@@ -1,0 +1,14 @@
+# dependencies
+/frontend/node_modules
+
+# production
+/frontend/build
+
+# env
+env
+
+# git
+.commit
+
+# vscode
+.vscode
