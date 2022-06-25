@@ -8,7 +8,7 @@ A project to practice frontend and backend in different teams with different res
 
 1. [ ] `/api/login` address to login users and receive `session_id`.
 2. [ ] `/api/register` address to register users.
-3. [ ] `/api/me` address to register users.
+3. [ ] `/api/me` address to current user's profile data.
 
 ### Frontend
 
