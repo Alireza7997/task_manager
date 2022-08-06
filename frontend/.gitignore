@@ -24,3 +24,5 @@ yarn-error.log*
 
 # me
 /output.css
+/index.css.map
+/index.css
