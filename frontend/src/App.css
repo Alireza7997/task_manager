@@ -1,38 +1,29 @@
-.App {
-  text-align: center;
+/* General Designs */
+body {
+	background-color: #080710;
+	/* Fonts */
+	@apply text-white outline-none border-none;
+	font-family: "Poppins", sans-serif;
+	letter-spacing: 0.5px;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h3 {
+	@apply text-3xl font-medium text-center;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+form {
+	@apply p-9;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+label {
+	@apply block text-sm font-medium;
 }
-
-.App-link {
-  color: #61dafb;
+input {
+	@apply block w-full h-12 rounded-lg px-3 text-sm font-light;
+	background-color: #ffffff12;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input::placeholder {
+	color: #e5e5e5;
 }
+button {
+	@apply w-full bg-white p-4 text-base font-semibold rounded-md cursor-pointer;
+	color: #080710;
+}
+/* End Of General Designs */
