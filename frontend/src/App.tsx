@@ -1,12 +1,8 @@
-import './App.css';
-import Squares from './components/UI/Squares';
+import "./App.css";
+import Login from "./components/Glassmorphism/Login";
 
 function App() {
-  return (
-    <>
-      <Squares/>
-    </>
-  );
+	return <Login />;
 }
 
 export default App;

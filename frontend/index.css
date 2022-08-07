@@ -11,19 +11,20 @@ body {
 	letter-spacing: 0.5px;
 }
 h3 {
-	@apply text-3xl font-medium text-center;
+	@apply text-3xl font-medium text-center capitalize;
 }
 form {
 	@apply p-9;
 }
 label {
-	@apply block text-sm font-medium;
+	@apply block text-sm font-medium capitalize;
 }
 input {
 	@apply block w-full h-12 rounded-lg px-3 text-sm font-light;
 	background-color: #ffffff12;
 }
 input::placeholder {
+	@apply capitalize;
 	color: #e5e5e5;
 }
 button {
@@ -36,7 +37,7 @@ button {
 .square-container {
 	width: 430px;
 	height: 520px;
-	z-index: 1;
+	z-index: 0;
 	/* Center it */
 	@apply absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2;
 }
@@ -46,14 +47,17 @@ button {
 	top: -15px;
 	right: -45px;
 	background: linear-gradient(#1845ad50, #23a2f650);
+	--i: 0;
 }
 .square-container .square:nth-child(2) {
 	width: 150px;
 	height: 150px;
 	top: 155px;
 	left: -115px;
+	z-index: 1;
 	background: linear-gradient(to right, #ff522f50, #f0961950);
 	border-radius: 50%;
+	--i: 1;
 }
 .square-container .square:nth-child(3) {
 	width: 60px;
@@ -61,7 +65,9 @@ button {
 	bottom: 85px;
 	right: -15px;
 	border-radius: 50%;
+	z-index: 1;
 	background: linear-gradient(to left, #55ffff50, #3cb6b650);
+	--i: 2;
 }
 .square-container .square:nth-child(4) {
 	width: 50px;
@@ -69,6 +75,7 @@ button {
 	bottom: 35px;
 	left: -55px;
 	background: linear-gradient(to left, #9b986850, #6b694850);
+	--i: 3;
 }
 .square-container .square:nth-child(5) {
 	width: 50px;
@@ -76,6 +83,7 @@ button {
 	top: -15px;
 	left: -20px;
 	background: linear-gradient(to right, #4eff4150, #26682150);
+	--i: 4;
 }
 .square-container .square:nth-child(6) {
 	width: 85px;
@@ -83,6 +91,7 @@ button {
 	top: 165px;
 	right: -155px;
 	background: linear-gradient(to right, #aa55ff50, #773bb350);
+	--i: 5;
 }
 .square {
 	/* Style */
@@ -128,6 +137,16 @@ button {
 	/* Center it */
 	@apply absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2;
 }
+/* Responsibility */
+@media (max-width: 475px) {
+	.glassmorphism-form {
+		width: 100%;
+		height: 100%;
+	}
+}
+/* End Of Glassmorphism Form */
+
+/* Glassmorphism Inputs Form */
 .input-container {
 	@apply relative mt-7 space-y-3;
 }
@@ -146,11 +165,4 @@ button {
 .password-visible {
 	background: url(https://snipp.ru/demo/495/no-view.svg) 0 0 no-repeat;
 }
-/* Responsibility */
-@media (max-width: 475px) {
-	.glassmorphism-form {
-		width: 100%;
-		height: 100%;
-	}
-}
-/* End Of Glassmorphism Form */
+/* End Of Glassmorphism Inputs Form */

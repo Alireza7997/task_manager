@@ -7,19 +7,20 @@ body {
 	letter-spacing: 0.5px;
 }
 h3 {
-	@apply text-3xl font-medium text-center;
+	@apply text-3xl font-medium text-center capitalize;
 }
 form {
 	@apply p-9;
 }
 label {
-	@apply block text-sm font-medium;
+	@apply block text-sm font-medium capitalize;
 }
 input {
 	@apply block w-full h-12 rounded-lg px-3 text-sm font-light;
 	background-color: #ffffff12;
 }
 input::placeholder {
+	@apply capitalize;
 	color: #e5e5e5;
 }
 button {

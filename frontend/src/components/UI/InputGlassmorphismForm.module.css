@@ -1,0 +1,20 @@
+/* Glassmorphism Inputs Form */
+.input-container {
+	@apply relative mt-7 space-y-3;
+}
+.password-view-control {
+	@apply absolute inline-block cursor-pointer w-6 h-6;
+	background: url(https://snipp.ru/demo/495/view.svg) 0 0 no-repeat;
+	transition: 500ms;
+}
+.password-input-container > .password-view-control {
+	right: 15px;
+	top: 45px;
+}
+.password-input-container > input {
+	@apply pr-12;
+}
+.password-visible {
+	background: url(https://snipp.ru/demo/495/no-view.svg) 0 0 no-repeat;
+}
+/* End Of Glassmorphism Inputs Form */

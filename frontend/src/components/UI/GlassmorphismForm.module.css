@@ -1,0 +1,22 @@
+/* Glassmorphism Form */
+.glassmorphism-form {
+	@apply backdrop-blur-md rounded-xl;
+	height: 420px;
+	width: 400px;
+	background-color: rgba(255, 255, 255, 0.13);
+	border: 2px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+	z-index: 0;
+	/* Style items inside */
+	@apply flex flex-col justify-center;
+	/* Center it */
+	@apply absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2;
+}
+/* Responsibility */
+@media (max-width: 475px) {
+	.glassmorphism-form {
+		width: 100%;
+		height: 100%;
+	}
+}
+/* End Of Glassmorphism Form */

@@ -2,7 +2,7 @@
 .square-container {
 	width: 430px;
 	height: 520px;
-	z-index: 1;
+	z-index: 0;
 	/* Center it */
 	@apply absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2;
 }
@@ -19,6 +19,7 @@
 	height: 150px;
 	top: 155px;
 	left: -115px;
+	z-index: 1;
 	background: linear-gradient(to right, #ff522f50, #f0961950);
 	border-radius: 50%;
 	--i: 1;
@@ -29,6 +30,7 @@
 	bottom: 85px;
 	right: -15px;
 	border-radius: 50%;
+	z-index: 1;
 	background: linear-gradient(to left, #55ffff50, #3cb6b650);
 	--i: 2;
 }

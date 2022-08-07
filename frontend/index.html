@@ -22,36 +22,35 @@
 	</head>
 	<body>
 		<div class="square-container">
-			<div class="square" style="--i: 0"></div>
-			<div class="square" style="--i: 1"></div>
-			<div class="square" style="--i: 2"></div>
-			<div class="square" style="--i: 3"></div>
-			<div class="square" style="--i: 4"></div>
-			<div class="square" style="--i: 5"></div>
-		</div>
+			<div class="square"></div>
+			<div class="square"></div>
+			<div class="square"></div>
+			<div class="square"></div>
+			<div class="square"></div>
+			<div class="square"></div>
+			<form class="glassmorphism-form">
+				<h3>Login</h3>
 
-		<form class="glassmorphism-form">
-			<h3>Login</h3>
-
-			<div class="input-container">
-				<label for="username">Username</label>
-				<input type="text" placeholder="Email or Phone" id="username" />
-			</div>
-
-			<div class="input-container">
-				<label for="password">Password</label>
-				<div class="password-input-container">
-					<input type="password" placeholder="Password" id="password" />
-					<a
-						class="password-view-control"
-						onclick="return show_hide_password(this);"
-					></a>
+				<div class="input-container">
+					<label for="username">Username</label>
+					<input type="text" placeholder="Email or Phone" id="username" />
 				</div>
-			</div>
 
-			<div class="input-container">
-				<button>Log In</button>
-			</div>
-		</form>
+				<div class="input-container">
+					<label for="password">Password</label>
+					<div class="password-input-container">
+						<input type="password" placeholder="Password" id="password" />
+						<a
+							class="password-view-control"
+							onclick="return show_hide_password(this);"
+						></a>
+					</div>
+				</div>
+
+				<div class="input-container">
+					<button>Log In</button>
+				</div>
+			</form>
+		</div>
 	</body>
 </html>
