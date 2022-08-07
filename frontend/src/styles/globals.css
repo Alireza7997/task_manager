@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+
 /* General Designs */
 body {
 	background-color: #080710;
@@ -24,7 +27,10 @@ input::placeholder {
 	color: #e5e5e5;
 }
 button {
-	@apply w-full bg-white p-4 text-base font-semibold rounded-md cursor-pointer;
+	@apply w-full bg-white p-4 text-base font-semibold rounded-md cursor-pointer capitalize;
 	color: #080710;
+}
+a {
+	@apply capitalize;
 }
 /* End Of General Designs */

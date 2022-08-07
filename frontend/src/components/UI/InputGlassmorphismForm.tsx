@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./InputGlassmorphismForm.module.css";
+import styles from "../../styles/UI/InputGlassmorphismForm.module.css";
 
 const show_hide_password = (id: string) => {
 	return (event: React.MouseEvent<HTMLElement>) => {
@@ -18,8 +18,8 @@ const show_hide_password = (id: string) => {
 	};
 };
 
-interface InputGlassmorphismFormProps {
-	type: "password" | "text" | "button";
+interface InputGlassmorphismFormProps extends React.PropsWithChildren {
+	type: "password" | "text" | "button" | "email";
 	label: string;
 	placeHolder: string;
 	id: string;
@@ -55,6 +55,15 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 
 			{/* Text input */}
 			{props.type === "text" && (
+				<input
+					type={props.type}
+					placeholder={props.placeHolder}
+					id={props.id}
+				/>
+			)}
+
+			{/* Email input */}
+			{props.type === "email" && (
 				<input
 					type={props.type}
 					placeholder={props.placeHolder}

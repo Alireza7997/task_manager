@@ -1,5 +1,5 @@
+import styles from "../../styles/UI/Squares.module.css";
 import React from "react";
-import styles from "./Squares.module.css";
 
 const Squares: React.FC<React.PropsWithChildren> = (
 	props: React.PropsWithChildren

@@ -1,3 +1,5 @@
+@tailwind components;
+
 /* Squares Section */
 .square-container {
 	width: 430px;

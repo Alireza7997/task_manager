@@ -1,3 +1,5 @@
+@tailwind components;
+
 /* Glassmorphism Inputs Form */
 .input-container {
 	@apply relative space-y-3;

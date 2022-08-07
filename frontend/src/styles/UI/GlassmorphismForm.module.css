@@ -1,13 +1,15 @@
+@tailwind components;
+
 /* Glassmorphism Form */
 .glassmorphism-form {
-	@apply backdrop-blur-md rounded-xl space-y-7;
+	@apply backdrop-blur-md rounded-xl;
 	width: 400px;
 	background-color: rgba(255, 255, 255, 0.13);
 	border: 2px solid rgba(255, 255, 255, 0.1);
 	box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
 	z-index: 0;
 	/* Style items inside */
-	@apply flex flex-col justify-center;
+	@apply flex flex-col justify-center space-y-7;
 	/* Center it */
 	@apply absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2;
 }

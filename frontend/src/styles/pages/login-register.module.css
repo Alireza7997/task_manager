@@ -1,0 +1,13 @@
+@tailwind components;
+
+.not-signed-up-container {
+	@apply flex mt-2;
+}
+
+.not-signed-up-container > p {
+	@apply w-full text-sm text-gray-400;
+}
+
+.not-signed-up-container > p:last-child {
+	@apply text-right;
+}

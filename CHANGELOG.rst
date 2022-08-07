@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: next.js added
 * 🐛 fix: better design
 * 🎉 feat(components-login): Login page added
 * 🎉 feat(components-squares): Squares component added
