@@ -11,6 +11,7 @@ import (
 var Store = sessions.NewCookieStore([]byte("super-secret"))
 
 func init() {
+	Store.Options.MaxAge = 3600
 	Store.Options.HttpOnly = true
 	Store.Options.Secure = true
 	gob.Register(&models.User{})
