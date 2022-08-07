@@ -1,7 +1,14 @@
 package app
 
-import "github.com/alireza/api/internal/database"
+import (
+	internalConfig "github.com/alireza/api/internal/configs"
+	"github.com/alireza/api/internal/database"
+	"github.com/alireza/api/pkg/config"
+)
+
+var configs = &internalConfig.Config{}
 
 func init() {
-	database.InitDataBase()
+	config.ReadLocalConfigs(configs)
+	database.InitDataBase(&configs.Database)
 }

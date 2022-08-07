@@ -6,9 +6,17 @@
 
 # env
 env
+.env
+.env.yml
+.env.yaml
+env.yml
+env.yaml
 
 # git
 .commit
 
 # vscode
 .vscode
+
+# go
+go.sum
