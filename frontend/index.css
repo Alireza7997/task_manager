@@ -126,7 +126,6 @@ button {
 /* Glassmorphism Form */
 .glassmorphism-form {
 	@apply backdrop-blur-md rounded-xl;
-	height: 420px;
 	width: 400px;
 	background-color: rgba(255, 255, 255, 0.13);
 	border: 2px solid rgba(255, 255, 255, 0.1);
@@ -151,7 +150,7 @@ button {
 	@apply relative mt-7 space-y-3;
 }
 .password-view-control {
-	@apply absolute inline-block cursor-pointer w-6 h-6;
+	@apply absolute inline-block cursor-pointer w-6 h-6 p-0;
 	background: url(https://snipp.ru/demo/495/view.svg) 0 0 no-repeat;
 	transition: 500ms;
 }
