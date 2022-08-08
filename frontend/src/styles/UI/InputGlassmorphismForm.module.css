@@ -2,7 +2,20 @@
 
 /* Glassmorphism Inputs Form */
 .input-container {
-	@apply relative space-y-3;
+	@apply relative;
+}
+.label {
+	/* Style */
+	@apply absolute inset-0 -top-5 left-0 text-xs;
+	pointer-events: none;
+
+	/* Animation */
+	@apply transition-all duration-300;
+}
+.label-on-input {
+	@apply text-sm;
+	top: 14px;
+	left: 12px;
 }
 .password-view-control {
 	@apply absolute inline-block cursor-pointer w-6 h-6 p-0;
@@ -16,7 +29,7 @@
 }
 .password-input-container > .password-view-control {
 	right: 15px;
-	top: 45px;
+	top: 14px;
 }
 .password-input-container > input {
 	@apply pr-12;

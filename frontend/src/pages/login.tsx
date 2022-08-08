@@ -1,8 +1,13 @@
-import Link from "next/link";
+// =============== Styles =============== //
 import styles from "../styles/pages/login-register.module.css";
+
+// =============== Libraries =============== //
+import Link from "next/link";
+import Head from "next/head";
+
+// =============== Components =============== //
 import GlassmorphismForm from "../components/UI/GlassmorphismForm";
 import InputGlassmorphismForm from "../components/UI/InputGlassmorphismForm";
-import Head from "next/head";
 
 const Login: React.FC = () => {
 	return (
@@ -15,13 +20,13 @@ const Login: React.FC = () => {
 				<InputGlassmorphismForm
 					id="username"
 					label="username"
-					placeHolder="email or username"
+					placeHolder=""
 					type="text"
 				/>
 				<InputGlassmorphismForm
 					id="password"
 					label="password"
-					placeHolder="password"
+					placeHolder=""
 					type="password"
 				/>
 				<div>

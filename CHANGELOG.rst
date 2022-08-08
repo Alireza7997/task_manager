@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: labels are more dynamic
 * 🎉 feat: next.js added
 * 🐛 fix: better design
 * 🎉 feat(components-login): Login page added

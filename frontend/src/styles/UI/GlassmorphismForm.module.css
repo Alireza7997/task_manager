@@ -9,7 +9,7 @@
 	box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
 	z-index: 0;
 	/* Style items inside */
-	@apply flex flex-col justify-center space-y-7;
+	@apply flex flex-col justify-center space-y-8;
 	/* Center it */
 	@apply absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2;
 }

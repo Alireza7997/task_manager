@@ -13,22 +13,11 @@ const Register: React.FC = () => {
 			</Head>
 			<GlassmorphismForm>
 				<h3>Register</h3>
-				<InputGlassmorphismForm
-					id="username"
-					label="username"
-					placeHolder="email or username"
-					type="text"
-				/>
-				<InputGlassmorphismForm
-					id="email"
-					label="email"
-					placeHolder="email"
-					type="email"
-				/>
+				<InputGlassmorphismForm id="username" label="username" type="text" />
+				<InputGlassmorphismForm id="email" label="email" type="email" />
 				<InputGlassmorphismForm
 					id="password"
 					label="password"
-					placeHolder="password"
 					type="password"
 				/>
 				<div>
