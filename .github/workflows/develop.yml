@@ -14,16 +14,20 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Retrieve the last changes
+        uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - name: action-yarn
-        # You may pin to the exact commit or the version.
-        # uses: comchangs/action-yarn@e4a1f4800849aa2e73dbc77d872a3c011cdc28d5
-        uses: comchangs/action-yarn@v0.1-beta
-      - run: cd frontend && yarn build
+          cache: "yarn"
+          cache-dependency-path: ./frontend/yarn.lock
+      - name: Install Dependencies
+        working-directory: frontend
+        run: yarn install
+      - name: Build frontend
+        working-directory: frontend
+        run: yarn build
       - name: Restart docker container
-      - run: cd frontend && docker compose down && docker compose up -d
+        working-directory: frontend
+        run: docker compose down && docker compose up -d
