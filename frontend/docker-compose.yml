@@ -6,7 +6,7 @@ services:
     image: nginx:alpine
     restart: always
     volumes:
-      - ./frontend/configs:/etc/nginx/conf.d
-      - ./frontend/out:/project
+      - ./configs:/etc/nginx/conf.d
+      - ./out:/project
     ports:
       - 3004:80
