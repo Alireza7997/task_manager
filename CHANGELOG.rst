@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: CD workflow for frontend added and a bug on phone size fixed
 * 🎉 feat: labels are more dynamic
 * 🎉 feat: next.js added
 * 🐛 fix: better design
