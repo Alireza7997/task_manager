@@ -1,38 +1,57 @@
 package handlers
 
 import (
+	"time"
+
 	"github.com/alireza/api/internal/database"
-	middleware "github.com/alireza/api/internal/middlewares"
 	"github.com/alireza/api/internal/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Login(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+type request struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
 
-	query := database.DB.Exec("SELECT username FROM users WHERE username = ?", username)
-	if query.RowsAffected == 0 {
+func Login(c *gin.Context) {
+	var req request
+	var user models.User
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(400, "Error while binding")
+		return
+	}
+	row := database.DB.Exec("SELECT * FROM users WHERE username = ?", req.Username)
+	if row.RowsAffected == 0 {
 		c.JSON(401, gin.H{
 			"message": "User does not exist",
 		})
 		return
 	}
-	var user models.User
-	database.DB.Exec("SELECT * FROM users WHERE username = ?", username).Find(&user)
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil {
+	row.Find(&user)
+	hasherr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if hasherr != nil {
 		c.JSON(401, gin.H{
 			"message": "username and password do not match",
 		})
 		return
 	}
-	session, _ := middleware.Store.Get(c.Request, "session")
-	session.Values["user"] = user
-	session.Save(c.Request, c.Writer)
+	if database.SessionExists(user.Username) {
+		c.JSON(200, gin.H{
+			"message": "Logged In",
+		})
+		return
+	}
+	session := models.Session{
+		User_name: user.Username,
+		SessionID: uuid.NewString(),
+		Expiry:    time.Now().Add(1800 * time.Second),
+	}
+	database.DB.Create(&session)
+	database.DB.Model(&models.Session{}).AddForeignKey("user_name", "users(username)", "RESTRICT", "RESTRICT")
 	c.JSON(200, gin.H{
-		"message": "Logged In",
+		"message": "Logged In\n",
+		"data":    session,
 	})
-
 }

@@ -20,6 +20,16 @@ func InitDataBase(cfg *internalConfig.Database) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.Session{})
+}
+
+func UserExists(username, email string) bool {
+	finder := DB.Exec("SELECT username FROM users WHERE username = ? OR email = ?", username, email)
+	return finder.RowsAffected == 1
+}
+
+func SessionExists(username string) bool {
+	sessionFinder := DB.Exec("SELECT * FROM sessions WHERE user_name = ?", username)
+	return sessionFinder.RowsAffected == 1
 }

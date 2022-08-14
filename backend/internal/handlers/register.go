@@ -12,11 +12,13 @@ import (
 )
 
 func Register(c *gin.Context) {
-	db := database.DB
 	var user models.User
-	user.Username = c.PostForm("username")
-	password := c.PostForm("password")
-	user.Email = c.PostForm("email")
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(400, gin.H{
+			"message": "Error while binding",
+		})
+		return
+	}
 	user.CreatedAt = time.Now().Local()
 
 	// registering validations
@@ -28,38 +30,31 @@ func Register(c *gin.Context) {
 	}
 	for _, char := range user.Username {
 		if !unicode.IsLetter(char) && !unicode.IsNumber(char) {
-			c.HTML(400, "register.html", gin.H{
+			c.JSON(400, gin.H{
 				"message": "Only alphanumeric characters are allowed",
 			})
 			return
 		}
 	}
-	query1 := database.DB.Exec("SELECT username FROM users WHERE username = ?", user.Username)
-	if query1.RowsAffected != 0 {
-		c.JSON(400, gin.H{
-			"message": "Username is already taken, try another",
-		})
-		return
-	}
-	if len(password) < 8 || len(password) > 100 {
+	if len(user.Password) < 8 || len(user.Password) > 100 {
 		c.JSON(400, gin.H{
 			"message": "Password should be 8-100 characters long",
 		})
 		return
 	}
-	query2 := database.DB.Exec("SELECT email FROM users WHERE email = ?", user.Email)
-	if query2.RowsAffected != 0 {
+
+	if database.UserExists(user.Username, user.Email) {
 		c.JSON(400, gin.H{
-			"message": "This email is used by another user",
+			"message": "Username or Email already taken, try another",
 		})
 		return
 	}
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Fatal(err)
 	}
 	user.Password = string(hash)
-	db.Create(&user)
+	database.DB.Create(&user)
 	c.JSON(200, gin.H{
 		"message": "Successfully Registered",
 	})

@@ -9,8 +9,8 @@ import (
 func SetUpRouters(r *gin.Engine) {
 	r.POST("/api/register", handlers.Register)
 	r.POST("/api/login", handlers.Login)
-	authGroup := r.Group("/user", middleware.Auth)
-	authGroup.GET("/me", handlers.Me)
-	authGroup.GET("/logout", handlers.Logout)
+	private := r.Group("/user", middleware.Auth)
+	private.GET("/me", handlers.Me)
+	private.GET("/logout", handlers.Logout)
 
 }
