@@ -33,3 +33,14 @@ func SessionExists(username string) bool {
 	sessionFinder := DB.Exec("SELECT * FROM sessions WHERE user_name = ?", username)
 	return sessionFinder.RowsAffected == 1
 }
+
+func GetSession(username string) models.Session {
+	var session models.Session
+	var errcase models.Session
+	sessionFinder := DB.Exec("SELECT * FROM sessions WHERE user_name = ?", username)
+	if sessionFinder.RowsAffected == 1 {
+		sessionFinder.Find(&session)
+		return session
+	}
+	return errcase
+}

@@ -4,13 +4,13 @@ import (
 	"github.com/alireza/api/internal/database"
 	"github.com/alireza/api/internal/models"
 	"github.com/gin-gonic/gin"
-	"github.com/icza/session"
 )
 
 func Auth(c *gin.Context) {
-	sessionID := session.Get(c.Request)
+	sessionID := c.GetHeader("session_id")
 	sessionCheck := database.DB.Exec("SELECT * FROM sessions WHERE session_id = ? ", sessionID)
 	if sessionCheck.RowsAffected != 1 {
+		c.JSON(401, gin.H{"message": "Unauthorized"})
 		c.Abort()
 		return
 	}

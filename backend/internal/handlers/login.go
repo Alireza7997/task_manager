@@ -38,10 +38,15 @@ func Login(c *gin.Context) {
 		return
 	}
 	if database.SessionExists(user.Username) {
-		c.JSON(200, gin.H{
-			"message": "Logged In",
-		})
-		return
+		if sess := database.GetSession(user.Username); sess.IsExpired() {
+			database.DB.Model(&models.Session{}).Where("user_name = ?", user.Username).Update("expiry", time.Now().Add(1800*time.Second))
+			c.JSON(200, gin.H{
+				"message": "Logged In\n",
+				"data":    sess.SessionID,
+			})
+			return
+		}
+
 	}
 	session := models.Session{
 		User_name: user.Username,
@@ -52,6 +57,6 @@ func Login(c *gin.Context) {
 	database.DB.Model(&models.Session{}).AddForeignKey("user_name", "users(username)", "RESTRICT", "RESTRICT")
 	c.JSON(200, gin.H{
 		"message": "Logged In\n",
-		"data":    session,
+		"data":    session.SessionID,
 	})
 }

@@ -5,16 +5,9 @@ go 1.18
 require (
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.8.1
-	github.com/icza/session v1.2.0
 	github.com/jinzhu/gorm v1.9.16
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	gopkg.in/yaml.v3 v3.0.1
-)
-
-require (
-	github.com/golang/protobuf v1.5.0 // indirect
-	github.com/icza/mighty v0.0.0-20220812133946-909cba2425e9 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
 )
 
 require (
