@@ -11,4 +11,5 @@ var configs = &internalConfig.Config{}
 func init() {
 	config.ReadLocalConfigs(configs)
 	database.InitDataBase(&configs.Database)
+
 }

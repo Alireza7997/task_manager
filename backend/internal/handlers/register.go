@@ -7,28 +7,34 @@ import (
 
 	"github.com/alireza/api/internal/database"
 	"github.com/alireza/api/internal/models"
+	uServices "github.com/alireza/api/internal/services/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
+type RegisterRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+}
+
 func Register(c *gin.Context) {
-	var user models.User
-	if err := c.BindJSON(&user); err != nil {
+	req := &RegisterRequest{}
+	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{
-			"message": "Error while binding",
+			"message": "Fill blank fields",
 		})
 		return
 	}
-	user.CreatedAt = time.Now().Local()
 
-	// registering validations
-	if len(user.Username) < 5 || len(user.Username) > 64 {
+	// Registering validations
+	if len(req.Username) < 5 || len(req.Username) > 64 {
 		c.JSON(400, gin.H{
 			"message": "Username should be 5-64 characters long",
 		})
 		return
 	}
-	for _, char := range user.Username {
+	for _, char := range req.Username {
 		if !unicode.IsLetter(char) && !unicode.IsNumber(char) {
 			c.JSON(400, gin.H{
 				"message": "Only alphanumeric characters are allowed",
@@ -36,26 +42,36 @@ func Register(c *gin.Context) {
 			return
 		}
 	}
-	if len(user.Password) < 8 || len(user.Password) > 100 {
+	if len(req.Password) < 8 || len(req.Password) > 100 {
 		c.JSON(400, gin.H{
 			"message": "Password should be 8-100 characters long",
 		})
 		return
 	}
-
-	if database.UserExists(user.Username, user.Email) {
+	// Importing user services
+	s := uServices.New()
+	if s.UserExists(database.DB, req.Username, req.Email) {
 		c.JSON(400, gin.H{
 			"message": "Username or Email already taken, try another",
 		})
 		return
 	}
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	// Hashing password
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Fatal(err)
 	}
-	user.Password = string(hash)
-	database.DB.Create(&user)
-	c.JSON(200, gin.H{
-		"message": "Successfully Registered",
-	})
+	// Creating user
+	user := &models.User{
+		ID:        1,
+		Username:  req.Username,
+		Password:  string(hash),
+		Email:     req.Email,
+		CreatedAt: time.Now().Local(),
+	}
+	err = s.CreateUser(database.DB, *user)
+	if err != nil {
+		c.JSON(404, gin.H{"message": "Failed to Create User"})
+	}
+	c.JSON(200, user)
 }

@@ -7,10 +7,15 @@ import (
 )
 
 func SetUpRouters(r *gin.Engine) {
-	r.POST("/api/register", handlers.Register)
-	r.POST("/api/login", handlers.Login)
+	// authentication
+	authentication := r.Group("/auth")
+	authentication.POST("/register", handlers.Register)
+	authentication.POST("/login", handlers.Login)
+	// authorization
+	authorization := r.Group("/auth", middleware.Auth)
+	authorization.GET("/logout", handlers.Logout)
+	// private
 	private := r.Group("/user", middleware.Auth)
-	private.GET("/me", handlers.Me)
-	private.GET("/logout", handlers.Logout)
+	private.GET("me", handlers.Me)
 
 }

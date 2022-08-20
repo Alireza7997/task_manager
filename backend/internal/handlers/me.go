@@ -5,5 +5,6 @@ import (
 )
 
 func Me(c *gin.Context) {
-	// Not finished :|
+	user, _ := c.Get("user")
+	c.JSON(200, user)
 }

@@ -1,46 +1,43 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 
 	internalConfig "github.com/alireza/api/internal/configs"
-	"github.com/alireza/api/internal/models"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/doug-martin/goqu/v9"
+	migrate "github.com/rubenv/sql-migrate"
+
+	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
+	_ "github.com/lib/pq"
 )
 
-var DB *gorm.DB
+var db *sql.DB
+var DB *goqu.Database
 
-func InitDataBase(cfg *internalConfig.Database) {
+func InitDataBase(database *internalConfig.Database) {
 	var err error
-	DB, err = gorm.Open("postgres",
-		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-			cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password))
+	db, err = sql.Open("postgres",
+		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable TimeZone=Asia/Tehran",
+			database.Host, database.Port, database.Username, database.DBName, database.Password))
 	if err != nil {
 		log.Fatal(err)
 	}
-	DB.AutoMigrate(&models.User{})
-	DB.AutoMigrate(&models.Session{})
+	DB = goqu.New("postgres", db)
+	migrateLatestChanges(db)
 }
 
-func UserExists(username, email string) bool {
-	finder := DB.Exec("SELECT username FROM users WHERE username = ? OR email = ?", username, email)
-	return finder.RowsAffected == 1
-}
-
-func SessionExists(username string) bool {
-	sessionFinder := DB.Exec("SELECT * FROM sessions WHERE user_name = ?", username)
-	return sessionFinder.RowsAffected == 1
-}
-
-func GetSession(username string) models.Session {
-	var session models.Session
-	var errcase models.Session
-	sessionFinder := DB.Exec("SELECT * FROM sessions WHERE user_name = ?", username)
-	if sessionFinder.RowsAffected == 1 {
-		sessionFinder.Find(&session)
-		return session
+func migrateLatestChanges(db *sql.DB) {
+	migrations := &migrate.FileMigrationSource{
+		Dir: "migrations/",
 	}
-	return errcase
+	n, err := migrate.Exec(db, "postgres", migrations, migrate.Up)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if n > 0 {
+		fmt.Println("\n==Migrations==")
+		fmt.Printf("Applied %d migrations!\n", n)
+	}
 }
