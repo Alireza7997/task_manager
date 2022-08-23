@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"time"
 	"unicode"
@@ -9,6 +10,7 @@ import (
 	"github.com/alireza/api/internal/models"
 	uServices "github.com/alireza/api/internal/services/user"
 	"github.com/gin-gonic/gin"
+	"github.com/golodash/galidator"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,6 +21,12 @@ type RegisterRequest struct {
 }
 
 func Register(c *gin.Context) {
+	g := galidator.New()
+	validator := g.Validator(galidator.Rules{
+		"Username": g.RuleSet().Required().Min(5).Max(64),
+		"Password": g.RuleSet().Required().Min(8).Max(100),
+		"Email":    g.RuleSet().Required().Max(320),
+	})
 	req := &RegisterRequest{}
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{
@@ -26,14 +34,19 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-
-	// Registering validations
-	if len(req.Username) < 5 || len(req.Username) > 64 {
-		c.JSON(400, gin.H{
-			"message": "Username should be 5-64 characters long",
-		})
+	err := validator.Validate(req)
+	fmt.Println(err)
+	if err != nil {
+		c.JSON(400, gin.H{"errors : ": err})
 		return
 	}
+	// Registering validations
+	// if len(req.Username) < 5 || len(req.Username) > 64 {
+	// 	c.JSON(400, gin.H{
+	// 		"message": "Username should be 5-64 characters long",
+	// 	})
+	// 	return
+	// }
 	for _, char := range req.Username {
 		if !unicode.IsLetter(char) && !unicode.IsNumber(char) {
 			c.JSON(400, gin.H{
@@ -42,12 +55,12 @@ func Register(c *gin.Context) {
 			return
 		}
 	}
-	if len(req.Password) < 8 || len(req.Password) > 100 {
-		c.JSON(400, gin.H{
-			"message": "Password should be 8-100 characters long",
-		})
-		return
-	}
+	// if len(req.Password) < 8 || len(req.Password) > 100 {
+	// 	c.JSON(400, gin.H{
+	// 		"message": "Password should be 8-100 characters long",
+	// 	})
+	// 	return
+	// }
 	// Importing user services
 	s := uServices.New()
 	if s.UserExists(database.DB, req.Username, req.Email) {

@@ -13,7 +13,12 @@ require (
 	github.com/rubenv/sql-migrate v1.1.2
 )
 
-require github.com/go-gorp/gorp/v3 v3.0.2 // indirect
+require (
+	github.com/dlclark/regexp2 v1.7.0 // indirect
+	github.com/go-gorp/gorp/v3 v3.0.2 // indirect
+	github.com/golodash/galidator v0.0.0-beta.1 // indirect
+	github.com/golodash/godash v1.1.1 // indirect
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect

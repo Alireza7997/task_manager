@@ -18,5 +18,3 @@ env.yaml
 # vscode
 .vscode
 
-# go
-go.sum
