@@ -15,7 +15,8 @@ var service = &userService{}
 type UserInterface interface {
 	UserExists(db *goqu.Database, username, email string) bool
 	GetUser(db *goqu.Database, username string) (*models.User, error)
-	CreateUser(db *goqu.Database, data models.User) error
+	CreateUser(db *goqu.Database, data models.User) (*models.User, error)
+	GetUserByID(db *goqu.Database, id int) (*models.User, error)
 }
 
 // Checks if the given username/email exists in the given database.
@@ -39,12 +40,25 @@ func (s *userService) GetUser(db *goqu.Database, username string) (*models.User,
 }
 
 // Creates user in the given database with given information.
-func (s *userService) CreateUser(db *goqu.Database, data models.User) error {
+func (s *userService) CreateUser(db *goqu.Database, data models.User) (*models.User, error) {
 	_, err := db.Insert(models.UserName).Rows(data).Executor().Exec()
 	if err != nil {
-		return errors.New("register failed")
+		return nil, errors.New("failed creating user")
 	}
-	return nil
+	user, err := s.GetUser(db, data.Username)
+	if err != nil {
+		return nil, errors.New("failed creating user")
+	}
+	return user, nil
+}
+
+func (s *userService) GetUserByID(db *goqu.Database, id int) (*models.User, error) {
+	var user models.User
+	ok, _ := db.From(models.UserName).Where(goqu.Ex{"id": id}).Executor().ScanStruct(&user)
+	if !ok {
+		return nil, sql.ErrNoRows
+	}
+	return &user, nil
 }
 
 func New() UserInterface {

@@ -62,16 +62,16 @@ func Register(c *gin.Context) {
 		log.Fatal(err)
 	}
 	// Creating user
-	user := &models.User{
-		ID:        1,
+	model := &models.User{
 		Username:  req.Username,
 		Password:  string(hash),
 		Email:     req.Email,
 		CreatedAt: time.Now().Local(),
 	}
-	err = s.CreateUser(database.DB, *user)
+	user, err := s.CreateUser(database.DB, *model)
 	if err != nil {
-		c.JSON(404, gin.H{"message": "Failed to Create User"})
+		c.JSON(500, err)
+		return
 	}
 	c.JSON(200, user)
 }

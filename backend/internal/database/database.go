@@ -25,10 +25,10 @@ func InitDataBase(database *internalConfig.Database) {
 		log.Fatal(err)
 	}
 	DB = goqu.New("postgres", db)
-	migrateLatestChanges(db)
+	migrateLatestChanges()
 }
 
-func migrateLatestChanges(db *sql.DB) {
+func migrateLatestChanges() {
 	migrations := &migrate.FileMigrationSource{
 		Dir: "migrations/",
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/alireza/api/internal/database"
 	sessionServices "github.com/alireza/api/internal/services/session"
+	uServices "github.com/alireza/api/internal/services/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,8 +37,15 @@ func Auth(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	u := uServices.New()
+	user, err := u.GetUserByID(database.DB, int(session.UserID))
+	if err != nil {
+		c.JSON(500, "auth error")
+		c.Abort()
+		return
+	}
 	// setting "user" as parameter to get used by handler
-	c.Set("user", session)
-	c.Set("session", session)
+	c.Set("user", user)
+	c.Set("session", session.SessionID)
 	c.Next()
 }

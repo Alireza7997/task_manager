@@ -6,6 +6,7 @@ import (
 
 	"github.com/alireza/api/internal/database"
 	"github.com/alireza/api/internal/models"
+	Services "github.com/alireza/api/internal/services/session"
 	uServices "github.com/alireza/api/internal/services/user"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -23,8 +24,8 @@ func Login(c *gin.Context) {
 		c.JSON(400, "Error while binding")
 		return
 	}
-	s := uServices.New()
-	user, err := s.GetUser(database.DB, req.Username)
+	u := uServices.New()
+	user, err := u.GetUser(database.DB, req.Username)
 	if err == sql.ErrNoRows {
 		c.JSON(401, gin.H{
 			"message": "User does not exist",
@@ -39,10 +40,16 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	session := models.Session{
+	model := &models.Session{
+		UserID:    user.ID,
 		SessionID: uuid.NewString(),
 		Expiry:    time.Now().Add(1800 * time.Second),
 	}
-	// database.DB.Create(&session)
+	s := Services.New()
+	session, err := s.CreateSession(database.DB, *model)
+	if err != nil {
+		c.JSON(500, "error while creating session")
+		return
+	}
 	c.JSON(200, session)
 }
