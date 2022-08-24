@@ -3,6 +3,6 @@ package validators
 import "github.com/golodash/galidator"
 
 var LoginValidator = g.Validator(galidator.Rules{
-	"Username": g.RuleSet().Min(5).Max(64).Regex(`^(\w|\d|\s|_|-)+$`),
-	"Password": g.RuleSet().Password().Max(100),
+	"Username": g.RuleSet().Required().Min(5).Max(64),
+	"Password": g.RuleSet().Required().Password().Max(100),
 })

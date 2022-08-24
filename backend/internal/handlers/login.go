@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/alireza/api/internal/database"
 	"github.com/alireza/api/internal/global"
 	"github.com/alireza/api/internal/models"
@@ -27,15 +29,17 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if err := validators.LoginValidator.Validate(req); err != nil {
-		c.JSON(400, gin.H{"errors": err})
+	// Validate
+	if errors := validators.LoginValidator.Validate(*req); errors != nil {
+		c.JSON(400, gin.H{"errors": errors})
 		return
 	}
 
 	// Get user
 	user, err := u.GetUser(database.DB, req.Username)
 	if err != nil {
-		c.JSON(401, gin.H{"message": err})
+		fmt.Println(err)
+		c.JSON(401, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -54,7 +58,7 @@ func Login(c *gin.Context) {
 	}
 	session, err := s.CreateSession(database.DB, *model, global.CFG.ExpireTokenAfter)
 	if err != nil {
-		c.JSON(500, gin.H{"message": err})
+		c.JSON(500, gin.H{"message": err.Error()})
 		return
 	}
 

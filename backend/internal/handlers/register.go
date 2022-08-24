@@ -25,15 +25,15 @@ func Register(c *gin.Context) {
 	}
 
 	// Validate user input
-	if err := validators.RegisterValidator.Validate(*req); err != nil {
-		c.JSON(400, gin.H{"errors": err})
+	if errors := validators.RegisterValidator.Validate(*req); errors != nil {
+		c.JSON(400, gin.H{"errors": errors})
 		return
 	}
 
 	// Hashing password
 	hashedPassword, err := s.HashPassword(req.Password)
 	if err != nil {
-		c.JSON(500, gin.H{"errors": err})
+		c.JSON(500, gin.H{"errors": err.Error()})
 		return
 	}
 
@@ -45,7 +45,7 @@ func Register(c *gin.Context) {
 	}
 	user, err := s.CreateUser(database.DB, *model)
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(500, err.Error())
 		return
 	}
 
