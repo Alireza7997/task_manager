@@ -1,7 +1,6 @@
-package sessionServices
+package sessionService
 
 import (
-	"database/sql"
 	"errors"
 
 	"github.com/alireza/api/internal/models"
@@ -9,9 +8,12 @@ import (
 )
 
 type SessionInterface interface {
+	// Return a session based on session_id
 	GetSession(db *goqu.Database, id string) (*models.Session, error)
+	// Creates and returns a session
 	CreateSession(db *goqu.Database, data models.Session) (*models.Session, error)
-	DeleteSession(db *goqu.Database, session any) error
+	// Deletes a session
+	DeleteSession(db *goqu.Database, session string) error
 }
 
 type sessionService struct{}
@@ -19,34 +21,39 @@ type sessionService struct{}
 var service = &sessionService{}
 
 func (s *sessionService) GetSession(db *goqu.Database, id string) (*models.Session, error) {
-	var session models.Session
+	session := &models.Session{}
 	ok, _ := db.From(models.SessionName).Where(goqu.Ex{
 		"session_id": id,
-	}).Executor().ScanStruct(&session)
-
+	}).Executor().ScanStruct(session)
 	if !ok {
-		return nil, sql.ErrNoRows
+		return nil, errors.New("session not found")
 	}
-	return &session, nil
+
+	return session, nil
 }
+
 func (s *sessionService) CreateSession(db *goqu.Database, data models.Session) (*models.Session, error) {
 	_, err := db.Insert(models.SessionName).Rows(data).Executor().Exec()
 	if err != nil {
-		return nil, errors.New("failed creating session")
+		return nil, errors.New("session did not create")
 	}
+
 	session, err := s.GetSession(db, data.SessionID)
 	if err != nil {
-		return nil, errors.New("failed creating session")
+		return nil, errors.New("session did not create")
 	}
+
 	return session, nil
 }
-func (s *sessionService) DeleteSession(db *goqu.Database, id any) error {
+
+func (s *sessionService) DeleteSession(db *goqu.Database, id string) error {
 	_, err := db.Delete(models.SessionName).Where(goqu.Ex{
 		"session_id": id,
 	}).Executor().Exec()
 	if err != nil {
-		return errors.New("failed to delete session")
+		return errors.New("session did not delete")
 	}
+
 	return nil
 }
 

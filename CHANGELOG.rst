@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added a validator and refactor code for register logic
 * 🎉 feat: added config loading
 * 🎉 feat: added config loading
 * 🐛 fix: docker fixed
