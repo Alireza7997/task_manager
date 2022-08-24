@@ -7,9 +7,9 @@ import (
 )
 
 var RegisterValidator = g.Validator(galidator.Rules{
-	"Username": g.RuleSet().Required().Min(5).Max(64).Regex(`^(\w|\d|\s|_|-)+$`).Custom(galidator.Validators{"DuplicateUsername": DuplicateUsername}),
+	"Username": g.RuleSet().Min(5).Max(64).Regex(`^(\w|\d|\s|_|-)+$`).Custom(galidator.Validators{"DuplicateUsername": DuplicateUsername}),
 	"Email":    g.RuleSet().Required().Email().Max(320).Custom(galidator.Validators{"DuplicateEmail": DuplicateEmail}),
-	"Password": g.RuleSet().Required().Password().Max(100),
+	"Password": g.RuleSet().Password().Max(100),
 }, galidator.Messages{
 	"DuplicateUsername": "$value already exists",
 	"DuplicateEmail":    "$value already exists",

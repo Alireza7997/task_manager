@@ -1,8 +1,8 @@
 package userService
 
 import (
-	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/alireza/api/internal/models"
@@ -27,6 +27,8 @@ type UserInterface interface {
 	GetUserByID(db *goqu.Database, id int) (*models.User, error)
 	// Hashes user Password
 	HashPassword(password string) (string, error)
+	// Compares hashed password with raw password
+	ComparePassword(password, hashedPassword string) bool
 }
 
 func (s *userService) UserExistsByUsername(db *goqu.Database, username string) bool {
@@ -51,7 +53,7 @@ func (s *userService) GetUser(db *goqu.Database, username string) (*models.User,
 	user := &models.User{}
 	ok, _ := db.From(models.UserName).Where(goqu.Ex{"username": username}).Executor().ScanStruct(user)
 	if !ok {
-		return nil, sql.ErrNoRows
+		return nil, fmt.Errorf("couldn't find a user based on %s username", username)
 	}
 
 	return user, nil
@@ -62,12 +64,12 @@ func (s *userService) CreateUser(db *goqu.Database, data models.User) (*models.U
 
 	_, err := db.Insert(models.UserName).Rows(data).Executor().Exec()
 	if err != nil {
-		return nil, errors.New("failed creating user")
+		return nil, errors.New("user creation failed")
 	}
 
 	user, err := s.GetUser(db, data.Username)
 	if err != nil {
-		return nil, errors.New("failed creating user")
+		return nil, errors.New("user creation failed")
 	}
 
 	return user, nil
@@ -77,7 +79,7 @@ func (s *userService) GetUserByID(db *goqu.Database, id int) (*models.User, erro
 	user := &models.User{}
 	ok, _ := db.From(models.UserName).Where(goqu.Ex{"id": id}).Executor().ScanStruct(user)
 	if !ok {
-		return nil, sql.ErrNoRows
+		return nil, fmt.Errorf("couldn't find a user based on %d id", id)
 	}
 
 	return user, nil
@@ -90,6 +92,11 @@ func (s *userService) HashPassword(password string) (string, error) {
 	}
 
 	return string(hashedPassword), nil
+}
+
+func (s *userService) ComparePassword(password, hashedPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err != nil
 }
 
 func New() UserInterface {

@@ -1,16 +1,15 @@
 package handlers
 
 import (
-	"database/sql"
-	"time"
-
 	"github.com/alireza/api/internal/database"
+	"github.com/alireza/api/internal/global"
 	"github.com/alireza/api/internal/models"
-	Services "github.com/alireza/api/internal/services/session"
-	uServices "github.com/alireza/api/internal/services/user"
+	sessionService "github.com/alireza/api/internal/services/session"
+	userService "github.com/alireza/api/internal/services/user"
+	"github.com/alireza/api/internal/utils"
+	"github.com/alireza/api/internal/validators"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type loginRequest struct {
@@ -19,37 +18,45 @@ type loginRequest struct {
 }
 
 func Login(c *gin.Context) {
-	var req loginRequest
-	if err := c.BindJSON(&req); err != nil {
-		c.JSON(400, "Error while binding")
+	req := &loginRequest{}
+	u := userService.New()
+	s := sessionService.New()
+
+	// Parse json
+	if !utils.ParseJson(req, c) {
 		return
 	}
-	u := uServices.New()
+
+	if err := validators.LoginValidator.Validate(req); err != nil {
+		c.JSON(400, gin.H{"errors": err})
+		return
+	}
+
+	// Get user
 	user, err := u.GetUser(database.DB, req.Username)
-	if err == sql.ErrNoRows {
-		c.JSON(401, gin.H{
-			"message": "User does not exist",
-		})
+	if err != nil {
+		c.JSON(401, gin.H{"message": err})
 		return
 	}
-	hasherr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
-	if hasherr != nil {
+
+	// Compare Password
+	if !u.ComparePassword(req.Password, user.Password) {
 		c.JSON(401, gin.H{
 			"message": "username and password do not match",
 		})
 		return
 	}
 
+	// Session Creation
 	model := &models.Session{
 		UserID:    user.ID,
 		SessionID: uuid.NewString(),
-		Expiry:    time.Now().Add(1800 * time.Second),
 	}
-	s := Services.New()
-	session, err := s.CreateSession(database.DB, *model)
+	session, err := s.CreateSession(database.DB, *model, global.CFG.ExpireTokenAfter)
 	if err != nil {
-		c.JSON(500, "error while creating session")
+		c.JSON(500, gin.H{"message": err})
 		return
 	}
+
 	c.JSON(200, session)
 }

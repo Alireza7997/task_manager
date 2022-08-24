@@ -1,7 +1,8 @@
 package configs
 
 type Config struct {
-	Database Database `yaml:"database"`
+	Database         Database `yaml:"database"`
+	ExpireTokenAfter int64    `yaml:"expire_token_after"`
 }
 
 type Database struct {

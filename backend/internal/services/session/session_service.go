@@ -2,6 +2,7 @@ package sessionService
 
 import (
 	"errors"
+	"time"
 
 	"github.com/alireza/api/internal/models"
 	"github.com/doug-martin/goqu/v9"
@@ -11,7 +12,7 @@ type SessionInterface interface {
 	// Return a session based on session_id
 	GetSession(db *goqu.Database, id string) (*models.Session, error)
 	// Creates and returns a session
-	CreateSession(db *goqu.Database, data models.Session) (*models.Session, error)
+	CreateSession(db *goqu.Database, data models.Session, expireAfter int64) (*models.Session, error)
 	// Deletes a session
 	DeleteSession(db *goqu.Database, session string) error
 }
@@ -32,7 +33,8 @@ func (s *sessionService) GetSession(db *goqu.Database, id string) (*models.Sessi
 	return session, nil
 }
 
-func (s *sessionService) CreateSession(db *goqu.Database, data models.Session) (*models.Session, error) {
+func (s *sessionService) CreateSession(db *goqu.Database, data models.Session, expireAfter int64) (*models.Session, error) {
+	data.Expiry = time.Now().Add(time.Duration(expireAfter) * time.Second)
 	_, err := db.Insert(models.SessionName).Rows(data).Executor().Exec()
 	if err != nil {
 		return nil, errors.New("session did not create")
