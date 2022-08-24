@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"fmt"
-
 	"github.com/alireza/api/internal/database"
 	"github.com/alireza/api/internal/global"
 	"github.com/alireza/api/internal/models"
@@ -38,7 +36,6 @@ func Login(c *gin.Context) {
 	// Get user
 	user, err := u.GetUser(database.DB, req.Username)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(401, gin.H{"message": err.Error()})
 		return
 	}
@@ -62,5 +59,5 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, session)
+	c.JSON(200, session.Clean())
 }

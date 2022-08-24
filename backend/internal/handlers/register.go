@@ -49,5 +49,5 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(201, user)
+	c.JSON(201, user.Clean())
 }

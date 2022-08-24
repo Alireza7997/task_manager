@@ -24,7 +24,7 @@ type UserInterface interface {
 	// Creates a user model.
 	CreateUser(db *goqu.Database, data models.User) (*models.User, error)
 	// Finds and returns a user based on it's id if exists.
-	GetUserByID(db *goqu.Database, id int) (*models.User, error)
+	GetUserByID(db *goqu.Database, id uint) (*models.User, error)
 	// Hashes user Password
 	HashPassword(password string) (string, error)
 	// Compares hashed password with raw password
@@ -75,7 +75,7 @@ func (s *userService) CreateUser(db *goqu.Database, data models.User) (*models.U
 	return user, nil
 }
 
-func (s *userService) GetUserByID(db *goqu.Database, id int) (*models.User, error) {
+func (s *userService) GetUserByID(db *goqu.Database, id uint) (*models.User, error) {
 	user := &models.User{}
 	ok, _ := db.From(models.UserName).Where(goqu.Ex{"id": id}).Executor().ScanStruct(user)
 	if !ok {
@@ -96,7 +96,7 @@ func (s *userService) HashPassword(password string) (string, error) {
 
 func (s *userService) ComparePassword(password, hashedPassword string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-	return err != nil
+	return err == nil
 }
 
 func New() UserInterface {

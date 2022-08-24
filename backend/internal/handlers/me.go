@@ -1,10 +1,11 @@
 package handlers
 
 import (
+	"github.com/alireza/api/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
 func Me(c *gin.Context) {
-	user, _ := c.Get("user")
-	c.JSON(200, user)
+	user := c.MustGet("user").(*models.User)
+	c.JSON(200, user.Clean())
 }

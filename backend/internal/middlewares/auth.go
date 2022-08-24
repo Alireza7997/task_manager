@@ -1,51 +1,57 @@
 package middleware
 
 import (
-	"database/sql"
-
 	"github.com/alireza/api/internal/database"
-	sessionServices "github.com/alireza/api/internal/services/session"
-	uServices "github.com/alireza/api/internal/services/user"
+	sessionService "github.com/alireza/api/internal/services/session"
+	userService "github.com/alireza/api/internal/services/user"
 	"github.com/gin-gonic/gin"
 )
 
 func Auth(c *gin.Context) {
-	// Getting value of session_id from header
 	sessionID := c.GetHeader("session_id")
+	s := sessionService.New()
+	u := userService.New()
+
+	// Checking if there is even a sessionID
 	if len(sessionID) == 0 {
 		c.JSON(403, gin.H{
-			"message": "No Session, Login first!",
+			"message": "unauthorized, login first",
 		})
 		c.Abort()
 		return
 	}
-	// checking if received session exists in database, then retriving it from database
-	s := sessionServices.New()
+
+	// Checking if received session exists in database, then retrieving it from database
 	session, err := s.GetSession(database.DB, sessionID)
-	if err == sql.ErrNoRows {
+	if err != nil {
 		c.JSON(403, gin.H{
-			"message": "Forbidden, Login first!",
+			"message": err.Error(),
 		})
 		c.Abort()
 		return
 	}
-	// if session is expired
+
+	// Checking if session is expired
 	if session.IsExpired() {
 		c.JSON(403, gin.H{
-			"message": "Session expired, Login first!",
+			"message": "unauthorized, session expired",
 		})
 		c.Abort()
 		return
 	}
-	u := uServices.New()
-	user, err := u.GetUserByID(database.DB, int(session.UserID))
+
+	// Checking if there is a user by passed UserID
+	user, err := u.GetUserByID(database.DB, session.UserID)
 	if err != nil {
-		c.JSON(500, "auth error")
+		c.JSON(500, gin.H{
+			"message": "internal, no user found",
+		})
 		c.Abort()
 		return
 	}
-	// setting "user" as parameter to get used by handler
+
+	// Setting "user" as parameter to get used by handlers
 	c.Set("user", user)
-	c.Set("session", session.SessionID)
+	c.Set("session", session)
 	c.Next()
 }

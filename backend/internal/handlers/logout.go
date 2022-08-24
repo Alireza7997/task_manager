@@ -2,12 +2,12 @@ package handlers
 
 import (
 	"github.com/alireza/api/internal/database"
-	sessionServices "github.com/alireza/api/internal/services/session"
+	sessionService "github.com/alireza/api/internal/services/session"
 	"github.com/gin-gonic/gin"
 )
 
 func Logout(c *gin.Context) {
-	s := sessionServices.New()
+	s := sessionService.New()
 	session := c.GetString("session")
 	err := s.DeleteSession(database.DB, session)
 	if err != nil {
