@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  tea:
+  frontend:
     container_name: collaboration_frontend
     image: nginx:alpine
     restart: always

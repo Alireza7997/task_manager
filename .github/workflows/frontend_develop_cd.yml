@@ -1,4 +1,4 @@
-name: Deployment on `Develop`
+name: Frontend Deployment for `Develop` branch
 
 on:
   push:
@@ -16,18 +16,22 @@ jobs:
     steps:
       - name: Retrieve the last changes
         uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
           cache-dependency-path: ./frontend/yarn.lock
+
       - name: Install Dependencies
         working-directory: frontend
         run: yarn install
+
       - name: Build frontend
         working-directory: frontend
         run: yarn build
+
       - name: Restart docker container
         working-directory: frontend
         run: docker compose down && docker compose up -d
