@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added a host and port in configs for server setup in server side
 * 🐛 fix: messages on errors fixed
 * 🎉 feat: added a validator and refactor code for register logic
 * 🎉 feat: added config loading

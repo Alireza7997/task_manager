@@ -2,6 +2,8 @@ package configs
 
 type Config struct {
 	Database         Database `yaml:"database"`
+	Host             string   `yaml:"host"`
+	Port             string   `yaml:"port"`
 	ExpireTokenAfter int64    `yaml:"expire_token_after"`
 }
 
