@@ -5,6 +5,7 @@ type Config struct {
 	Host             string   `yaml:"host"`
 	Port             string   `yaml:"port"`
 	ExpireTokenAfter int64    `yaml:"expire_token_after"`
+	SecretKey        string   `yaml:"secret_key"`
 }
 
 type Database struct {

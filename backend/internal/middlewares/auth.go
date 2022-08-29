@@ -1,25 +1,40 @@
 package middleware
 
 import (
+	"time"
+
+	"github.com/alireza/api/internal/contract"
 	"github.com/alireza/api/internal/database"
+	"github.com/alireza/api/internal/global"
 	sessionService "github.com/alireza/api/internal/services/session"
 	userService "github.com/alireza/api/internal/services/user"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
 func Auth(c *gin.Context) {
 	sessionID := c.GetHeader("session_id")
-	s := sessionService.New()
-	u := userService.New()
+	jwt := c.GetHeader("jwt")
 
-	// Checking if there is even a sessionID
-	if len(sessionID) == 0 {
+	if len(sessionID) == 0 && len(jwt) == 0 {
 		c.JSON(403, gin.H{
-			"message": "unauthorized, login first",
+			"message": "No auth Method !!",
 		})
 		c.Abort()
 		return
 	}
+	if len(sessionID) != 0 {
+		sessionAuth(c, sessionID)
+	}
+	if len(jwt) != 0 {
+		jwtAuth(c, jwt)
+	}
+	c.Next()
+}
+
+func sessionAuth(c *gin.Context, sessionID string) {
+	s := sessionService.New()
+	u := userService.New()
 
 	// Checking if received session exists in database, then retrieving it from database
 	session, err := s.GetSession(database.DB, sessionID)
@@ -50,8 +65,58 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	// Setting "user" as parameter to get used by handlers
+	// Setting "user","session" and "method" as parameter to get used by handlers
 	c.Set("user", user)
 	c.Set("session", session)
-	c.Next()
+	c.Set("method", "session")
+}
+
+func jwtAuth(c *gin.Context, jwtoken string) {
+	u := userService.New()
+
+	// Checking if the given token is valid
+	token, err := jwt.ParseWithClaims(jwtoken, &contract.Claims{}, func(t *jwt.Token) (interface{}, error) {
+		return global.SecretKey, nil
+	})
+
+	if err != nil {
+		c.JSON(403, gin.H{
+			"message": "Invalid Token!",
+		})
+		c.Abort()
+		return
+	}
+
+	// Getting the token claims
+	claims, ok := token.Claims.(*contract.Claims)
+	if !ok {
+		c.JSON(500, gin.H{
+			"message": "Internal Error, Failed to Parse Claims",
+		})
+		c.Abort()
+		return
+	}
+
+	// Checking if token is expired
+	if claims.ExpiresAt < time.Now().Unix() {
+		c.JSON(403, gin.H{
+			"message": "Token Expired",
+		})
+		c.Abort()
+		return
+	}
+
+	// Checking if the user passed by token exists
+	user, err := u.GetUser(database.DB, claims.Username)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Internal Error, No user Found",
+		})
+		c.Abort()
+		return
+	}
+
+	// Setting "user" and "method" as parameters to get used by handlers
+	c.Set("user", user)
+	c.Set("method", "jwt")
 }
