@@ -17,5 +17,4 @@ func SetUpRouters(r *gin.Engine) {
 	// private
 	private := r.Group("/user", middleware.Auth)
 	private.GET("me", handlers.Me)
-
 }

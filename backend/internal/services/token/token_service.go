@@ -13,8 +13,8 @@ type TokenService struct{}
 
 var service = &TokenService{}
 
-func (t *TokenService) GenerateJWT(user *models.User) (tokenString string, err error) {
-	expirationTime := time.Now().Add(20 * time.Minute)
+func (t *TokenService) GenerateJWT(user *models.User, expireAfter int64) (tokenString string, err error) {
+	expirationTime := time.Now().Add(time.Duration(expireAfter) * time.Second)
 	claims := &contract.Claims{
 		Username: user.Username,
 		Email:    user.Email,
@@ -23,7 +23,7 @@ func (t *TokenService) GenerateJWT(user *models.User) (tokenString string, err e
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err = token.SignedString(g.SecretKey)
+	tokenString, err = token.SignedString(g.CFG.SecretKey)
 	return
 }
 

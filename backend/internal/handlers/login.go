@@ -50,26 +50,32 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+
+	// Generate Session if method is "session"
 	if req.Method == "session" {
 		// Session Creation
 		model := &models.Session{
 			UserID:    user.ID,
 			SessionID: uuid.NewString(),
 		}
-		session, err := s.CreateSession(database.DB, *model, global.CFG.ExpireTokenAfter)
+		session, err := s.CreateSession(database.DB, *model, global.CFG.ExpireTokenAfterSeconds)
 		if err != nil {
 			c.JSON(500, gin.H{"message": err.Error()})
 			return
 		}
+
 		c.JSON(200, session.Clean())
 	}
+
+	// Generate jwt if method is "jwt"
 	if req.Method == "jwt" {
 		// JWT Creation
-		token, err := t.GenerateJWT(user)
+		token, err := t.GenerateJWT(user, global.CFG.ExpireTokenAfterSeconds)
 		if err != nil {
 			c.JSON(500, gin.H{"message": err.Error()})
 			return
 		}
-		c.JSON(200, token)
+
+		c.JSON(200, gin.H{"token": token})
 	}
 }

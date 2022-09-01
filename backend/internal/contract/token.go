@@ -13,5 +13,5 @@ type Claims struct {
 
 type TokenInterface interface {
 	// Creates and returns JWT
-	GenerateJWT(user *models.User) (tokenString string, err error)
+	GenerateJWT(user *models.User, expireAfter int64) (tokenString string, err error)
 }

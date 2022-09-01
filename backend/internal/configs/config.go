@@ -1,11 +1,11 @@
 package configs
 
 type Config struct {
-	Database         Database `yaml:"database"`
-	Host             string   `yaml:"host"`
-	Port             string   `yaml:"port"`
-	ExpireTokenAfter int64    `yaml:"expire_token_after"`
-	SecretKey        string   `yaml:"secret_key"`
+	Database                Database `yaml:"database"`
+	Host                    string   `yaml:"host"`
+	Port                    string   `yaml:"port"`
+	ExpireTokenAfterSeconds int64    `yaml:"expire_token_after_seconds"`
+	SecretKey               []byte   `yaml:"secret_key"`
 }
 
 type Database struct {

@@ -6,6 +6,7 @@ import (
 	"github.com/alireza/api/internal/contract"
 	"github.com/alireza/api/internal/database"
 	"github.com/alireza/api/internal/global"
+	"github.com/alireza/api/internal/models"
 	sessionService "github.com/alireza/api/internal/services/session"
 	userService "github.com/alireza/api/internal/services/user"
 	"github.com/dgrijalva/jwt-go"
@@ -72,11 +73,9 @@ func sessionAuth(c *gin.Context, sessionID string) {
 }
 
 func jwtAuth(c *gin.Context, jwtoken string) {
-	u := userService.New()
-
 	// Checking if the given token is valid
 	token, err := jwt.ParseWithClaims(jwtoken, &contract.Claims{}, func(t *jwt.Token) (interface{}, error) {
-		return global.SecretKey, nil
+		return global.CFG.SecretKey, nil
 	})
 
 	if err != nil {
@@ -106,14 +105,9 @@ func jwtAuth(c *gin.Context, jwtoken string) {
 		return
 	}
 
-	// Checking if the user passed by token exists
-	user, err := u.GetUser(database.DB, claims.Username)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"message": "Internal Error, No user Found",
-		})
-		c.Abort()
-		return
+	user := &models.User{
+		Username: claims.Username,
+		Email:    claims.Email,
 	}
 
 	// Setting "user" and "method" as parameters to get used by handlers
