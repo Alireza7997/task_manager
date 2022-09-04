@@ -2,20 +2,18 @@ package models
 
 import (
 	"time"
-
-	"github.com/alireza/api/internal/utils"
 )
 
 var UserName string = "users"
 
 type User struct {
-	ID        uint      `db:"id" goqu:"skipinsert"`
-	Username  string    `db:"username"`
-	Password  string    `db:"password" hide:"true"`
-	Email     string    `db:"email"`
-	CreatedAt time.Time `db:"created_at" goqu:"skipupdate"`
+	UserDetails
+	ID       uint   `db:"id" goqu:"skipinsert"`
+	Password string `db:"password"`
 }
 
-func (o *User) Clean() interface{} {
-	return utils.CleanStruct(o)
+type UserDetails struct {
+	Username  string    `db:"username"`
+	Email     string    `db:"email"`
+	CreatedAt time.Time `db:"created_at" goqu:"skipupdate"`
 }

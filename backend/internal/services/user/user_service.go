@@ -44,14 +44,14 @@ func (u *userService) GetUser(db *goqu.Database, username string) (*models.User,
 }
 
 func (u *userService) CreateUser(db *goqu.Database, data models.User) (*models.User, error) {
-	data.CreatedAt = time.Now().Local()
+	data.UserDetails.CreatedAt = time.Now().Local()
 
 	_, err := db.Insert(models.UserName).Rows(data).Executor().Exec()
 	if err != nil {
 		return nil, errors.New("user creation failed")
 	}
 
-	user, err := u.GetUser(db, data.Username)
+	user, err := u.GetUser(db, data.UserDetails.Username)
 	if err != nil {
 		return nil, errors.New("user creation failed")
 	}

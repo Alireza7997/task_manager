@@ -39,9 +39,11 @@ func Register(c *gin.Context) {
 
 	// Creating user
 	model := &models.User{
-		Username: req.Username,
+		UserDetails: models.UserDetails{
+			Username: req.Username,
+			Email:    req.Email,
+		},
 		Password: hashedPassword,
-		Email:    req.Email,
 	}
 	user, err := s.CreateUser(database.DB, *model)
 	if err != nil {
@@ -49,5 +51,5 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(201, user.Clean())
+	c.JSON(201, user.UserDetails)
 }

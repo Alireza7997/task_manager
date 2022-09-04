@@ -7,5 +7,5 @@ import (
 
 func Me(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
-	c.JSON(200, user.Clean())
+	c.JSON(200, user.UserDetails)
 }

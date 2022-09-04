@@ -80,7 +80,7 @@ func jwtAuth(c *gin.Context, jwtoken string) {
 
 	if err != nil {
 		c.JSON(403, gin.H{
-			"message": "Invalid Token!",
+			"message": err.Error(),
 		})
 		c.Abort()
 		return
@@ -106,8 +106,7 @@ func jwtAuth(c *gin.Context, jwtoken string) {
 	}
 
 	user := &models.User{
-		Username: claims.Username,
-		Email:    claims.Email,
+		UserDetails: claims.User,
 	}
 
 	// Setting "user" and "method" as parameters to get used by handlers

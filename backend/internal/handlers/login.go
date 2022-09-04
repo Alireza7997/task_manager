@@ -55,8 +55,10 @@ func Login(c *gin.Context) {
 	if req.Method == "session" {
 		// Session Creation
 		model := &models.Session{
-			UserID:    user.ID,
-			SessionID: uuid.NewString(),
+			SessionDetails: models.SessionDetails{
+				UserID:    user.ID,
+				SessionID: uuid.NewString(),
+			},
 		}
 		session, err := s.CreateSession(database.DB, *model, global.CFG.ExpireTokenAfterSeconds)
 		if err != nil {
@@ -64,7 +66,7 @@ func Login(c *gin.Context) {
 			return
 		}
 
-		c.JSON(200, session.Clean())
+		c.JSON(200, session.SessionDetails)
 	}
 
 	// Generate jwt if method is "jwt"
@@ -72,7 +74,7 @@ func Login(c *gin.Context) {
 		// JWT Creation
 		token, err := t.GenerateJWT(user, global.CFG.ExpireTokenAfterSeconds)
 		if err != nil {
-			c.JSON(500, gin.H{"message": err.Error()})
+			c.JSON(500, gin.H{"message": " Error while generating JWT"})
 			return
 		}
 
