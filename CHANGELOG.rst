@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: just added a tag in Claims
 * 🐛 fix: partial bug fixes and fixing some not completely right implementations
 * 🎉 feat: added a host and port in configs for server setup in server side
 * 🐛 fix: messages on errors fixed

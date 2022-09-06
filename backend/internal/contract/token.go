@@ -6,7 +6,7 @@ import (
 )
 
 type Claims struct {
-	User models.UserDetails
+	User models.UserDetails `json:"user"`
 	jwt.StandardClaims
 }
 
