@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added date input and /me page
 * 🎉 feat: added /auth/methods route and handler of it
 * 🎉 feat: just added a tag in Claims
 * 🐛 fix: partial bug fixes and fixing some not completely right implementations

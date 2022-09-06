@@ -16,15 +16,31 @@ const showHidePassword = (id: string) => {
 };
 
 const focusEventHandler = (id: string) => {
+	id = `_label_${id}`;
 	return (event: React.FocusEvent<HTMLInputElement>) => {
-		var label = document.getElementById(`_label_${id}`) as HTMLElement;
+		var label = document.getElementById(id) as HTMLElement;
 		label.classList.remove(styles["label-on-input"]);
 	};
 };
 
-const blurEventHandler = (id: string) => {
+const changeEventHandler = (id: string) => {
+	id = `_label_${id}`;
 	return (event: React.FocusEvent<HTMLInputElement>) => {
-		var label = document.getElementById(`_label_${id}`) as HTMLElement;
+		var label = document.getElementById(id) as HTMLElement;
+		if (event.target.value.length > 0) {
+			label.classList.remove(styles["label-on-input"]);
+		} else {
+			if (document.activeElement !== event.target) {
+				label.classList.add(styles["label-on-input"]);
+			}
+		}
+	};
+};
+
+const blurEventHandler = (id: string) => {
+	id = `_label_${id}`;
+	return (event: React.FocusEvent<HTMLInputElement>) => {
+		var label = document.getElementById(id) as HTMLElement;
 		if (event.target.value.length == 0) {
 			label.classList.add(styles["label-on-input"]);
 		}
@@ -32,7 +48,7 @@ const blurEventHandler = (id: string) => {
 };
 
 interface InputGlassmorphismFormProps extends React.PropsWithChildren {
-	type: "password" | "text" | "button" | "email";
+	type: "password" | "text" | "button" | "email" | "date";
 	label: string;
 	placeHolder?: string;
 	id: string;
@@ -43,11 +59,16 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 	props: InputGlassmorphismFormProps
 ) => {
 	const propsOnInput = {
-		type: props.type,
-		placeholder: props.placeHolder,
-		id: props.id,
-		onFocus: focusEventHandler(props.id),
-		onBlur: blurEventHandler(props.id),
+		data: {
+			type: props.type,
+			placeholder: props.placeHolder,
+			id: props.id,
+		},
+		functions: {
+			onFocus: focusEventHandler(props.id),
+			onBlur: blurEventHandler(props.id),
+			onChange: changeEventHandler(props.id),
+		},
 	};
 
 	return (
@@ -55,7 +76,9 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Label Creation */}
 			{props.type !== "button" && (
 				<label
-					className={`${styles.label} ${styles["label-on-input"]}`}
+					className={`${styles.label} ${
+						props.type !== "date" && styles["label-on-input"]
+					}`}
 					htmlFor={props.id}
 					id={`_label_${props.id}`}
 				>
@@ -66,7 +89,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Password */}
 			{props.type === "password" && (
 				<div className={styles["password-input-container"]}>
-					<input {...propsOnInput} />
+					<input {...propsOnInput.data} {...propsOnInput.functions} />
 					<div
 						className={styles["password-view-control"]}
 						onClick={showHidePassword(props.id)}
@@ -76,11 +99,13 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 				</div>
 			)}
 
-			{/* Text input */}
-			{props.type === "text" && <input {...propsOnInput} />}
+			{/* Text and Email input */}
+			{(props.type === "text" || props.type === "email") && (
+				<input {...propsOnInput.data} {...propsOnInput.functions} />
+			)}
 
-			{/* Email input */}
-			{props.type === "email" && <input {...propsOnInput} />}
+			{/* Date input */}
+			{props.type === "date" && <input {...propsOnInput.data} />}
 
 			{/* Button */}
 			{props.type === "button" && (

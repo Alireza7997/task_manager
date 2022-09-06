@@ -9,30 +9,27 @@ import Head from "next/head";
 import GlassmorphismForm from "../components/UI/GlassmorphismForm";
 import InputGlassmorphismForm from "../components/UI/InputGlassmorphismForm";
 
-const Register: React.FC = () => {
+const Me: React.FC = () => {
 	return (
 		<>
 			<Head>
-				<title>Register</title>
+				<title>Me</title>
 			</Head>
 			<GlassmorphismForm>
-				<h3>Register</h3>
+				<h3>Me</h3>
 				<InputGlassmorphismForm id="username" label="username" type="text" />
 				<InputGlassmorphismForm id="email" label="email" type="email" />
+				<InputGlassmorphismForm id="created_at" label="joined in" type="date" />
 				<InputGlassmorphismForm
 					id="password"
 					label="password"
 					type="password"
 				/>
 				<div>
-					<InputGlassmorphismForm label="register" type="button" id="" />
+					<InputGlassmorphismForm label="submit" type="button" id="submit" />
 					<div className={styles["not-signed-up-container"]}>
-						<p>
-							<Link href={"/login"}>login</Link>
-						</p>
-						<p>
-							<Link href={"/register"}>forgot password</Link>
-						</p>
+						<p>Logout</p>
+						<p></p>
 					</div>
 				</div>
 			</GlassmorphismForm>
@@ -40,4 +37,4 @@ const Register: React.FC = () => {
 	);
 };
 
-export default Register;
+export default Me;

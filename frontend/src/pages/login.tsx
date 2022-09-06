@@ -30,12 +30,7 @@ const Login: React.FC = () => {
 					type="password"
 				/>
 				<div>
-					<InputGlassmorphismForm
-						label="login"
-						type="button"
-						id=""
-						placeHolder=""
-					/>
+					<InputGlassmorphismForm label="login" type="button" id="" />
 					<div className={styles["not-signed-up-container"]}>
 						<p>
 							<Link href={"/register"}>register</Link>
