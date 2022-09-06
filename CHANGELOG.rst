@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added ability to add or remove squares around form
 * 🎉 feat: added date input and /me page
 * 🎉 feat: added /auth/methods route and handler of it
 * 🎉 feat: just added a tag in Claims

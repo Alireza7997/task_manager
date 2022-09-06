@@ -1,12 +1,15 @@
-import React from "react";
 import styles from "../../styles/UI/GlassmorphismForm.module.css";
 import Squares from "./Squares";
 
-const GlassmorphismForm: React.FC<React.PropsWithChildren> = (
-	props: React.PropsWithChildren
+interface GlassmorphismFormProps extends React.PropsWithChildren {
+	addSquares: boolean;
+}
+
+const GlassmorphismForm: React.FC<GlassmorphismFormProps> = (
+	props: GlassmorphismFormProps
 ) => {
 	return (
-		<Squares>
+		<Squares addSquares={props.addSquares}>
 			<form className={styles["glassmorphism-form"]}>{props.children}</form>
 		</Squares>
 	);

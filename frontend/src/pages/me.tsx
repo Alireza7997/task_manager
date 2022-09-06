@@ -15,7 +15,7 @@ const Me: React.FC = () => {
 			<Head>
 				<title>Me</title>
 			</Head>
-			<GlassmorphismForm>
+			<GlassmorphismForm addSquares={false}>
 				<h3>Me</h3>
 				<InputGlassmorphismForm id="username" label="username" type="text" />
 				<InputGlassmorphismForm id="email" label="email" type="email" />

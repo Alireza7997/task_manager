@@ -1,17 +1,22 @@
 import styles from "../../styles/UI/Squares.module.css";
-import React from "react";
 
-const Squares: React.FC<React.PropsWithChildren> = (
-	props: React.PropsWithChildren
-) => {
+interface SquaresProps extends React.PropsWithChildren {
+	addSquares: boolean;
+}
+
+const Squares: React.FC<SquaresProps> = (props: SquaresProps) => {
 	return (
 		<div className={styles["square-container"]}>
-			<div className={styles.square}></div>
-			<div className={styles.square}></div>
-			<div className={styles.square}></div>
-			<div className={styles.square}></div>
-			<div className={styles.square}></div>
-			<div className={styles.square}></div>
+			{props.addSquares && (
+				<>
+					<div className={styles.square}></div>
+					<div className={styles.square}></div>
+					<div className={styles.square}></div>
+					<div className={styles.square}></div>
+					<div className={styles.square}></div>
+					<div className={styles.square}></div>
+				</>
+			)}
 			{props.children}
 		</div>
 	);

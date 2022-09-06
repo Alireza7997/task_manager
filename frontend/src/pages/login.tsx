@@ -15,7 +15,7 @@ const Login: React.FC = () => {
 			<Head>
 				<title>Login</title>
 			</Head>
-			<GlassmorphismForm>
+			<GlassmorphismForm addSquares={true}>
 				<h3>welcome</h3>
 				<InputGlassmorphismForm
 					id="username"

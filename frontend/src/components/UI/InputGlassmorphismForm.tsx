@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "../../styles/UI/InputGlassmorphismForm.module.css";
 
 const showHidePassword = (id: string) => {
@@ -47,7 +46,7 @@ const blurEventHandler = (id: string) => {
 	};
 };
 
-interface InputGlassmorphismFormProps extends React.PropsWithChildren {
+interface InputGlassmorphismFormProps {
 	type: "password" | "text" | "button" | "email" | "date";
 	label: string;
 	placeHolder?: string;

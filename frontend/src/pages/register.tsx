@@ -15,7 +15,7 @@ const Register: React.FC = () => {
 			<Head>
 				<title>Register</title>
 			</Head>
-			<GlassmorphismForm>
+			<GlassmorphismForm addSquares={true}>
 				<h3>Register</h3>
 				<InputGlassmorphismForm id="username" label="username" type="text" />
 				<InputGlassmorphismForm id="email" label="email" type="email" />
