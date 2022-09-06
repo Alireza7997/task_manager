@@ -34,4 +34,13 @@
 .password-input-container > input {
 	@apply pr-12;
 }
+.radio-button-container {
+	@apply flex flex-col;
+}
+.radio-button-container input {
+	@apply h-5 w-4 mr-2 text-left;
+}
+.radio-button-container label {
+	@apply w-full;
+}
 /* End Of Glassmorphism Inputs Form */

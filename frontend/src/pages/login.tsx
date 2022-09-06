@@ -17,17 +17,17 @@ const Login: React.FC = () => {
 			</Head>
 			<GlassmorphismForm addSquares={true}>
 				<h3>welcome</h3>
-				<InputGlassmorphismForm
-					id="username"
-					label="username"
-					placeHolder=""
-					type="text"
-				/>
+				<InputGlassmorphismForm id="username" label="username" type="text" />
 				<InputGlassmorphismForm
 					id="password"
 					label="password"
-					placeHolder=""
 					type="password"
+				/>
+				<InputGlassmorphismForm
+					label="method"
+					type="radio"
+					id="method"
+					values={["jwt", "session"]}
 				/>
 				<div>
 					<InputGlassmorphismForm label="login" type="button" id="" />

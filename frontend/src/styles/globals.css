@@ -1,5 +1,6 @@
 @tailwind base;
 @tailwind components;
+@tailwind utilities;
 
 /* General Designs */
 body {
@@ -34,3 +35,11 @@ a {
 	@apply capitalize;
 }
 /* End Of General Designs */
+
+/* Custom Components */
+@layer components {
+	.all-static * {
+		@apply static;
+	}
+}
+/* End Of Custom Components */

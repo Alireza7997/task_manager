@@ -47,10 +47,12 @@ const blurEventHandler = (id: string) => {
 };
 
 interface InputGlassmorphismFormProps {
-	type: "password" | "text" | "button" | "email" | "date";
+	type: "password" | "text" | "button" | "email" | "date" | "radio";
 	label: string;
 	placeHolder?: string;
 	id: string;
+	values?: string[];
+	default?: string;
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -62,6 +64,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			type: props.type,
 			placeholder: props.placeHolder,
 			id: props.id,
+			name: props.id,
 		},
 		functions: {
 			onFocus: focusEventHandler(props.id),
@@ -71,12 +74,18 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 	};
 
 	return (
-		<div className={styles["input-container"]}>
-			{/* Label Creation */}
+		<div
+			className={`${styles["input-container"]} ${
+				props.type === "radio" && styles["radio-button-container"]
+			}`}
+		>
+			{/* Label */}
 			{props.type !== "button" && (
 				<label
 					className={`${styles.label} ${
-						props.type !== "date" && styles["label-on-input"]
+						props.type !== "date" &&
+						props.type !== "radio" &&
+						styles["label-on-input"]
 					}`}
 					htmlFor={props.id}
 					id={`_label_${props.id}`}
@@ -85,7 +94,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 				</label>
 			)}
 
-			{/* Password */}
+			{/* Password input */}
 			{props.type === "password" && (
 				<div className={styles["password-input-container"]}>
 					<input {...propsOnInput.data} {...propsOnInput.functions} />
@@ -106,9 +115,33 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Date input */}
 			{props.type === "date" && <input {...propsOnInput.data} />}
 
-			{/* Button */}
+			{/* Button input */}
 			{props.type === "button" && (
 				<button onClick={props.onClick}>{props.label}</button>
+			)}
+
+			{/* Radio Button input */}
+			{props.type === "radio" && (
+				<div className="columns-2 pt-2 space-y-2">
+					{props.values?.map<React.ReactNode>((value) => {
+						return (
+							<div className="w-full flex flex-row" key={value}>
+								{props.default === value && (
+									<input
+										value={value}
+										{...propsOnInput.data}
+										id={value}
+										defaultChecked
+									/>
+								)}
+								{props.default !== value && (
+									<input value={value} {...propsOnInput.data} id={value} />
+								)}
+								<label htmlFor={value}>{value}</label>
+							</div>
+						);
+					})}
+				</div>
 			)}
 		</div>
 	);
