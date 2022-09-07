@@ -17,6 +17,7 @@ func config(router *gin.Engine) {
 	config.AllowOriginFunc = func(input string) bool {
 		return slices.FindIndex(global.CFG.AllowOrigins, input) != -1
 	}
+	config.AllowHeaders = append(config.AllowHeaders, "session_id", "jwt")
 	router.Use(cors.New(config))
 }
 
