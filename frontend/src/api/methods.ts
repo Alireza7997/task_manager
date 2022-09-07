@@ -1,14 +1,16 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { CatchErrorRepeatedly } from "./catch_error"
 
 const Methods: (setMethods: (value: string[]) => void) => () => void = (setMethods: (value: string[]) => void) => {
+    const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/methods"
     return () => {
         axios
-            .get<string[]>("http://127.0.0.1:9090/auth/methods")
+            .get<string[]>(address)
             .then((results) => {
                 setMethods(results.data);
             })
-            .catch((reason) => {
-                console.log(reason);
+            .catch((reason: Error | AxiosError) => {
+                CatchErrorRepeatedly(Methods(setMethods), reason)
             });
         }
     }
