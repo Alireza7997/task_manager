@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import { AxiosRequestConfig } from "axios";
 import Router from "next/router";
+import me from "@/api/me";
 
 export interface User {
 	username: string;
@@ -9,13 +10,13 @@ export interface User {
 }
 
 export interface Auth {
-	session_id?: string;
-	token?: string;
+	session_id: string;
+	token: string;
 	is_authenticated: boolean;
 	user?: User;
 	reset: () => void;
 	authenticate: (session_id: string, token: string) => void;
-	getAuthHeaders: () => { headers: { session_id?: string; token?: string } };
+	getAuthHeaders: () => AxiosRequestConfig;
 	addUser: (user: User) => void;
 }
 
@@ -65,14 +66,15 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 	};
 
 	const addUser = (user: User) => {
+		console.log(user);
 		setUser(user);
 	};
 
-	const getAuthHeaders = () => {
+	const getAuthHeaders: () => AxiosRequestConfig = () => {
 		return {
 			headers: {
 				session_id: sessionID,
-				token: token,
+				jwt: token,
 			},
 		};
 	};
@@ -106,6 +108,13 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 			Router.push("/me");
 		}
 	}, []);
+
+	useEffect(() => {
+		if (sessionID.length !== 0 || token.length !== 0) {
+			console.log(sessionID, token);
+			me(value)();
+		}
+	}, [sessionID, token]);
 
 	return (
 		<AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>

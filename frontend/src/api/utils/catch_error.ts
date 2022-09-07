@@ -23,7 +23,7 @@ export const CatchErrorWithoutRepeat: (reason: Error | AxiosError) => (ErrorResp
             createNotification(reason.response.status, data.message, "", 0)
             return data
         } else {
-            createNotification(500, "No right response returned from server, retry in 10 seconds", "Network Error", 0)
+            createNotification(500, "No right response returned from server", "Network Error", 0)
         }
     } else {
         createNotification(500, "Inform developers from this error happening on your system", "Browser Error", 0)

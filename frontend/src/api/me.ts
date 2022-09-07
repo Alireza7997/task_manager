@@ -1,12 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { CatchErrorWithoutRepeat } from "./utils/catch_error"
 import Router from "next/router";
-import { useContext } from "react";
-import { AuthContext, User } from "@/store/auth";
+import { User, Auth } from "@/store/auth";
 
-const auth = useContext(AuthContext)
-
-function me(): () => void {
+function me(auth: Auth): () => void {
     const address = process.env.NEXT_PUBLIC_BACKEND + "/user/me"
     return () => {
         axios

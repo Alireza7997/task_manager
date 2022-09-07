@@ -89,11 +89,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Label */}
 			{props.type !== "button" && (
 				<label
-					className={`${styles.label} ${
-						props.type !== "date" &&
-						props.type !== "radio" &&
-						styles["label-on-input"]
-					}`}
+					className={`${styles.label}`}
 					htmlFor={props.id}
 					id={`_label_${props.id}`}
 				>

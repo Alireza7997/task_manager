@@ -4,7 +4,7 @@ import styles from "@/styles/pages/login-register.module.css";
 // =============== Libraries =============== //
 import Head from "next/head";
 import Router from "next/router";
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 
 // =============== Components =============== //
 import GlassmorphismForm from "@/components/UI/GlassmorphismForm";
@@ -15,6 +15,13 @@ import { AuthContext } from "@/store/auth";
 
 const Me: React.FC = () => {
 	const auth = useContext(AuthContext);
+
+	const onLogout = (event: React.MouseEvent) => {
+		auth.reset();
+		Router.push("/login");
+	};
+
+	console.log("date: ", typeof auth.user?.created_at);
 
 	return (
 		<>
@@ -49,7 +56,7 @@ const Me: React.FC = () => {
 				<div>
 					<InputGlassmorphismForm label="submit" type="button" id="submit" />
 					<div className={styles["not-signed-up-container"]}>
-						<p>Logout</p>
+						<p onClick={onLogout}>Logout</p>
 						<p></p>
 					</div>
 				</div>

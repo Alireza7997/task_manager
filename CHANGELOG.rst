@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: me page is kinda functional
 * 🐛 fix: headers for authentication added
 * 🎉 feat: login functionality completed
 * 🎉 feat: added authentication functionality
