@@ -1,4 +1,6 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import axios from "axios";
+import Router from "next/router";
 
 export interface User {
 	username: string;
@@ -13,6 +15,7 @@ export interface Auth {
 	user?: User;
 	reset: () => void;
 	authenticate: (session_id: string, token: string) => void;
+	getAuthHeaders: () => { headers: { session_id?: string; token?: string } };
 	addUser: (user: User) => void;
 }
 
@@ -25,13 +28,38 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 	const [token, setToken] = useState("");
 	const [user, setUser] = useState<User | undefined>(undefined);
 
+	let session_temp = "";
+	let token_temp: string | null = "";
+	if (typeof window !== "undefined") {
+		const s = localStorage.getItem("session_id");
+		const t = localStorage.getItem("token");
+
+		session_temp = s ? s : "";
+		token_temp = t ? t : "";
+	}
+
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			setSessionID(session_temp ? session_temp : "");
+			setToken(token_temp ? token_temp : "");
+		}
+	}, []);
+
 	const reset = () => {
+		if (typeof window !== "undefined") {
+			localStorage.setItem("session_id", "");
+			localStorage.setItem("token", "");
+		}
 		setSessionID("");
 		setToken("");
 		setUser(undefined);
 	};
 
 	const authenticate = (session_id: string, token: string) => {
+		if (typeof window !== "undefined") {
+			localStorage.setItem("session_id", session_id);
+			localStorage.setItem("token", token);
+		}
 		setSessionID(session_id);
 		setToken(token);
 	};
@@ -40,22 +68,47 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 		setUser(user);
 	};
 
+	const getAuthHeaders = () => {
+		return {
+			headers: {
+				session_id: sessionID,
+				token: token,
+			},
+		};
+	};
+
+	const value = {
+		session_id: session_temp,
+		token: token_temp,
+		is_authenticated: session_temp.length !== 0 || token_temp.length !== 0,
+		user: user,
+		reset: reset,
+		authenticate: authenticate,
+		addUser: addUser,
+		getAuthHeaders: getAuthHeaders,
+	} as Auth;
+
+	useEffect(() => {
+		if (
+			!value.is_authenticated &&
+			Router.pathname !== "/login" &&
+			Router.pathname !== "/register"
+		) {
+			Router.push("/login");
+		}
+	}, []);
+
+	useEffect(() => {
+		if (
+			value.is_authenticated &&
+			(Router.pathname === "/login" || Router.pathname === "/register")
+		) {
+			Router.push("/me");
+		}
+	}, []);
+
 	return (
-		<AuthContext.Provider
-			value={
-				{
-					session_id: sessionID,
-					token: token,
-					is_authenticated: sessionID.length !== 0 || token.length !== 0,
-					user: user,
-					reset: reset,
-					authenticate: authenticate,
-					addUser: addUser,
-				} as Auth
-			}
-		>
-			{props.children}
-		</AuthContext.Provider>
+		<AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
 	);
 };
 

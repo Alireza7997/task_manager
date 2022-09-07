@@ -4,7 +4,7 @@ import styles from "@/styles/pages/login-register.module.css";
 // =============== Libraries =============== //
 import Link from "next/link";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 // =============== Components =============== //
 import GlassmorphismForm from "@/components/UI/GlassmorphismForm";
@@ -13,24 +13,36 @@ import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 // =============== API =============== //
 import methods from "@/api/methods";
 import login, { loginRequest } from "@/api/login";
+import { AuthContext } from "@/store/auth";
 
 const Login: React.FC = () => {
 	const [methodsList, setMethods] = useState<string[]>([]);
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
+	const [method, setMethod] = useState<string>();
 	const username = useRef<HTMLInputElement>();
 	const password = useRef<HTMLInputElement>();
-	const method = useRef<HTMLInputElement>();
+	const auth = useContext(AuthContext);
 	useEffect(methods(setMethods), []);
+
+	useEffect(() => {
+		if (methodsList.length > 0) {
+			setMethod(methodsList[0]);
+		}
+	}, [methodsList]);
 
 	const onLoginSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data: loginRequest = {
 			username: username.current?.value,
 			password: password.current?.value,
-			method: method.current?.value,
+			method: method,
 		};
 
-		login(setErrors, data)();
+		login(setErrors, data, auth)();
+	};
+
+	const onRadioButtonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setMethod(event.target.value);
 	};
 
 	return (
@@ -61,7 +73,7 @@ const Login: React.FC = () => {
 					values={methodsList}
 					default={methodsList[0]}
 					errors={errors["Method"]}
-					reff={method}
+					onRadioButtonChange={onRadioButtonChange}
 				/>
 				<div>
 					<InputGlassmorphismForm label="login" type="button" id="" />

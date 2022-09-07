@@ -1,8 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { CatchErrorWithoutRepeat } from "./utils/catch_error"
 import Router from "next/router";
-import { useContext } from "react";
-import { AuthContext } from "@/store/auth";
+import { AuthContext, Auth } from "@/store/auth";
 
 interface loginResponse {
     token?: string
@@ -15,9 +14,8 @@ export interface loginRequest {
     method: string | undefined
 }
 
-const auth = useContext(AuthContext)
 
-function login(setErrors: (value: Record<string, string[]>) => void, data: loginRequest): () => void {
+function login(setErrors: (value: Record<string, string[]>) => void, data: loginRequest, auth: Auth): () => void {
     const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/login"
     return () => {
         axios

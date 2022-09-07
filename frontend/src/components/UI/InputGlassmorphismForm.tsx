@@ -52,10 +52,12 @@ interface InputGlassmorphismFormProps {
 	placeHolder?: string;
 	id: string;
 	values?: string[];
+	value?: any;
 	default?: string;
 	errors?: string[];
 	reff?: React.MutableRefObject<any | undefined>;
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
+	onRadioButtonChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
@@ -66,6 +68,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			type: props.type,
 			placeholder: props.placeHolder,
 			id: props.id,
+			value: props.value,
 			name: props.id,
 			ref: props.reff,
 		},
@@ -132,14 +135,20 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 							<div className="w-full flex flex-row" key={value}>
 								{props.default === value && (
 									<input
-										value={value}
 										{...propsOnInput.data}
+										value={value}
 										id={value}
+										onChange={props.onRadioButtonChange}
 										defaultChecked
 									/>
 								)}
 								{props.default !== value && (
-									<input value={value} {...propsOnInput.data} id={value} />
+									<input
+										{...propsOnInput.data}
+										value={value}
+										id={value}
+										onChange={props.onRadioButtonChange}
+									/>
 								)}
 								<label htmlFor={value}>{value}</label>
 							</div>
