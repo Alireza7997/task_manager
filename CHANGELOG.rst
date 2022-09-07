@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added methods api request in login page
 * 🐛 fix: reactStrictMode changed to false so components do not run twice
 * 🎉 feat: added cors
 * 🎉 feat: added radio buttons in login page

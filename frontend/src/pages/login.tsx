@@ -4,12 +4,19 @@ import styles from "../styles/pages/login-register.module.css";
 // =============== Libraries =============== //
 import Link from "next/link";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 
 // =============== Components =============== //
 import GlassmorphismForm from "../components/UI/GlassmorphismForm";
 import InputGlassmorphismForm from "../components/UI/InputGlassmorphismForm";
 
+// =============== API =============== //
+import Methods from "../api/methods";
+
 const Login: React.FC = () => {
+	const [methods, setMethods] = useState<string[]>([]);
+	useEffect(Methods(setMethods), []);
+
 	return (
 		<>
 			<Head>
@@ -27,7 +34,8 @@ const Login: React.FC = () => {
 					label="method"
 					type="radio"
 					id="method"
-					values={["jwt", "session"]}
+					values={methods}
+					default={methods[0]}
 				/>
 				<div>
 					<InputGlassmorphismForm label="login" type="button" id="" />
