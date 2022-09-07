@@ -1,4 +1,4 @@
-import styles from "../../styles/UI/Squares.module.css";
+import styles from "@/styles/UI/Squares.module.css";
 
 interface SquaresProps extends React.PropsWithChildren {
 	addSquares: boolean;

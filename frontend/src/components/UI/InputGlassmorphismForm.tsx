@@ -1,4 +1,4 @@
-import styles from "../../styles/UI/InputGlassmorphismForm.module.css";
+import styles from "@/styles/UI/InputGlassmorphismForm.module.css";
 
 const showHidePassword = (id: string) => {
 	return (event: React.MouseEvent<HTMLDivElement>) => {
@@ -47,12 +47,14 @@ const blurEventHandler = (id: string) => {
 };
 
 interface InputGlassmorphismFormProps {
-	type: "password" | "text" | "button" | "email" | "date" | "radio";
+	type: "password" | "text" | "button" | "submit" | "email" | "date" | "radio";
 	label: string;
 	placeHolder?: string;
 	id: string;
 	values?: string[];
 	default?: string;
+	errors?: string[];
+	reff?: React.MutableRefObject<any | undefined>;
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -65,12 +67,14 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			placeholder: props.placeHolder,
 			id: props.id,
 			name: props.id,
+			ref: props.reff,
 		},
 		functions: {
 			onFocus: focusEventHandler(props.id),
 			onBlur: blurEventHandler(props.id),
 			onChange: changeEventHandler(props.id),
 		},
+		errors: props.errors,
 	};
 
 	return (
@@ -115,7 +119,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Date input */}
 			{props.type === "date" && <input {...propsOnInput.data} />}
 
-			{/* Button input */}
+			{/* Button, Submit input */}
 			{props.type === "button" && (
 				<button onClick={props.onClick}>{props.label}</button>
 			)}
@@ -140,6 +144,15 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 								<label htmlFor={value}>{value}</label>
 							</div>
 						);
+					})}
+				</div>
+			)}
+
+			{/* Errors */}
+			{props.errors && props.errors.length !== 0 && (
+				<div className={styles["error-box"]}>
+					{props.errors?.map((value) => {
+						return <p className={styles.error}>{value}</p>;
 					})}
 				</div>
 			)}

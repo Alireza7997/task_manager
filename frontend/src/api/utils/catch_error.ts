@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import createNotification from "../notification/notifier"
+import createNotification from "@/notification/notifier"
 import ErrorResponse from "./error_response";
 
 const CatchError = (func: () => void, reason: Error | AxiosError, ) => {
@@ -14,6 +14,21 @@ const CatchError = (func: () => void, reason: Error | AxiosError, ) => {
     } else {
         createNotification(500, "Inform developers from this error happening on your system", "Browser Error", 0)
     }
+}
+
+export const CatchErrorWithoutRepeat: (reason: Error | AxiosError) => (ErrorResponse | null) = (reason: Error | AxiosError) => {
+    if (axios.isAxiosError(reason))  {
+        if (reason.response !== undefined && reason.response.data) {
+            const data = reason.response?.data as ErrorResponse
+            createNotification(reason.response.status, data.message, "", 0)
+            return data
+        } else {
+            createNotification(500, "No right response returned from server, retry in 10 seconds", "Network Error", 0)
+        }
+    } else {
+        createNotification(500, "Inform developers from this error happening on your system", "Browser Error", 0)
+    }
+    return null
 }
 
 export const CatchErrorRepeatedly = (func: () => void, reason: Error | AxiosError, ) => {

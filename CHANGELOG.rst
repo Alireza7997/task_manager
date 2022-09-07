@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: login page functionality added
 * 🐛 fix: allow_origins problem fixed
 * 🎉 feat: added notifier and error handling mechanism
 * 🎉 feat: added methods api request in login page

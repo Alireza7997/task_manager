@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
-import { CatchErrorRepeatedly } from "./catch_error"
+import { CatchErrorRepeatedly } from "./utils/catch_error"
 
-const Methods: (setMethods: (value: string[]) => void) => () => void = (setMethods: (value: string[]) => void) => {
+function methods(setMethods: (value: string[]) => void): () => void {
     const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/methods"
     return () => {
         axios
@@ -10,9 +10,9 @@ const Methods: (setMethods: (value: string[]) => void) => () => void = (setMetho
                 setMethods(results.data);
             })
             .catch((reason: Error | AxiosError) => {
-                CatchErrorRepeatedly(Methods(setMethods), reason)
+                CatchErrorRepeatedly(methods(setMethods), reason)
             });
         }
     }
 
-export default Methods
+export default methods

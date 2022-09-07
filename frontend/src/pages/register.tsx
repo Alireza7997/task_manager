@@ -1,13 +1,13 @@
 // =============== Styles =============== //
-import styles from "../styles/pages/login-register.module.css";
+import styles from "@/styles/pages/login-register.module.css";
 
 // =============== Libraries =============== //
 import Link from "next/link";
 import Head from "next/head";
 
 // =============== Components =============== //
-import GlassmorphismForm from "../components/UI/GlassmorphismForm";
-import InputGlassmorphismForm from "../components/UI/InputGlassmorphismForm";
+import GlassmorphismForm from "@/components/UI/GlassmorphismForm";
+import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 
 const Register: React.FC = () => {
 	return (

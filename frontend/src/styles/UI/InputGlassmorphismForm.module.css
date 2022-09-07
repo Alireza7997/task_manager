@@ -43,4 +43,10 @@
 .radio-button-container label {
 	@apply w-full;
 }
+.error-box {
+	@apply pt-2 space-y-1;
+}
+.error {
+	@apply text-sm text-red-500;
+}
 /* End Of Glassmorphism Inputs Form */
