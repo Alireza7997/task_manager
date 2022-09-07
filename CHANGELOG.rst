@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🐛 fix: reactStrictMode changed to false so components do not run twice
 * 🎉 feat: added cors
 * 🎉 feat: added radio buttons in login page
 * 🎉 feat: added ability to add or remove squares around form
