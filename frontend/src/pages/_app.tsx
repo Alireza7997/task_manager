@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ReactNotifications } from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
+import AuthProvider from "@/store/auth";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
@@ -15,7 +16,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 				/>
 			</Head>
 			<ReactNotifications />
-			<Component {...pageProps} />
+			<AuthProvider>
+				<Component {...pageProps} />
+			</AuthProvider>
 		</>
 	);
 }

@@ -1,11 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { CatchErrorWithoutRepeat } from "./utils/catch_error"
 import Router from "next/router";
+import { useContext } from "react";
+import { AuthContext } from "@/store/auth";
 
 interface loginResponse {
-    username: string,
-    email: string,
-    created_at: Date
+    token?: string
+    session_id?: string
 }
 
 export interface loginRequest {
@@ -14,14 +15,17 @@ export interface loginRequest {
     method: string | undefined
 }
 
+const auth = useContext(AuthContext)
+
 function login(setErrors: (value: Record<string, string[]>) => void, data: loginRequest): () => void {
     const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/login"
     return () => {
         axios
             .post<loginResponse>(address, data)
             .then((results) => {
+                const data = results.data as loginResponse
+                auth.authenticate(data.session_id? data.session_id: "", data.token? data.token: "")
                 Router.push("/me")
-                // Add user data to a store
             })
             .catch((reason: Error | AxiosError) => {
                 const data = CatchErrorWithoutRepeat(reason)
