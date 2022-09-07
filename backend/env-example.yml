@@ -7,6 +7,9 @@ database:
 
 host: 127.0.0.1
 port: 3000
+allow_origins:
+  - "http://127.0.0.1:3000"
+  - "http://localhost:3000"
 # 30 days
 expire_token_after_seconds: 2592000
 secret_key: slkanduiqgrinkjdb4679sdaw4ewe553231_)&$@#JNJFBA123weasdDASE

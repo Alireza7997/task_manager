@@ -4,6 +4,7 @@ type Config struct {
 	Database                Database `yaml:"database"`
 	Host                    string   `yaml:"host"`
 	Port                    string   `yaml:"port"`
+	AllowOrigins            []string `yaml:"allow_origins"`
 	ExpireTokenAfterSeconds int64    `yaml:"expire_token_after_seconds"`
 	SecretKey               []byte   `yaml:"secret_key"`
 }

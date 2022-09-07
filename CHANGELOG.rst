@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added cors
 * 🎉 feat: added radio buttons in login page
 * 🎉 feat: added ability to add or remove squares around form
 * 🎉 feat: added date input and /me page
