@@ -6,7 +6,7 @@ database:
   dbname: example
 
 host: 127.0.0.1
-port: 3000
+port: 9090
 allow_origins:
   - "http://127.0.0.1:3000"
   - "http://localhost:3000"
