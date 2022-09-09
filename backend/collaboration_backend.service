@@ -1,10 +1,10 @@
 [Unit]
-Description=an automation for openvpn accounting subject
+Description=a service to serve backend for collaboration backend project.
 
 [Service]
 User=root
 WorkingDirectory=
-ExecStart=./api
+ExecStart=
 Restart=always
 
 [Install]

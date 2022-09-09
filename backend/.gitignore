@@ -1,3 +1,7 @@
 # Ignore build output
 
 api
+
+# Ignore python files
+
+__pycache__

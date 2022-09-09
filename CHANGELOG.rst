@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🐛 fix: still working on backend workflow
 * 🐛 fix: added a secret in backend workflow
 * 🐛 fix: backend workflow fix
 * 🎉 feat: backend cd action workflow added

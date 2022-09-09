@@ -1,17 +1,20 @@
 import os, subprocess
 
 def add_dir_and_get_data():
-    item = "WorkingDirectory"
+    workingDir = "WorkingDirectory"
+    execStart = "ExecStart"
     pwd = os.getcwd()
 
-    file = open("collaboration_backend.service", "r")
+    file = open(pwd + "/collaboration_backend.service", "r")
     lines = file.readlines()
     file.close()
 
     lines_str = ""
     for line in lines:
-        if line.find(item) != -1:
+        if line.find(workingDir) != -1:
             line = line.strip() + pwd + "\n"
+        if line.find(execStart) != -1:
+            line = line.strip() + pwd + "/" + "api" + "\n"
         lines_str += line
 
     return lines_str
