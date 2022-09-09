@@ -56,6 +56,7 @@ interface InputGlassmorphismFormProps {
 	value?: any;
 	default?: string;
 	errors?: string[];
+	readonly?: boolean;
 	reff?: React.MutableRefObject<any | undefined>;
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 	onRadioButtonChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -101,7 +102,11 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Password input */}
 			{props.type === "password" && (
 				<div className={styles["password-input-container"]}>
-					<input {...propsOnInput.data} {...propsOnInput.functions} />
+					<input
+						{...propsOnInput.data}
+						{...propsOnInput.functions}
+						readOnly={props.readonly}
+					/>
 					<div
 						className={styles["password-view-control"]}
 						onClick={showHidePassword(props.id)}
@@ -113,11 +118,17 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 
 			{/* Text and Email input */}
 			{(props.type === "text" || props.type === "email") && (
-				<input {...propsOnInput.data} {...propsOnInput.functions} />
+				<input
+					{...propsOnInput.data}
+					{...propsOnInput.functions}
+					readOnly={props.readonly}
+				/>
 			)}
 
 			{/* Date input */}
-			{props.type === "date" && <input {...propsOnInput.data} />}
+			{props.type === "date" && (
+				<input {...propsOnInput.data} readOnly={props.readonly} />
+			)}
 
 			{/* Button, Submit input */}
 			{props.type === "button" && (
@@ -136,6 +147,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 										value={value}
 										id={value}
 										onChange={props.onRadioButtonChange}
+										readOnly={props.readonly}
 										defaultChecked
 									/>
 								)}
@@ -145,6 +157,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 										value={value}
 										id={value}
 										onChange={props.onRadioButtonChange}
+										readOnly={props.readonly}
 									/>
 								)}
 								<label htmlFor={value}>{value}</label>
