@@ -22,7 +22,9 @@ const Login: React.FC = () => {
 	const username = useRef<HTMLInputElement>();
 	const password = useRef<HTMLInputElement>();
 	const auth = useContext(AuthContext);
-	useEffect(methods(setMethods), []);
+	useEffect(() => {
+		methods(setMethods)();
+	}, []);
 
 	useEffect(() => {
 		if (methodsList.length > 0) {

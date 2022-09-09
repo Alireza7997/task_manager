@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🐛 fix: fixed every warnings and errors next said so
 * 🎉 feat: register functionality added
 * 🐛 fix: date fixed in /me address
 * 🐛 fix: date in typescript fixed

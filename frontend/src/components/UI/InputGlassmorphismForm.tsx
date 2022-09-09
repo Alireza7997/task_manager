@@ -170,8 +170,12 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Errors */}
 			{props.errors && props.errors.length !== 0 && (
 				<div className={styles["error-box"]}>
-					{props.errors?.map((value) => {
-						return <p className={styles.error}>{value}</p>;
+					{props.errors?.map((value, i) => {
+						return (
+							<p className={styles.error} key={i}>
+								{value}
+							</p>
+						);
 					})}
 				</div>
 			)}

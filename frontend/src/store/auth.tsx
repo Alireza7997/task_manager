@@ -48,12 +48,11 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 		token_temp = t ? t : "";
 	}
 
+	// eslint-disable-next-line
 	useEffect(() => {
-		if (typeof window !== "undefined") {
-			setSessionID(session_temp ? session_temp : "");
-			setToken(token_temp ? token_temp : "");
-		}
-	}, []);
+		setSessionID(session_temp ? session_temp : "");
+		setToken(token_temp ? token_temp : "");
+	});
 
 	const reset = () => {
 		if (typeof window !== "undefined") {
@@ -106,7 +105,7 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 		) {
 			Router.push("/login");
 		}
-	}, []);
+	});
 
 	useEffect(() => {
 		if (
@@ -115,12 +114,13 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 		) {
 			Router.push("/me");
 		}
-	}, []);
+	});
 
 	useEffect(() => {
 		if (sessionID.length !== 0 || token.length !== 0) {
 			me(value)();
 		}
+		// eslint-disable-next-line
 	}, [sessionID, token]);
 
 	return (
