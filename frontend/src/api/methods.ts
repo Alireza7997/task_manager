@@ -4,8 +4,9 @@ import axios, { AxiosError } from "axios";
 // =============== Utils =============== //
 import { CatchErrorRepeatedly } from "./utils/catch_error"
 
+const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/methods"
+
 function methods(setMethods: (value: string[]) => void): () => void {
-    const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/methods"
     return () => {
         axios
             .get<string[]>(address)

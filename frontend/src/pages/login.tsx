@@ -12,7 +12,7 @@ import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 
 // =============== API =============== //
 import methods from "@/api/methods";
-import login, { loginRequest } from "@/api/login";
+import login from "@/api/login";
 import { AuthContext } from "@/store/auth";
 
 const Login: React.FC = () => {
@@ -32,13 +32,16 @@ const Login: React.FC = () => {
 
 	const onLoginSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const data: loginRequest = {
-			username: username.current?.value,
-			password: password.current?.value,
-			method: method,
-		};
 
-		login(setErrors, data, auth)();
+		login(
+			setErrors,
+			{
+				username: username.current?.value,
+				password: password.current?.value,
+				method: method,
+			},
+			auth
+		);
 	};
 
 	const onRadioButtonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
