@@ -1,3 +1,4 @@
+// =============== Libraries =============== //
 import { Store } from 'react-notifications-component';
 
 type NotifType = "default" | "success" | "danger" | "warning" | "info"

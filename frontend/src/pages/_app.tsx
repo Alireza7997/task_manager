@@ -1,8 +1,13 @@
+// =============== Styles =============== //
 import "../styles/globals.css";
+import "react-notifications-component/dist/theme.css";
+
+// =============== Libraries =============== //
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ReactNotifications } from "react-notifications-component";
-import "react-notifications-component/dist/theme.css";
+
+// =============== Stores =============== //
 import AuthProvider from "@/store/auth";
 
 function MyApp({ Component, pageProps }: AppProps) {

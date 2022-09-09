@@ -1,4 +1,7 @@
+// =============== Styles =============== //
 import styles from "@/styles/UI/GlassmorphismForm.module.css";
+
+// =============== Components =============== //
 import Squares from "./Squares";
 
 interface GlassmorphismFormProps extends React.PropsWithChildren {

@@ -1,3 +1,4 @@
+// =============== Styles =============== //
 import styles from "@/styles/UI/Squares.module.css";
 
 interface SquaresProps extends React.PropsWithChildren {

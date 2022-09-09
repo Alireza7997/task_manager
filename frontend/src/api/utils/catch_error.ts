@@ -1,4 +1,7 @@
+// =============== Libraries =============== //
 import axios, { AxiosError } from "axios";
+
+// =============== Utils =============== //
 import createNotification from "@/notification/notifier"
 import ErrorResponse from "./error_response";
 

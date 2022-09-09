@@ -1,8 +1,11 @@
+// =============== Libraries =============== //
 import React, { createContext, useEffect, useState } from "react";
 import { AxiosRequestConfig } from "axios";
 import Router from "next/router";
-import me from "@/api/me";
 import { parseISO } from "date-fns";
+
+// =============== API =============== //
+import me from "@/api/me";
 
 export class User {
 	public username: string;

@@ -1,4 +1,7 @@
+// =============== Libraries =============== //
 import axios, { AxiosError } from "axios";
+
+// =============== Utils =============== //
 import { CatchErrorRepeatedly } from "./utils/catch_error"
 
 function methods(setMethods: (value: string[]) => void): () => void {

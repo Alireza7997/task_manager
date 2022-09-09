@@ -1,7 +1,12 @@
+// =============== Libraries =============== //
 import axios, { AxiosError } from "axios";
-import { CatchErrorWithoutRepeat } from "./utils/catch_error"
 import Router from "next/router";
-import { AuthContext, Auth } from "@/store/auth";
+
+// =============== Utils =============== //
+import { CatchErrorWithoutRepeat } from "./utils/catch_error"
+
+// =============== Stores =============== //
+import { Auth } from "@/store/auth";
 
 interface loginResponse {
     token?: string

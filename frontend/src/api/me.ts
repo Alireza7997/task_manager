@@ -1,6 +1,11 @@
+// =============== Libraries =============== //
 import axios, { AxiosError } from "axios";
-import { CatchErrorWithoutRepeat } from "./utils/catch_error"
 import Router from "next/router";
+
+// =============== Utils =============== //
+import { CatchErrorWithoutRepeat } from "./utils/catch_error"
+
+// =============== Stores =============== //
 import { User, Auth } from "@/store/auth";
 
 interface MeResponse {
