@@ -2,11 +2,17 @@ import React, { createContext, useEffect, useState } from "react";
 import { AxiosRequestConfig } from "axios";
 import Router from "next/router";
 import me from "@/api/me";
+import { parseISO } from "date-fns";
 
-export interface User {
-	username: string;
-	email: string;
-	created_at: Date;
+export class User {
+	public username: string;
+	public email: string;
+	public created_at: Date;
+	constructor(username: string, email: string, created_at: string) {
+		this.username = username;
+		this.email = email;
+		this.created_at = parseISO(created_at);
+	}
 }
 
 export interface Auth {
@@ -66,7 +72,6 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 	};
 
 	const addUser = (user: User) => {
-		console.log(user);
 		setUser(user);
 	};
 
@@ -111,7 +116,6 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 
 	useEffect(() => {
 		if (sessionID.length !== 0 || token.length !== 0) {
-			console.log(sessionID, token);
 			me(value)();
 		}
 	}, [sessionID, token]);

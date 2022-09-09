@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🐛 fix: date in typescript fixed
 * 🎉 feat: me page is kinda functional
 * 🐛 fix: headers for authentication added
 * 🎉 feat: login functionality completed

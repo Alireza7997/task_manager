@@ -21,8 +21,6 @@ const Me: React.FC = () => {
 		Router.push("/login");
 	};
 
-	console.log("date: ", typeof auth.user?.created_at);
-
 	return (
 		<>
 			<Head>
