@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🐛 fix: workflow for frontend develop branch added
 * 🐛 fix: fixed every warnings and errors next said so
 * 🎉 feat: register functionality added
 * 🐛 fix: date fixed in /me address
