@@ -25,8 +25,8 @@ jobs:
 
       - name: Make API Executable
         working-directory: backend
-        run: sudo chmod +x ./api
+        run: chmod +x ./api
 
-      - name: Restart docker container
+      - name: Restart api service
         working-directory: backend
         run: python3 ./scripts/setup.py install && python3 ./scripts/setup.py restart

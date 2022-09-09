@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🐛 fix: backend workflow fix
 * 🎉 feat: backend cd action workflow added
 * 🐛 fix: workflow for frontend develop branch added
 * 🐛 fix: fixed every warnings and errors next said so
