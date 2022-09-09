@@ -19,7 +19,7 @@ const CatchError = (func: () => void, reason: Error | AxiosError, ) => {
     }
 }
 
-export const CatchErrorWithoutRepeat: (reason: Error | AxiosError) => (ErrorResponse | null) = (reason: Error | AxiosError) => {
+export function CatchErrorWithoutRepeat(reason: Error | AxiosError): (ErrorResponse | null) {
     if (axios.isAxiosError(reason))  {
         if (reason.response !== undefined && reason.response.data) {
             const data = reason.response?.data as ErrorResponse

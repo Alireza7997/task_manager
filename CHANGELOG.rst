@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: register functionality added
 * 🐛 fix: date fixed in /me address
 * 🐛 fix: date in typescript fixed
 * 🎉 feat: me page is kinda functional

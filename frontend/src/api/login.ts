@@ -19,9 +19,9 @@ export interface loginRequest {
     method: string | undefined
 }
 
+const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/login"
 
 function login(setErrors: (value: Record<string, string[]>) => void, data: loginRequest, auth: Auth): () => void {
-    const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/login"
     return () => {
         axios
             .post<loginResponse>(address, data)
