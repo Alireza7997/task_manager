@@ -1,0 +1,11 @@
+[Unit]
+Description=an automation for openvpn accounting subject
+
+[Service]
+User=root
+WorkingDirectory=
+ExecStart=./api
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
