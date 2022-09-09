@@ -31,8 +31,8 @@ jobs:
       - name: Add .env file
         working-directory: frontend
         env:
-          FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
-        run: echo $FRONTEND_ENV > .env
+          NEXT_PUBLIC_BACKEND: ${{ secrets.NEXT_PUBLIC_BACKEND }}
+        run: python3 ./scripts/env_generator.py
 
       - name: Build frontend
         working-directory: frontend

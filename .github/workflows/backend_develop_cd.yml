@@ -22,8 +22,16 @@ jobs:
       - name: Add env.yml file
         working-directory: backend
         env:
-          BACKEND_ENV: ${{ secrets.BACKEND_ENV }}
-        run: echo $BACKEND_ENV > env.yml
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          HOST: ${{ secrets.HOST }}
+          PORT: ${{ secrets.PORT }}
+          ALLOW_ORIGIN: ${{ secrets.ALLOW_ORIGIN }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: python3 ./scripts/env_generator.py
 
       - name: Build project
         working-directory: backend
