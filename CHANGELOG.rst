@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🐛 fix: cd workflows, adding env configs
 * 🐛 fix: still working on backend workflow
 * 🐛 fix: added a secret in backend workflow
 * 🐛 fix: backend workflow fix

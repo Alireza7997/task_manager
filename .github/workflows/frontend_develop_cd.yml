@@ -28,6 +28,12 @@ jobs:
         working-directory: frontend
         run: yarn install
 
+      - name: Add .env file
+        working-directory: frontend
+        env:
+          FRONTEND_ENV: ${{ secrets.FrontendEnv }}
+        run: echo $FRONTEND_ENV > .env
+
       - name: Build frontend
         working-directory: frontend
         run: yarn build
