@@ -22,7 +22,7 @@ jobs:
       - name: Add env.yml file
         working-directory: backend
         env:
-          BACKEND_ENV: ${{ secrets.BackendEnv }}
+          BACKEND_ENV: ${{ secrets.BACKEND_ENV }}
         run: echo $BACKEND_ENV > env.yml
 
       - name: Build project

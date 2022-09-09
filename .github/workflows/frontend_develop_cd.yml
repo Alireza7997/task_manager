@@ -31,7 +31,7 @@ jobs:
       - name: Add .env file
         working-directory: frontend
         env:
-          FRONTEND_ENV: ${{ secrets.FrontendEnv }}
+          FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
         run: echo $FRONTEND_ENV > .env
 
       - name: Build frontend
