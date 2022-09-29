@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added more interactivity for tables
 * 🎉 feat: added tables and tasks view
 * 🐛 fix: scripts added to fix workflows
 * 🐛 fix: still working on workflow
