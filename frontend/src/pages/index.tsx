@@ -11,7 +11,10 @@ const Home: FC = () => {
 		if (auth.is_authenticated) {
 			Router.push("/me");
 		} else {
-			Router.push("/login");
+			// ! Temporary, change dashboard to login
+			if (Router.pathname !== "/dashboard") {
+				Router.push("/dashboard");
+			}
 		}
 	}
 	return <div></div>;

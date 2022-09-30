@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: added task manager components
 * 🎉 feat: added more interactivity for tables
 * 🎉 feat: added tables and tasks view
 * 🐛 fix: scripts added to fix workflows

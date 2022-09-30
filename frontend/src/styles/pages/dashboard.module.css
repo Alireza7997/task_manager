@@ -1,0 +1,18 @@
+.task-manager-container {
+	@apply bg-[#0d0c1a] h-screen p-5 space-x-3 flex overflow-auto;
+}
+
+.add-table {
+	@apply h-full;
+}
+
+.add-table > button {
+	@apply text-center h-full transition-all bg-[#b0a9fc];
+}
+
+.add-table > button:hover {
+	@apply scale-x-[1.1];
+
+	/* Blur */
+	@apply bg-opacity-80 backdrop-blur-[5px];
+}

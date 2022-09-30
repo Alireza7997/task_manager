@@ -1,0 +1,31 @@
+.task-row {
+	@apply bg-[#413b81] rounded-lg px-4 py-4 cursor-pointer;
+
+	@apply transition-all;
+
+	/* Prevent Selecting Text */
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+}
+
+.task-row:hover {
+	@apply scale-y-[.97] scale-x-[.99];
+
+	/* Blur */
+	@apply bg-opacity-80;
+	backdrop-filter: blur(5px);
+}
+
+.task-title {
+	@apply font-semibold mb-2;
+}
+
+.task-description {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 1;
+	-webkit-box-orient: vertical;
+}

@@ -4,14 +4,19 @@
 
 /* General Designs */
 body {
-	background-color: #080710;
 	/* Fonts */
-	@apply text-white outline-none border-none;
+	@apply bg-[#080710] text-white outline-none border-none;
 	font-family: "Poppins", sans-serif;
 	letter-spacing: 0.5px;
 }
 h3 {
 	@apply text-3xl font-medium text-center capitalize;
+}
+h4 {
+	@apply text-2xl font-medium text-center uppercase;
+}
+h5 {
+	@apply text-xl font-medium capitalize;
 }
 form {
 	@apply p-9;
@@ -20,16 +25,13 @@ label {
 	@apply block text-sm font-medium capitalize;
 }
 input {
-	@apply block w-full h-12 rounded-lg px-3 text-sm font-light;
-	background-color: #ffffff12;
+	@apply block w-full h-12 rounded-lg px-3 text-sm font-light bg-[#ffffff12];
 }
 input::placeholder {
-	@apply capitalize;
-	color: #e5e5e5;
+	@apply capitalize text-[#e5e5e5];
 }
 button {
-	@apply w-full bg-white p-4 text-base font-semibold rounded-md cursor-pointer capitalize;
-	color: #080710;
+	@apply w-full bg-white p-4 text-base font-semibold rounded-md cursor-pointer capitalize text-[#080710];
 }
 a {
 	@apply capitalize;
