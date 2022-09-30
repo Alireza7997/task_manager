@@ -28,7 +28,7 @@ input {
 	@apply block w-full h-12 rounded-lg px-3 text-sm font-light bg-[#ffffff12];
 }
 input::placeholder {
-	@apply capitalize text-[#e5e5e5];
+	@apply capitalize text-[#7e1d1d];
 }
 button {
 	@apply w-full bg-white p-4 text-base font-semibold rounded-md cursor-pointer capitalize text-[#080710];

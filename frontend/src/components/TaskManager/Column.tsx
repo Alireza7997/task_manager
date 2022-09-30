@@ -1,5 +1,5 @@
 // =============== Styles =============== //
-import styles from "@/styles/TaskManager/column.module.css";
+import styles from "@/styles/TaskManager/Column.module.css";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";

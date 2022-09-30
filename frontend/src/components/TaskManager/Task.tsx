@@ -1,5 +1,5 @@
 // =============== Styles =============== //
-import styles from "@/styles/TaskManager/task.module.css";
+import styles from "@/styles/TaskManager/Task.module.css";
 
 interface TaskProps extends React.PropsWithChildren {
 	title: string;
