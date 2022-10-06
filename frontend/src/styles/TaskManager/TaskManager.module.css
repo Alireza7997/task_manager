@@ -1,9 +1,5 @@
 .task-manager-container {
-	@apply h-screen flex flex-col;
-}
-
-.task-manager {
-	@apply bg-[#0d0c1a] p-5 space-x-3 flex flex-grow overflow-auto;
+	@apply p-5 space-x-3 flex flex-grow overflow-auto;
 }
 
 .add-table {
