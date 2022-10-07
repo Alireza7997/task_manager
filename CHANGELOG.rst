@@ -4,6 +4,7 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* 🎉 feat: click on rows goes to show page
 * 🎉 feat: completed a admin view of the projet
 * 🎉 feat: added task manager components
 * 🎉 feat: added more interactivity for tables

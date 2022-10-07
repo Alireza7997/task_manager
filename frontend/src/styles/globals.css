@@ -31,7 +31,7 @@ input::placeholder {
 	@apply capitalize text-[#7e1d1d];
 }
 button {
-	@apply w-full bg-white p-4 text-base font-semibold rounded-md cursor-pointer capitalize text-[#080710];
+	@apply bg-white p-4 text-base font-semibold rounded-md cursor-pointer capitalize text-[#080710];
 }
 a {
 	@apply capitalize;

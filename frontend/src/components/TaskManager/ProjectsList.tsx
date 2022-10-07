@@ -1,23 +1,21 @@
 import {
 	List,
 	Datagrid,
-	TextField,
-	DateField,
 	DeleteButton,
 	EditButton,
-	ShowButton,
+	TextField,
+	DateField,
 } from "react-admin";
 
 const ProjectsList: React.FC = () => {
 	return (
 		<List resource="projects">
-			<Datagrid>
+			<Datagrid rowClick="show">
 				<TextField source="id" label="ID" />
 				<TextField source="name" />
 				<DateField source="created_at" />
-				<ShowButton />
 				<EditButton />
-				<DeleteButton resource="projects" />
+				<DeleteButton mutationMode="pessimistic" resource="projects" />
 			</Datagrid>
 		</List>
 	);
