@@ -1,5 +1,6 @@
 {
 	"port": 5000,
 	"watch": true,
-	"middlewares": ["./backend-middlewares/content-range.js"]
+	"middlewares": ["./backend-middlewares/content-range.js"],
+	"routes": "routes.json"
 }

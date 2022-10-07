@@ -9,6 +9,7 @@ import { ReactNotifications } from "react-notifications-component";
 
 // =============== Stores =============== //
 import AuthProvider from "@/store/auth";
+import GlobalProvider from "@/store/global";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
@@ -21,9 +22,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 				/>
 			</Head>
 			<ReactNotifications />
-			<AuthProvider>
-				<Component {...pageProps} />
-			</AuthProvider>
+			<GlobalProvider>
+				<AuthProvider>
+					<Component {...pageProps} />
+				</AuthProvider>
+			</GlobalProvider>
 		</>
 	);
 }

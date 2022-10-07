@@ -4,24 +4,24 @@ import TaskManager from "@/components/TaskManager/TaskManager";
 import ProjectsList from "@/components/TaskManager/ProjectsList";
 import ProjectCreate from "@/components/TaskManager/ProjectCreate";
 import PostEdit from "@/components/TaskManager/PostEdit";
+import { GlobalContext } from "@/store/global";
+import { useContext } from "react";
 
-const dataProvider = jsonServerProvider(
-	process.env.NEXT_PUBLIC_BACKEND
-		? process.env.NEXT_PUBLIC_BACKEND
-		: "http://127.0.0.1:5000"
-);
+const App = () => {
+	const globals = useContext(GlobalContext);
 
-const App = () => (
-	<Admin dataProvider={dataProvider}>
-		<Resource
-			name="projects"
-			// show={TaskManager}
-			list={ProjectsList}
-			create={ProjectCreate}
-			edit={PostEdit}
-			show={TaskManager}
-		/>
-	</Admin>
-);
+	return (
+		<Admin dataProvider={jsonServerProvider(globals.backend)}>
+			<Resource
+				name="projects"
+				// show={TaskManager}
+				list={ProjectsList}
+				create={ProjectCreate}
+				edit={PostEdit}
+				show={TaskManager}
+			/>
+		</Admin>
+	);
+};
 
 export default App;
