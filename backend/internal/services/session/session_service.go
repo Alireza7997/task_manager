@@ -19,7 +19,7 @@ func (s *sessionService) GetSession(db *goqu.Database, id string) (*models.Sessi
 		"session_id": id,
 	}).Executor().ScanStruct(session)
 	if !ok {
-		return nil, errors.New("session not found")
+		return nil, errors.New("session does not exist in the database")
 	}
 
 	return session, nil

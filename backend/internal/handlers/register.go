@@ -26,14 +26,20 @@ func Register(c *gin.Context) {
 
 	// Validate user input
 	if errors := validators.RegisterValidator.Validate(*req); errors != nil {
-		c.JSON(400, gin.H{"errors": errors})
+		utils.Response(c, 400,
+			"Invalid credentials",
+			"Fields are not filled properly",
+			errors)
 		return
 	}
 
 	// Hashing password
 	hashedPassword, err := s.HashPassword(req.Password)
 	if err != nil {
-		c.JSON(500, gin.H{"errors": err.Error()})
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
 		return
 	}
 
@@ -47,9 +53,15 @@ func Register(c *gin.Context) {
 	}
 	user, err := s.CreateUser(database.DB, *model)
 	if err != nil {
-		c.JSON(500, err.Error())
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
 		return
 	}
 
-	c.JSON(201, user.UserDetails)
+	utils.Response(c, 201,
+		"Registered",
+		user.UserDetails,
+		nil)
 }

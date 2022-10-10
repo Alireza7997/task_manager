@@ -3,9 +3,9 @@ module github.com/alireza/api
 go 1.18
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/doug-martin/goqu/v9 v9.18.0
 	github.com/gin-gonic/gin v1.8.1
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golodash/galidator v0.0.0-beta.2
 	github.com/rubenv/sql-migrate v1.1.2
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90

@@ -12,6 +12,7 @@ func SetUpRouters(r *gin.Engine) {
 	authentication.POST("/register", handlers.Register)
 	authentication.POST("/login", handlers.Login)
 	authentication.GET("/methods", handlers.Methods)
+	authentication.POST("/refresh", handlers.Refresh)
 	// authorization
 	authorization := r.Group("/auth", middleware.Auth)
 	authorization.GET("/logout", handlers.Logout)

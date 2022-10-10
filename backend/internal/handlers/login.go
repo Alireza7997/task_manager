@@ -32,22 +32,29 @@ func Login(c *gin.Context) {
 
 	// Validate
 	if errors := validators.LoginValidator.Validate(*req); errors != nil {
-		c.JSON(400, gin.H{"errors": errors})
+		utils.Response(c, 400,
+			"Invalid credentials",
+			"Fields are not filled properly",
+			errors)
 		return
 	}
 
 	// Get user
 	user, err := u.GetUser(database.DB, req.Username)
 	if err != nil {
-		c.JSON(401, gin.H{"message": err.Error()})
+		utils.Response(c, 401,
+			"User does not exist",
+			err.Error(),
+			nil)
 		return
 	}
 
 	// Compare Password
 	if !u.ComparePassword(req.Password, user.Password) {
-		c.JSON(401, gin.H{
-			"message": "username and password do not match",
-		})
+		utils.Response(c, 401,
+			"mismatched credentials",
+			"Username and Password do not match",
+			nil)
 		return
 	}
 
@@ -60,24 +67,47 @@ func Login(c *gin.Context) {
 				SessionID: uuid.NewString(),
 			},
 		}
-		session, err := s.CreateSession(database.DB, *model, global.CFG.ExpireTokenAfterSeconds)
+		session, err := s.CreateSession(database.DB, *model, global.CFG.SessionExpirySeconds)
 		if err != nil {
-			c.JSON(500, gin.H{"message": err.Error()})
+			utils.Response(c, 500,
+				"",
+				err.Error(),
+				nil)
 			return
 		}
 
-		c.JSON(200, session.SessionDetails)
+		utils.Response(c, 200,
+			"Session",
+			session.SessionDetails,
+			nil)
 	}
 
 	// Generate jwt if method is "jwt"
 	if req.Method == "jwt" {
 		// JWT Creation
-		token, err := t.GenerateJWT(user, global.CFG.ExpireTokenAfterSeconds)
+		token1, err := t.GenerateAccessToken(user, global.CFG.AccessTokenExpirySeconds)
 		if err != nil {
-			c.JSON(500, gin.H{"message": " Error while generating JWT"})
+			utils.Response(c, 500,
+				"Internal Error",
+				"",
+				nil)
 			return
 		}
 
-		c.JSON(200, gin.H{"token": token})
+		token2, err := t.GenerateRefreshToken(database.DB, user, global.CFG.RefreshTokenExpirySeconds)
+		if err != nil {
+			utils.Response(c, 500,
+				"Internal Error",
+				"",
+				nil)
+		}
+
+		utils.Response(c, 200,
+			"Tokens",
+			gin.H{
+				"access_token":  token1,
+				"refresh_token": token2,
+			},
+			nil)
 	}
 }

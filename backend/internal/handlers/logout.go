@@ -3,19 +3,49 @@ package handlers
 import (
 	"github.com/alireza/api/internal/database"
 	sessionService "github.com/alireza/api/internal/services/session"
+	tokenService "github.com/alireza/api/internal/services/token"
+	"github.com/alireza/api/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func Logout(c *gin.Context) {
 	s := sessionService.New()
-	session := c.GetString("session")
-	err := s.DeleteSession(database.DB, session)
-	if err != nil {
-		c.JSON(500, err)
-		return
-	}
+	t := tokenService.New()
+	method := c.GetString("method")
 
-	c.JSON(200, gin.H{
-		"message": "Logged Out",
-	})
+	if method == "session" {
+		session := c.GetString("session")
+		err := s.DeleteSession(database.DB, session)
+		if err != nil {
+			utils.Response(c, 500,
+				"Internal Eerror",
+				"",
+				nil)
+			return
+		}
+		utils.Response(c, 200,
+			"Logged Out",
+			"",
+			nil)
+	}
+	if method == "jwt" {
+		token := c.GetString("token")
+		err := t.DeleteRefreshToken(database.DB, token)
+		if err != nil {
+			utils.Response(c, 500,
+				"Internal Error",
+				"",
+				nil)
+			return
+		}
+		utils.Response(c, 200,
+			"Logged Out",
+			"",
+			nil)
+	} else {
+		utils.Response(c, 403,
+			"No Methods!!!",
+			"",
+			nil)
+	}
 }

@@ -1,16 +1,15 @@
 package middleware
 
 import (
-	"time"
-
 	"github.com/alireza/api/internal/contract"
 	"github.com/alireza/api/internal/database"
 	"github.com/alireza/api/internal/global"
 	"github.com/alireza/api/internal/models"
 	sessionService "github.com/alireza/api/internal/services/session"
 	userService "github.com/alireza/api/internal/services/user"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/alireza/api/internal/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func Auth(c *gin.Context) {
@@ -18,9 +17,10 @@ func Auth(c *gin.Context) {
 	jwt := c.GetHeader("jwt")
 
 	if len(sessionID) == 0 && len(jwt) == 0 {
-		c.JSON(403, gin.H{
-			"message": "No auth Method !!",
-		})
+		utils.Response(c, 403,
+			"No Methods!",
+			"There are no methods in request",
+			nil)
 		c.Abort()
 		return
 	}
@@ -40,18 +40,20 @@ func sessionAuth(c *gin.Context, sessionID string) {
 	// Checking if received session exists in database, then retrieving it from database
 	session, err := s.GetSession(database.DB, sessionID)
 	if err != nil {
-		c.JSON(403, gin.H{
-			"message": err.Error(),
-		})
+		utils.Response(c, 403,
+			"Forbidden",
+			err.Error(),
+			nil)
 		c.Abort()
 		return
 	}
 
 	// Checking if session is expired
 	if session.IsExpired() {
-		c.JSON(403, gin.H{
-			"message": "unauthorized, session expired",
-		})
+		utils.Response(c, 403,
+			"Forbidden",
+			"Session is expired",
+			nil)
 		c.Abort()
 		return
 	}
@@ -59,9 +61,10 @@ func sessionAuth(c *gin.Context, sessionID string) {
 	// Checking if there is a user by passed UserID
 	user, err := u.GetUserByID(database.DB, session.UserID)
 	if err != nil {
-		c.JSON(500, gin.H{
-			"message": "internal, no user found",
-		})
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
 		c.Abort()
 		return
 	}
@@ -73,35 +76,43 @@ func sessionAuth(c *gin.Context, sessionID string) {
 }
 
 func jwtAuth(c *gin.Context, jwtoken string) {
-	// Checking if the given token is valid
+	// Parsing Token
 	token, err := jwt.ParseWithClaims(jwtoken, &contract.Claims{}, func(t *jwt.Token) (interface{}, error) {
 		return global.CFG.SecretKey, nil
 	})
 
+	// Checking if the given token is valid
 	if err != nil {
-		c.JSON(403, gin.H{
-			"message": err.Error(),
-		})
+		utils.Response(c, 403,
+			"Forbidden",
+			"couldn't parse token",
+			nil)
 		c.Abort()
+		return
+	}
+	if !token.Valid {
+		utils.Response(c, 403,
+			"Forbidden",
+			"Invalid token",
+			nil)
 		return
 	}
 
 	// Getting the token claims
 	claims, ok := token.Claims.(*contract.Claims)
 	if !ok {
-		c.JSON(500, gin.H{
-			"message": "Internal Error, Failed to Parse Claims",
-		})
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
 		c.Abort()
 		return
 	}
-
-	// Checking if token is expired
-	if claims.ExpiresAt < time.Now().Unix() {
-		c.JSON(403, gin.H{
-			"message": "Token Expired",
-		})
-		c.Abort()
+	if claims.TokenType != 0 {
+		utils.Response(c, 403,
+			"Forbidden",
+			"The given token is not a access token",
+			nil)
 		return
 	}
 
@@ -111,5 +122,6 @@ func jwtAuth(c *gin.Context, jwtoken string) {
 
 	// Setting "user" and "method" as parameters to get used by handlers
 	c.Set("user", user)
+	c.Set("token", jwtoken)
 	c.Set("method", "jwt")
 }
