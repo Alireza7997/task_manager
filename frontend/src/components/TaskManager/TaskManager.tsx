@@ -7,15 +7,30 @@ import styles from "@/styles/TaskManager/TaskManager.module.css";
 
 // =============== Components =============== //
 import Column from "./Column";
-import { get } from "lodash";
+import { find, findIndex, get } from "lodash";
 import getTables, { TableResponse } from "@/api/tables";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { GlobalContext } from "@/store/global";
+import { DragDropContext } from "react-beautiful-dnd";
+import getTasks, { TaskResponse, task } from "@/api/tasks";
+
+const updateTasks = (prevState: task[], action: task) => {
+	const index = findIndex(prevState, (value) => {
+		return value.id === action.id;
+	});
+	if (index === -1) prevState.push(action);
+	else {
+		prevState[index] = action;
+	}
+
+	return prevState;
+};
 
 const TaskManager: React.FC = () => {
-	const globals = useContext(GlobalContext);
+	console.log("updated");
 	const { id } = useParams();
 	const redirect = useRedirect();
+	const globals = useContext(GlobalContext);
 	const { data, isLoading } = useGetOne(
 		"projects",
 		{ id },
@@ -23,9 +38,17 @@ const TaskManager: React.FC = () => {
 	);
 	const name = get(data, "name");
 	const [tables, setTables] = useState<TableResponse[]>([] as TableResponse[]);
+	const [tasks, dispatchTasks] = useReducer(updateTasks, []);
 	useEffect(() => {
 		getTables(globals.backend, id!, setTables)();
 	}, []);
+	useEffect(() => {
+		if (tables.length !== 0) {
+			tables.map((value) => {
+				getTasks(globals.backend, value.id, value.id, dispatchTasks)();
+			});
+		}
+	}, [tables]);
 
 	return (
 		<>
@@ -33,18 +56,28 @@ const TaskManager: React.FC = () => {
 			{!isLoading && (
 				<div className={styles["task-manager-container"]}>
 					<Title title={name} />
-					{tables.map((value) => {
-						return (
-							<Column
-								key={value.id}
-								id={value.id}
-								title={value.title}
-								description={value.description}
-								created_at={value.created_at}
-								updated_at={value.updated_at}
-							/>
-						);
-					})}
+					<DragDropContext
+						onDragEnd={(result, provided) => {
+							console.log(result, provided);
+						}}
+					>
+						{tasks.map((value) => {
+							const t = find(tables, (v) => v.id === value.id);
+							const all_tasks = t ? value.tasks : [];
+							console.log("tasks = ", all_tasks);
+							return (
+								<Column
+									key={value.id}
+									tasks={all_tasks}
+									id={t!.id}
+									title={t!.title}
+									description={t!.description}
+									created_at={t!.created_at}
+									updated_at={t!.updated_at}
+								/>
+							);
+						})}
+					</DragDropContext>
 					<div className={styles["add-table"]}>
 						<button>+</button>
 					</div>
