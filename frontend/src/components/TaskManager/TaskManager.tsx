@@ -7,12 +7,12 @@ import styles from "@/styles/TaskManager/TaskManager.module.css";
 
 // =============== Components =============== //
 import Column from "./Column";
-import { find, findIndex, get } from "lodash";
+import { find, findIndex, get, remove } from "lodash";
 import getTables, { TableResponse } from "@/api/tables";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { GlobalContext } from "@/store/global";
 import { DragDropContext } from "react-beautiful-dnd";
-import getTasks, { TaskResponse, task } from "@/api/tasks";
+import getTasks, { task } from "@/api/tasks";
 
 const updateTasks = (prevState: task[], action: task) => {
 	const index = findIndex(prevState, (value) => {
@@ -27,7 +27,6 @@ const updateTasks = (prevState: task[], action: task) => {
 };
 
 const TaskManager: React.FC = () => {
-	console.log("updated");
 	const { id } = useParams();
 	const redirect = useRedirect();
 	const globals = useContext(GlobalContext);
@@ -44,11 +43,16 @@ const TaskManager: React.FC = () => {
 	}, []);
 	useEffect(() => {
 		if (tables.length !== 0) {
+			console.log(tables);
 			tables.map((value) => {
 				getTasks(globals.backend, value.id, value.id, dispatchTasks)();
 			});
 		}
 	}, [tables]);
+
+	const deleteColumn = (id: number) => {
+		setTables(remove(tables, (value) => value.id === id));
+	};
 
 	return (
 		<>
@@ -64,7 +68,6 @@ const TaskManager: React.FC = () => {
 						{tasks.map((value) => {
 							const t = find(tables, (v) => v.id === value.id);
 							const all_tasks = t ? value.tasks : [];
-							console.log("tasks = ", all_tasks);
 							return (
 								<Column
 									key={value.id}
@@ -74,6 +77,7 @@ const TaskManager: React.FC = () => {
 									description={t!.description}
 									created_at={t!.created_at}
 									updated_at={t!.updated_at}
+									deleteColumn={deleteColumn}
 								/>
 							);
 						})}

@@ -20,17 +20,17 @@ const Popup: React.FC<PopupProps> = (props) => {
 				<GlassmorphismForm addSquares={props.addSquares}>
 					<h3>{props.title}</h3>
 					{props.inputs.map((value) => {
-						return <InputGlassmorphismForm {...value} />;
+						return <InputGlassmorphismForm {...value} key={value.id} />;
 					})}
 					<div>
 						{props.buttons.map((value) => {
-							return <InputGlassmorphismForm {...value} />;
+							return <InputGlassmorphismForm {...value} key={value.id} />;
 						})}
 					</div>
 				</GlassmorphismForm>
 			</div>
 		</div>,
-		document.getElementsByName("body")[0]
+		document.getElementsByTagName("body")[0]
 	);
 };
 
