@@ -47,7 +47,7 @@ const blurEventHandler = (id: string) => {
 	};
 };
 
-interface InputGlassmorphismFormProps {
+export interface InputGlassmorphismFormProps {
 	type: "password" | "text" | "button" | "submit" | "email" | "date" | "radio";
 	label: string;
 	placeHolder?: string;
@@ -132,7 +132,9 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 
 			{/* Button, Submit input */}
 			{props.type === "button" && (
-				<button onClick={props.onClick}>{props.label}</button>
+				<button onClick={props.onClick} className="w-full">
+					{props.label}
+				</button>
 			)}
 
 			{/* Radio Button input */}

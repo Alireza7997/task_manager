@@ -14,7 +14,6 @@ const App = () => {
 		<Admin dataProvider={jsonServerProvider(globals.backend)}>
 			<Resource
 				name="projects"
-				// show={TaskManager}
 				list={ProjectsList}
 				create={ProjectCreate}
 				edit={PostEdit}

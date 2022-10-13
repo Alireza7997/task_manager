@@ -43,5 +43,11 @@ a {
 	.all-static * {
 		@apply static;
 	}
+	.full {
+		@apply w-full h-full;
+	}
+	.screen {
+		@apply w-screen h-screen;
+	}
 }
 /* End Of Custom Components */
