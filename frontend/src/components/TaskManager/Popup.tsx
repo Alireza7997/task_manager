@@ -10,12 +10,13 @@ interface PopupProps extends PropsWithChildren {
 	addSquares: boolean;
 	title: string;
 	buttons: InputGlassmorphismFormProps[];
+	hide: () => void;
 }
 
 const Popup: React.FC<PopupProps> = (props) => {
 	return createPortal(
 		<div className="screen absolute inset-0 z-50">
-			<div className="full bg-[#000000bd]"></div>
+			<div className="full bg-[#000000bd]" onClick={props.hide}></div>
 			<div className="full">
 				<GlassmorphismForm addSquares={props.addSquares}>
 					<h3>{props.title}</h3>

@@ -47,6 +47,9 @@ const Column: React.FC<ColumnProps> = (props) => {
 					title={`Delete ${props.title}?`}
 					inputs={[]}
 					buttons={buttons}
+					hide={() => {
+						setShowDeletePopup(false);
+					}}
 				/>
 			)}
 			<Droppable droppableId={props.id.toString()}>
