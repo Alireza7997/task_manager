@@ -1,5 +1,7 @@
 // =============== Styles =============== //
 import styles from "@/styles/TaskManager/Task.module.css";
+
+// =============== Libraries =============== //
 import { Draggable } from "react-beautiful-dnd";
 
 interface TaskProps extends React.PropsWithChildren {

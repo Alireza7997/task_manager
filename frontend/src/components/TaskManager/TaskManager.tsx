@@ -1,18 +1,22 @@
-// =============== Libraries =============== //
-import { useParams } from "react-router-dom";
-import { useGetOne, useRedirect, Title } from "react-admin";
-
 // =============== Styles =============== //
 import styles from "@/styles/TaskManager/TaskManager.module.css";
 
+// =============== Stores =============== //
+import { GlobalContext } from "@/store/global";
+
 // =============== Components =============== //
 import Table from "./Table";
-import { find, findIndex, get, remove } from "lodash";
+
+// =============== API =============== //
 import getTables, { TableResponse } from "@/api/tables";
-import { useContext, useEffect, useReducer, useState } from "react";
-import { GlobalContext } from "@/store/global";
 import getTasks, { task } from "@/api/tasks";
+
+// =============== Libraries =============== //
+import { useParams } from "react-router-dom";
+import { useGetOne, useRedirect, Title } from "react-admin";
+import { find, findIndex, get, remove } from "lodash";
 import { DragDropContext } from "react-beautiful-dnd";
+import { useContext, useEffect, useReducer, useState } from "react";
 
 const updateTasks = (prevState: task[], action: task) => {
 	const index = findIndex(prevState, (value) => {

@@ -1,15 +1,21 @@
 // =============== Styles =============== //
 import styles from "@/styles/TaskManager/Table.module.css";
 
-// =============== Components =============== //
-import Task from "@/components/TaskManager/Task";
+// =============== Stores =============== //
+import { GlobalContext } from "@/store/global";
+
+// =============== API =============== //
 import { TaskResponse } from "@/api/tasks";
+import delete_table from "@/api/delete_table";
+
+// =============== Libraries =============== //
 import { Droppable } from "react-beautiful-dnd";
 import { useContext, useState } from "react";
+
+// =============== Components =============== //
+import Task from "@/components/TaskManager/Task";
 import Popup from "./Popup";
 import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
-import delete_table from "@/api/delete_table";
-import { GlobalContext } from "@/store/global";
 
 interface TableProps {
 	id: number;
