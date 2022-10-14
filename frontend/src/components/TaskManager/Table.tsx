@@ -1,5 +1,5 @@
 // =============== Styles =============== //
-import styles from "@/styles/TaskManager/Column.module.css";
+import styles from "@/styles/TaskManager/Table.module.css";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
@@ -11,23 +11,23 @@ import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
 import delete_table from "@/api/delete_table";
 import { GlobalContext } from "@/store/global";
 
-interface ColumnProps {
+interface TableProps {
 	id: number;
 	title: string;
 	description: string;
 	created_at: string;
 	updated_at: string;
 	tasks: TaskResponse[];
-	deleteColumn: (id: number) => void;
+	deleteTable: (id: number) => void;
 }
 
-const Column: React.FC<ColumnProps> = (props) => {
+const Table: React.FC<TableProps> = (props) => {
 	const ctx = useContext(GlobalContext);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
 
 	const clickDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
-		delete_table(ctx.backend, props.id, props.deleteColumn);
+		delete_table(ctx.backend, props.id, props.deleteTable);
 		setShowDeletePopup(false);
 	};
 
@@ -55,7 +55,7 @@ const Column: React.FC<ColumnProps> = (props) => {
 			<Droppable droppableId={props.id.toString()}>
 				{(provided) => (
 					<div
-						className={styles["tasks-column"]}
+						className={styles["tasks-table"]}
 						ref={provided.innerRef}
 						{...provided.droppableProps}
 					>
@@ -96,4 +96,4 @@ const Column: React.FC<ColumnProps> = (props) => {
 	);
 };
 
-export default Column;
+export default Table;

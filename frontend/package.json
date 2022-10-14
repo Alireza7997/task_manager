@@ -3,9 +3,9 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "concurrently \"yarn server\" \"yarn client\"",
-		"client": "next dev",
-		"server": "json-server db.json",
+		"dev": "concurrently \"yarn B\" \"yarn F\"",
+		"F": "next dev",
+		"B": "json-server db.json",
 		"export": "next build && next export",
 		"build": "next build",
 		"start": "next start",

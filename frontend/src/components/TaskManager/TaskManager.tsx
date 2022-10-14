@@ -6,13 +6,13 @@ import { useGetOne, useRedirect, Title } from "react-admin";
 import styles from "@/styles/TaskManager/TaskManager.module.css";
 
 // =============== Components =============== //
-import Column from "./Column";
+import Table from "./Table";
 import { find, findIndex, get, remove } from "lodash";
 import getTables, { TableResponse } from "@/api/tables";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { GlobalContext } from "@/store/global";
-import { DragDropContext } from "react-beautiful-dnd";
 import getTasks, { task } from "@/api/tasks";
+import { DragDropContext } from "react-beautiful-dnd";
 
 const updateTasks = (prevState: task[], action: task) => {
 	const index = findIndex(prevState, (value) => {
@@ -39,18 +39,17 @@ const TaskManager: React.FC = () => {
 	const [tables, setTables] = useState<TableResponse[]>([] as TableResponse[]);
 	const [tasks, dispatchTasks] = useReducer(updateTasks, []);
 	useEffect(() => {
-		getTables(globals.backend, id!, setTables)();
+		getTables(globals.backend, id!, setTables);
 	}, []);
 	useEffect(() => {
 		if (tables.length !== 0) {
-			console.log(tables);
 			tables.map((value) => {
-				getTasks(globals.backend, value.id, value.id, dispatchTasks)();
+				getTasks(globals.backend, value.id, value.id, dispatchTasks);
 			});
 		}
 	}, [tables]);
 
-	const deleteColumn = (id: number) => {
+	const deleteTable = (id: number) => {
 		setTables(remove(tables, (value) => value.id === id));
 	};
 
@@ -69,7 +68,7 @@ const TaskManager: React.FC = () => {
 							const t = find(tables, (v) => v.id === value.id);
 							const all_tasks = t ? value.tasks : [];
 							return (
-								<Column
+								<Table
 									key={value.id}
 									tasks={all_tasks}
 									id={t!.id}
@@ -77,7 +76,7 @@ const TaskManager: React.FC = () => {
 									description={t!.description}
 									created_at={t!.created_at}
 									updated_at={t!.updated_at}
-									deleteColumn={deleteColumn}
+									deleteTable={deleteTable}
 								/>
 							);
 						})}

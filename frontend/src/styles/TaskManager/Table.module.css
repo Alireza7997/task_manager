@@ -12,7 +12,7 @@
 	@apply font-bold;
 }
 
-.tasks-column {
+.tasks-table {
 	@apply bg-[#221f41] rounded-lg w-[25rem] min-w-[25rem] overflow-hidden h-fit flex flex-col;
 }
 
