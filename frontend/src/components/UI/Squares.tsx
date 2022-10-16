@@ -7,19 +7,24 @@ interface SquaresProps extends React.PropsWithChildren {
 
 const Squares: React.FC<SquaresProps> = (props: SquaresProps) => {
 	return (
-		<div className={styles["square-container"]}>
+		<>
 			{props.addSquares && (
-				<>
-					<div className={styles.square}></div>
-					<div className={styles.square}></div>
-					<div className={styles.square}></div>
-					<div className={styles.square}></div>
-					<div className={styles.square}></div>
-					<div className={styles.square}></div>
-				</>
+				<div className={styles["square-container"]}>
+					{props.addSquares && (
+						<>
+							<div className={styles.square}></div>
+							<div className={styles.square}></div>
+							<div className={styles.square}></div>
+							<div className={styles.square}></div>
+							<div className={styles.square}></div>
+							<div className={styles.square}></div>
+						</>
+					)}
+					{props.children}
+				</div>
 			)}
-			{props.children}
-		</div>
+			{!props.addSquares && props.children}
+		</>
 	);
 };
 
