@@ -5,12 +5,12 @@ import styles from "@/styles/TaskManager/Table.module.css";
 import { GlobalContext } from "@/store/global";
 
 // =============== API =============== //
-import { TaskResponse } from "@/api/tasks";
+import getTasks, { task, TaskResponse } from "@/api/tasks";
 import delete_table from "@/api/delete_table";
 
 // =============== Libraries =============== //
 import { Droppable } from "react-beautiful-dnd";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
@@ -25,15 +25,19 @@ interface TableProps {
 	updated_at: string;
 	tasks: TaskResponse[];
 	deleteTable: (id: number) => void;
+	dispatchTasks: (value: task) => void;
 }
 
 const Table: React.FC<TableProps> = (props) => {
-	const ctx = useContext(GlobalContext);
+	const globals = useContext(GlobalContext);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
+	useEffect(() => {
+		getTasks(globals.backend, props.id, props.dispatchTasks);
+	}, []);
 
 	const clickDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
-		delete_table(ctx.backend, props.id, props.deleteTable);
+		delete_table(globals.backend, props.id, props.deleteTable);
 		setShowDeletePopup(false);
 	};
 

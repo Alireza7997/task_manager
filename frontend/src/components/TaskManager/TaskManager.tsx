@@ -45,17 +45,27 @@ const TaskManager: React.FC = () => {
 	useEffect(() => {
 		getTables(globals.backend, id!, setTables);
 	}, []);
-	useEffect(() => {
-		if (tables.length !== 0) {
-			tables.map((value) => {
-				getTasks(globals.backend, value.id, value.id, dispatchTasks);
-			});
-		}
-	}, [tables]);
 
 	const deleteTable = (id: number) => {
 		setTables(remove(tables, (value) => value.id === id));
 	};
+
+	const actualTables = tables.map((value) => {
+		const ts = find(tasks, (t) => t.id === value.id);
+		return (
+			<Table
+				key={value.id}
+				tasks={ts?.tasks ? ts.tasks : []}
+				id={value.id}
+				title={value.title}
+				description={value.description}
+				created_at={value.created_at}
+				updated_at={value.updated_at}
+				deleteTable={deleteTable}
+				dispatchTasks={dispatchTasks}
+			/>
+		);
+	});
 
 	return (
 		<>
@@ -68,22 +78,7 @@ const TaskManager: React.FC = () => {
 							console.log(result, provided);
 						}}
 					>
-						{tasks.map((value) => {
-							const t = find(tables, (v) => v.id === value.id);
-							const all_tasks = t ? value.tasks : [];
-							return (
-								<Table
-									key={value.id}
-									tasks={all_tasks}
-									id={t!.id}
-									title={t!.title}
-									description={t!.description}
-									created_at={t!.created_at}
-									updated_at={t!.updated_at}
-									deleteTable={deleteTable}
-								/>
-							);
-						})}
+						{actualTables}
 					</DragDropContext>
 					<div className={styles["add-table"]}>
 						<button>+</button>

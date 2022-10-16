@@ -18,8 +18,7 @@ export interface task {
 
 const tasks = (
     backend: string,
-	id: number,
-	table_id: string | number,
+	table_id: number,
 	setTables: (value: task) => void
 ) => {
 	const address = backend + `/tasks/${table_id}`;
@@ -28,7 +27,7 @@ const tasks = (
 		.get<TaskResponse[]>(address)
 		.then((results) => {
 			setTables({
-				id: id,
+				id: table_id,
 				tasks: results.data
 			});
 		})
