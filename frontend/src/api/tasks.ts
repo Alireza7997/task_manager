@@ -11,25 +11,17 @@ export interface TaskResponse {
 	done: boolean
 }
 
-export interface task {
-	id: number;
-	tasks: TaskResponse[];
-}
-
 const tasks = (
     backend: string,
 	table_id: number,
-	setTables: (value: task) => void
+	setTables: (value: TaskResponse[]) => void
 ) => {
 	const address = backend + `/tasks/${table_id}`;
 
 	axios
 		.get<TaskResponse[]>(address)
 		.then((results) => {
-			setTables({
-				id: table_id,
-				tasks: results.data
-			});
+			setTables(results.data);
 		})
 		.catch((reason: Error | AxiosError) => {
 			CatchErrorWithoutRepeat(reason);

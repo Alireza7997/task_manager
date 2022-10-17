@@ -5,11 +5,10 @@ import styles from "@/styles/TaskManager/Table.module.css";
 import { GlobalContext } from "@/store/global";
 
 // =============== API =============== //
-import getTasks, { task, TaskResponse } from "@/api/tasks";
+import getTasks, { TaskResponse } from "@/api/tasks";
 import delete_table from "@/api/delete_table";
 
 // =============== Libraries =============== //
-import { Droppable } from "react-beautiful-dnd";
 import { useContext, useEffect, useState } from "react";
 
 // =============== Components =============== //
@@ -23,16 +22,15 @@ interface TableProps {
 	description: string;
 	created_at: string;
 	updated_at: string;
-	tasks: TaskResponse[];
 	deleteTable: (id: number) => void;
-	dispatchTasks: (value: task) => void;
 }
 
 const Table: React.FC<TableProps> = (props) => {
 	const globals = useContext(GlobalContext);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
+	const [tasks, setTasks] = useState<TaskResponse[]>([]);
 	useEffect(() => {
-		getTasks(globals.backend, props.id, props.dispatchTasks);
+		getTasks(globals.backend, props.id, setTasks);
 	}, []);
 
 	const clickDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -62,46 +60,37 @@ const Table: React.FC<TableProps> = (props) => {
 					}}
 				/>
 			)}
-			<Droppable droppableId={props.id.toString()}>
-				{(provided) => (
-					<div
-						className={styles["tasks-table"]}
-						ref={provided.innerRef}
-						{...provided.droppableProps}
+			<div className={styles["tasks-table"]}>
+				<div className={styles["table-title"]}>
+					<h4>{props.title}</h4>
+				</div>
+
+				<div className={styles["tasks"]}>
+					{tasks.map((value, index) => {
+						return (
+							<Task
+								key={value.id}
+								id={value.id}
+								index={index}
+								name={value.name}
+								description={value.description}
+							/>
+						);
+					})}
+				</div>
+
+				<div className={styles["table-buttons"]}>
+					<button>add task</button>
+
+					<button
+						onClick={() => {
+							setShowDeletePopup(true);
+						}}
 					>
-						<div className={styles["table-title"]}>
-							<h4>{props.title}</h4>
-						</div>
-
-						<div className={styles["tasks"]}>
-							{props.tasks.map((value, index) => {
-								return (
-									<Task
-										key={value.id}
-										id={value.id}
-										index={index}
-										name={value.name}
-										description={value.description}
-									/>
-								);
-							})}
-							{provided.placeholder}
-						</div>
-
-						<div className={styles["table-buttons"]}>
-							<button>add task</button>
-
-							<button
-								onClick={() => {
-									setShowDeletePopup(true);
-								}}
-							>
-								delete table
-							</button>
-						</div>
-					</div>
-				)}
-			</Droppable>
+						delete table
+					</button>
+				</div>
+			</div>
 		</>
 	);
 };
