@@ -20,12 +20,12 @@ import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
 import add_task from "@/api/add_task";
 
 interface TableProps {
-	id: number;
+	id: number | string;
 	title: string;
 	description: string;
 	created_at: string;
 	updated_at: string;
-	deleteTable: (id: number) => void;
+	deleteTable: (id: number | string) => void;
 }
 
 const Table: React.FC<TableProps> = (props) => {

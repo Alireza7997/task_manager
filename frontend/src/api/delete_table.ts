@@ -6,8 +6,8 @@ import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
 const delete_table = (
     backend: string,
-	table_id: number,
-	deleteTable: (id: number) => void
+	table_id: number | string,
+	deleteTable: (id: number | string) => void
 ) => {
 	const address = backend + `/tables/${table_id}`;
 

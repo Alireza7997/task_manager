@@ -13,7 +13,7 @@ export interface TaskResponse {
 
 const tasks = (
     backend: string,
-	table_id: number,
+	table_id: number | string,
 	setTables: (value: TaskResponse[]) => void
 ) => {
 	const address = backend + `/tasks/${table_id}`;

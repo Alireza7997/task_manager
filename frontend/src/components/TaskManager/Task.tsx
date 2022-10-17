@@ -2,7 +2,7 @@
 import styles from "@/styles/TaskManager/Task.module.css";
 
 interface TaskProps extends React.PropsWithChildren {
-	id: number;
+	id: number | string;
 	index: number;
 	name: string;
 	description: string;

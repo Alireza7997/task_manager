@@ -31,8 +31,8 @@ const TaskManager: React.FC = () => {
 		getTables(globals.backend, id!, setTables);
 	}, []);
 
-	const deleteTable = (id: number) => {
-		setTables(remove(tables, (value) => value.id === id));
+	const deleteTable = (id: number | string) => {
+		setTables(remove(tables, (value) => value.id.toString() === id.toString()));
 	};
 
 	const actualTables = tables.map((value) => {
