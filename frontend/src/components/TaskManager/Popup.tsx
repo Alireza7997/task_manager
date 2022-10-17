@@ -23,9 +23,11 @@ const Popup: React.FC<PopupProps> = (props) => {
 					{props.inputs.map((value) => {
 						return <InputGlassmorphismForm {...value} key={value.id} />;
 					})}
-					{props.buttons.map((value) => {
-						return <InputGlassmorphismForm {...value} key={value.id} />;
-					})}
+					<div className="space-y-3">
+						{props.buttons.map((value) => {
+							return <InputGlassmorphismForm {...value} key={value.id} />;
+						})}
+					</div>
 				</GlassmorphismForm>
 			</div>
 		</div>,

@@ -6,9 +6,12 @@ import { GlobalContext } from "@/store/global";
 
 // =============== Components =============== //
 import Table from "./Table";
+import Popup, { getInputValues } from "./Popup";
+import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismForm";
 
 // =============== API =============== //
 import getTables, { TableResponse } from "@/api/tables";
+import add_table from "@/api/add_table";
 
 // =============== Libraries =============== //
 import { useParams } from "react-router-dom";
@@ -20,6 +23,7 @@ const TaskManager: React.FC = () => {
 	const { id } = useParams();
 	const redirect = useRedirect();
 	const globals = useContext(GlobalContext);
+	const [showAddPopup, setShowAddPopup] = useState(false);
 	const { data, isLoading } = useGetOne(
 		"projects",
 		{ id },
@@ -32,7 +36,7 @@ const TaskManager: React.FC = () => {
 	}, []);
 
 	const deleteTable = (id: number | string) => {
-		setTables(remove(tables, (value) => value.id.toString() === id.toString()));
+		setTables(remove(tables, (value) => value.id.toString() !== id.toString()));
 	};
 
 	const actualTables = tables.map((value) => {
@@ -49,6 +53,45 @@ const TaskManager: React.FC = () => {
 		);
 	});
 
+	const addClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+		e.preventDefault();
+		const values = getInputValues(addInputs);
+		values["project_id"] = id!;
+		add_table(globals.backend, values, setTables);
+		setShowAddPopup(false);
+	};
+
+	const addInputs: InputGlassmorphismFormProps[] = [
+		{
+			id: "title",
+			label: "title",
+			type: "text",
+		},
+		{
+			id: "description",
+			label: "description",
+			type: "text",
+		},
+	];
+
+	const addButtons: InputGlassmorphismFormProps[] = [
+		{
+			id: "add",
+			label: "add",
+			type: "button",
+			onClick: addClick,
+		},
+		{
+			id: "cancel",
+			label: "cancel",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				setShowAddPopup(false);
+			},
+		},
+	];
+
 	return (
 		<>
 			{isLoading && <div>Loading...</div>}
@@ -57,9 +100,27 @@ const TaskManager: React.FC = () => {
 					<Title title={name} />
 					{actualTables}
 					<div className={styles["add-table"]}>
-						<button>+</button>
+						<button
+							onClick={(e) => {
+								e.preventDefault();
+								setShowAddPopup(true);
+							}}
+						>
+							+
+						</button>
 					</div>
 				</div>
+			)}
+			{showAddPopup && (
+				<Popup
+					addSquares={false}
+					title="Add Table"
+					inputs={addInputs}
+					buttons={addButtons}
+					hide={() => {
+						setShowAddPopup(false);
+					}}
+				/>
 			)}
 		</>
 	);

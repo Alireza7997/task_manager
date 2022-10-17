@@ -105,7 +105,7 @@ const Table: React.FC<TableProps> = (props) => {
 			{showDeletePopup && (
 				<Popup
 					addSquares={false}
-					title={`Delete ${props.title}?`}
+					title={`Delete "${props.title}"?`}
 					inputs={[]}
 					buttons={delButtons}
 					hide={() => {
@@ -116,7 +116,7 @@ const Table: React.FC<TableProps> = (props) => {
 			{showAddPopup && (
 				<Popup
 					addSquares={false}
-					title="Add Table"
+					title="Add Task"
 					inputs={addInputs}
 					buttons={addButtons}
 					hide={() => {
@@ -130,6 +130,11 @@ const Table: React.FC<TableProps> = (props) => {
 				</div>
 
 				<div className={styles["tasks"]}>
+					{tasks.length === 0 && (
+						<div className="p-3 ">
+							<p className="text-center text-slate-200 font-bold">NO TASK</p>
+						</div>
+					)}
 					{tasks.map((value, index) => {
 						return (
 							<Task
@@ -138,6 +143,7 @@ const Table: React.FC<TableProps> = (props) => {
 								index={index}
 								name={value.name}
 								description={value.description}
+								setTasks={setTasks}
 							/>
 						);
 					})}
