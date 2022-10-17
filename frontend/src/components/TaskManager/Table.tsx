@@ -13,8 +13,11 @@ import { useContext, useEffect, useState } from "react";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
-import Popup from "./Popup";
+import Popup, { getInputValues } from "./Popup";
 import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
+
+// =============== API =============== //
+import add_task from "@/api/add_task";
 
 interface TableProps {
 	id: number;
@@ -28,25 +31,75 @@ interface TableProps {
 const Table: React.FC<TableProps> = (props) => {
 	const globals = useContext(GlobalContext);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
+	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [tasks, setTasks] = useState<TaskResponse[]>([]);
 	useEffect(() => {
 		getTasks(globals.backend, props.id, setTasks);
 	}, []);
 
-	const clickDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+	const deleteClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
 		delete_table(globals.backend, props.id, props.deleteTable);
 		setShowDeletePopup(false);
 	};
 
-	const buttons: InputGlassmorphismFormProps[] = [
+	const addClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+		e.preventDefault();
+		const values = getInputValues(addInputs);
+		values["table_id"] = props.id.toString();
+		add_task(globals.backend, values, setTasks);
+		setShowAddPopup(false);
+	};
+
+	const delButtons: InputGlassmorphismFormProps[] = [
 		{
 			id: "delete",
 			label: "delete",
 			type: "button",
-			onClick: clickDelete,
+			onClick: deleteClick,
+		},
+		{
+			id: "cancel",
+			label: "cancel",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				setShowDeletePopup(false);
+			},
 		},
 	];
+
+	const addInputs: InputGlassmorphismFormProps[] = [
+		{
+			id: "name",
+			label: "name",
+			type: "text",
+		},
+		{
+			id: "description",
+			label: "description",
+			type: "text",
+		},
+	];
+
+	const addButtons: InputGlassmorphismFormProps[] = [
+		{
+			id: "add",
+			label: "add",
+			type: "button",
+			onClick: addClick,
+		},
+		{
+			id: "cancel",
+			label: "cancel",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				setShowAddPopup(false);
+			},
+		},
+	];
+
 	return (
 		<>
 			{showDeletePopup && (
@@ -54,9 +107,20 @@ const Table: React.FC<TableProps> = (props) => {
 					addSquares={false}
 					title={`Delete ${props.title}?`}
 					inputs={[]}
-					buttons={buttons}
+					buttons={delButtons}
 					hide={() => {
 						setShowDeletePopup(false);
+					}}
+				/>
+			)}
+			{showAddPopup && (
+				<Popup
+					addSquares={false}
+					title="Add Table"
+					inputs={addInputs}
+					buttons={addButtons}
+					hide={() => {
+						setShowAddPopup(false);
 					}}
 				/>
 			)}
@@ -80,7 +144,13 @@ const Table: React.FC<TableProps> = (props) => {
 				</div>
 
 				<div className={styles["table-buttons"]}>
-					<button>add task</button>
+					<button
+						onClick={() => {
+							setShowAddPopup(true);
+						}}
+					>
+						add task
+					</button>
 
 					<button
 						onClick={() => {
