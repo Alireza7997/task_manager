@@ -13,7 +13,7 @@ import getTables, { TableResponse } from "@/api/tables";
 // =============== Libraries =============== //
 import { useParams } from "react-router-dom";
 import { useGetOne, useRedirect, Title } from "react-admin";
-import { find, findIndex, get, remove } from "lodash";
+import { get, remove } from "lodash";
 import { useContext, useEffect, useState } from "react";
 
 const TaskManager: React.FC = () => {
