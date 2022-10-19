@@ -1,0 +1,16 @@
+@tailwind components;
+
+/* Glassmorphism Form */
+.glassmorphism-form {
+	/* Style */
+	@apply w-[400px] bg-[#ffffff21] z-0 backdrop-blur-md rounded-xl;
+	/* Shadow and border */
+	@apply border-2 border-solid border-[#ffffff1a] shadow-[0_0_40px_#08071099];
+	/* Style items inside */
+	@apply flex flex-col justify-center space-y-8;
+	/* Center it */
+	@apply absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2;
+	/* Responsive */
+	@apply xsMax:w-screen xsMax:h-screen;
+}
+/* End Of Glassmorphism Form */
