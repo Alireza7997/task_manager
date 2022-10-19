@@ -66,14 +66,14 @@ const Login: React.FC = () => {
 					id="username"
 					label="username"
 					type="text"
-					errors={errors["Username"]}
+					errors={errors ? errors["Username"] : []}
 					reff={username}
 				/>
 				<InputGlassmorphismForm
 					id="password"
 					label="password"
 					type="password"
-					errors={errors["Password"]}
+					errors={errors ? errors["Password"] : []}
 					reff={password}
 				/>
 				<InputGlassmorphismForm
@@ -82,7 +82,7 @@ const Login: React.FC = () => {
 					id="method"
 					values={methodsList}
 					default={methodsList[0]}
-					errors={errors["Method"]}
+					errors={errors ? errors["Method"] : []}
 					onRadioButtonChange={onRadioButtonChange}
 				/>
 				<div>

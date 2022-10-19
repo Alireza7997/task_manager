@@ -53,21 +53,21 @@ const Register: React.FC = () => {
 					label="username"
 					type="text"
 					reff={usernameRef}
-					errors={errors["Username"]}
+					errors={errors ? errors["Username"] : []}
 				/>
 				<InputGlassmorphismForm
 					id="email"
 					label="email"
 					type="email"
 					reff={emailRef}
-					errors={errors["Email"]}
+					errors={errors ? errors["Email"] : []}
 				/>
 				<InputGlassmorphismForm
 					id="password"
 					label="password"
 					type="password"
 					reff={passwordRef}
-					errors={errors["Password"]}
+					errors={errors ? errors["Password"] : []}
 				/>
 				<div>
 					<InputGlassmorphismForm label="register" type="button" id="" />
