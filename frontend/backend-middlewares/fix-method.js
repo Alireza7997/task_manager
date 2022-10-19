@@ -4,5 +4,5 @@ module.exports = (req, res, next) => {
 		res.jsonp({
 			token: "sdadweqekdfsdojfejrqiroqirwi",
 		});
-	next();
+	else next();
 };

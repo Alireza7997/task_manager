@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@babel/core": "^7.0.0",
+		"@mui/material": "^5.10.10",
 		"axios": "^0.27.2",
 		"date-fns": "^2.29.2",
 		"history": "^5.1.0",

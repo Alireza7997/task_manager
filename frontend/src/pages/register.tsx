@@ -75,7 +75,9 @@ const Register: React.FC = () => {
 						<p>
 							<Link href={"/login"}>login</Link>
 						</p>
-						<p></p>
+						<p>
+							<Link href={"/login"}> </Link>
+						</p>
 					</div>
 				</div>
 			</GlassmorphismForm>

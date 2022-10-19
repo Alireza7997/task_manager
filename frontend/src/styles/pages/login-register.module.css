@@ -1,7 +1,7 @@
 @tailwind components;
 
 .not-signed-up-container {
-	@apply flex mt-2 cursor-pointer;
+	@apply flex mt-2;
 }
 
 .not-signed-up-container > p {
