@@ -1,6 +1,9 @@
 {
 	"port": 5000,
 	"watch": true,
-	"middlewares": ["./backend-middlewares/content-range.js"],
+	"middlewares": [
+		"./backend-middlewares/content-range.js",
+		"./backend-middlewares/fix-method.js"
+	],
 	"routes": "routes.json"
 }

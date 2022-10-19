@@ -2,5 +2,8 @@
 	"/tables/:id": "/tables?project_id=:id",
 	"/tasks/:id": "/tasks?table_id=:id",
 
-	"/auth/methods": "/methods"
+	"/auth/methods": "/methods",
+	"/auth/register": "/users",
+	"/auth/login": "/token/1",
+	"/user/me": "/users/1"
 }
