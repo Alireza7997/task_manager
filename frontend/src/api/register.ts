@@ -18,9 +18,9 @@ class RegisterRequestResponse {
     }
 }
 
-const address = process.env.NEXT_PUBLIC_BACKEND + "/auth/register"
+const register = (backend: string, setErrors: (value: Record<string, string[]>) => void, data: RegisterRequestResponse) => {
+    const address = backend + `/auth/register`
 
-const register = (setErrors: (value: Record<string, string[]>) => void, data: RegisterRequestResponse) => {
     axios.post<RegisterRequestResponse>(address, data)
     .then(() => {
         createNotification(200, "Now try to log into your account.", "Register Succeed", 0)

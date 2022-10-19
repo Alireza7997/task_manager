@@ -14,8 +14,9 @@ interface MeResponse {
 	created_at: string;
 }
 
-function me(auth: Auth): () => void {
-    const address = process.env.NEXT_PUBLIC_BACKEND + "/user/me"
+function me(backend: string, auth: Auth): () => void {
+    const address = backend + `/user/me`
+
     return () => {
         axios
             .get<MeResponse>(address, auth.getAuthHeaders())
@@ -31,6 +32,6 @@ function me(auth: Auth): () => void {
                 }
             });
         }
-    }
+}
 
 export default me

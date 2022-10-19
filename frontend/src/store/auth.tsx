@@ -1,11 +1,14 @@
 // =============== Libraries =============== //
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { AxiosRequestConfig } from "axios";
 import Router from "next/router";
 import { parseISO } from "date-fns";
 
 // =============== API =============== //
 import me from "@/api/me";
+
+// =============== Stores =============== //
+import { GlobalContext } from "@/store/global";
 
 export class User {
 	public username: string;
@@ -34,6 +37,7 @@ export const AuthContext = createContext({ is_authenticated: false } as Auth);
 const AuthProvider: React.FC<React.PropsWithChildren> = (
 	props: React.PropsWithChildren
 ) => {
+	const globals = useContext(GlobalContext);
 	const [sessionID, setSessionID] = useState("");
 	const [token, setToken] = useState("");
 	const [user, setUser] = useState<User | undefined>(undefined);
@@ -121,7 +125,7 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 
 	useEffect(() => {
 		if (sessionID.length !== 0 || token.length !== 0) {
-			me(value)();
+			me(globals.backend, value)();
 		}
 		// eslint-disable-next-line
 	}, [sessionID, token]);

@@ -1,4 +1,6 @@
 {
 	"/tables/:id": "/tables?project_id=:id",
-	"/tasks/:id": "/tasks?table_id=:id"
+	"/tasks/:id": "/tasks?table_id=:id",
+
+	"/auth/methods": "/methods"
 }

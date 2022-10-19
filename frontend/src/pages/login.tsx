@@ -13,9 +13,13 @@ import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 // =============== API =============== //
 import methods from "@/api/methods";
 import login from "@/api/login";
+
+// =============== Stores =============== //
 import { AuthContext } from "@/store/auth";
+import { GlobalContext } from "@/store/global";
 
 const Login: React.FC = () => {
+	const globals = useContext(GlobalContext);
 	const [methodsList, setMethods] = useState<string[]>([]);
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const [method, setMethod] = useState<string>();
@@ -23,7 +27,7 @@ const Login: React.FC = () => {
 	const password = useRef<HTMLInputElement>();
 	const auth = useContext(AuthContext);
 	useEffect(() => {
-		methods(setMethods)();
+		methods(globals.backend, setMethods)();
 	}, []);
 
 	useEffect(() => {
@@ -36,6 +40,7 @@ const Login: React.FC = () => {
 		event.preventDefault();
 
 		login(
+			globals.backend,
 			setErrors,
 			{
 				username: username.current?.value,
