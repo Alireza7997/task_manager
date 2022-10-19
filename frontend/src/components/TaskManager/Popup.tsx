@@ -1,7 +1,10 @@
+// =============== Components =============== //
 import GlassmorphismForm from "@/components/UI/GlassmorphismForm";
 import InputGlassmorphismForm, {
 	InputGlassmorphismFormProps,
 } from "@/components/UI/InputGlassmorphismForm";
+
+// =============== Libraries =============== //
 import { PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
 

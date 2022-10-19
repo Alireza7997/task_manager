@@ -4,20 +4,18 @@ import styles from "@/styles/TaskManager/Table.module.css";
 // =============== Stores =============== //
 import { GlobalContext } from "@/store/global";
 
+// =============== Libraries =============== //
+import { useContext, useEffect, useState } from "react";
+
 // =============== API =============== //
 import getTasks, { TaskResponse } from "@/api/tasks";
 import delete_table from "@/api/delete_table";
-
-// =============== Libraries =============== //
-import { useContext, useEffect, useState } from "react";
+import add_task from "@/api/add_task";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
 import Popup, { getInputValues } from "./Popup";
 import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
-
-// =============== API =============== //
-import add_task from "@/api/add_task";
 
 interface TableProps {
 	id: number | string;

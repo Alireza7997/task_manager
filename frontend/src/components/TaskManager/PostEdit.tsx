@@ -1,3 +1,4 @@
+// =============== Libraries =============== //
 import { Edit, SimpleForm, TextInput, DateField, required } from "react-admin";
 
 const PostEdit: React.FC = () => {

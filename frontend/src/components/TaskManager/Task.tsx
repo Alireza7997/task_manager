@@ -1,8 +1,14 @@
 // =============== Styles =============== //
+import styles from "@/styles/TaskManager/Task.module.css";
+
+// =============== API =============== //
 import delete_task from "@/api/delete_task";
 import { TaskResponse } from "@/api/tasks";
+
+// =============== Stores =============== //
 import { GlobalContext } from "@/store/global";
-import styles from "@/styles/TaskManager/Task.module.css";
+
+// =============== Libraries =============== //
 import { Dispatch, SetStateAction, useContext } from "react";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
@@ -16,6 +22,7 @@ interface TaskProps extends React.PropsWithChildren {
 
 const Task: React.FC<TaskProps> = (props: TaskProps) => {
 	const globals = useContext(GlobalContext);
+
 	return (
 		<div className={styles["task-row"]}>
 			<h5 className={styles["task-title"]}>{props.name}</h5>

@@ -24,7 +24,7 @@
 	@apply bg-transparent rounded-b-lg flex;
 
 	/* Shadow */
-	box-shadow: 0 -3px 20px 1px;
+	@apply shadow-[0_-3px_20px_1px];
 }
 
 .table-buttons > button {

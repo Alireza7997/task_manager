@@ -5,9 +5,7 @@
 /* General Designs */
 body {
 	/* Fonts */
-	@apply bg-[#080710] text-white outline-none border-none;
-	font-family: "Poppins", sans-serif;
-	letter-spacing: 0.5px;
+	@apply bg-[#080710] text-white outline-none border-none font-[Poppins,sans-serif] tracking-[0.5px];
 }
 h3 {
 	@apply text-3xl font-medium text-center capitalize;
