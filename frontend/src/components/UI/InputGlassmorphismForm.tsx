@@ -1,51 +1,9 @@
 // =============== Styles =============== //
 import styles from "@/styles/UI/InputGlassmorphismForm.module.css";
 
-const showHidePassword = (id: string) => {
-	return (event: React.MouseEvent<HTMLDivElement>) => {
-		var input = document.getElementById(id) as HTMLElement;
-		var passwordBtn = document.getElementById(`_password_${id}`) as HTMLElement;
-		if (input.getAttribute("type") === "password") {
-			passwordBtn.classList.add(styles["no-eye"]);
-			input.setAttribute("type", "text");
-		} else {
-			passwordBtn.classList.remove(styles["no-eye"]);
-			input.setAttribute("type", "password");
-		}
-	};
-};
-
-const focusEventHandler = (id: string) => {
-	id = `_label_${id}`;
-	return (event: React.FocusEvent<HTMLInputElement>) => {
-		var label = document.getElementById(id) as HTMLElement;
-		label.classList.remove(styles["label-on-input"]);
-	};
-};
-
-const changeEventHandler = (id: string) => {
-	id = `_label_${id}`;
-	return (event: React.FocusEvent<HTMLInputElement>) => {
-		var label = document.getElementById(id) as HTMLElement;
-		if (event.target.value.length > 0) {
-			label.classList.remove(styles["label-on-input"]);
-		} else {
-			if (document.activeElement !== event.target) {
-				label.classList.add(styles["label-on-input"]);
-			}
-		}
-	};
-};
-
-const blurEventHandler = (id: string) => {
-	id = `_label_${id}`;
-	return (event: React.FocusEvent<HTMLInputElement>) => {
-		var label = document.getElementById(id) as HTMLElement;
-		if (event.target.value.length == 0) {
-			label.classList.add(styles["label-on-input"]);
-		}
-	};
-};
+// =============== Libraries =============== //
+import { useState } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 export interface InputGlassmorphismFormProps {
 	type: "password" | "text" | "button" | "submit" | "email" | "date" | "radio";
@@ -65,6 +23,8 @@ export interface InputGlassmorphismFormProps {
 const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 	props: InputGlassmorphismFormProps
 ) => {
+	const [hide, setHide] = useState(true);
+	const [focus, setFocus] = useState(true);
 	const propsOnInput = {
 		data: {
 			type: props.type,
@@ -75,11 +35,15 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			ref: props.reff,
 		},
 		functions: {
-			onFocus: focusEventHandler(props.id),
-			onBlur: blurEventHandler(props.id),
-			onChange: changeEventHandler(props.id),
+			onFocus: () => setFocus(true),
+			onBlur: (e: React.FocusEvent<HTMLInputElement>) =>
+				setFocus(e.currentTarget.value.length !== 0),
 		},
 		errors: props.errors,
+	};
+
+	const showHidePassword = (event: React.MouseEvent<HTMLDivElement>) => {
+		setHide(!hide);
 	};
 
 	return (
@@ -91,7 +55,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			{/* Label */}
 			{props.type !== "button" && (
 				<label
-					className={`${styles.label}`}
+					className={`${styles.label} ${!focus && styles["label-in-input"]}`}
 					htmlFor={props.id}
 					id={`_label_${props.id}`}
 				>
@@ -105,13 +69,19 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 					<input
 						{...propsOnInput.data}
 						{...propsOnInput.functions}
+						type={`${(hide && "password") || (!hide && "text")}`}
 						readOnly={props.readonly}
 					/>
 					<div
 						className={styles["password-view-control"]}
-						onClick={showHidePassword(props.id)}
+						onClick={showHidePassword}
 					>
-						<div id={"_password_" + props.id} className={styles["eye"]}></div>
+						<div id={props.id} className={styles["eye"]}>
+							{hide && <AiFillEye color="black" className="w-full h-full" />}
+							{!hide && (
+								<AiFillEyeInvisible color="black" className="w-full h-full" />
+							)}
+						</div>
 					</div>
 				</div>
 			)}
