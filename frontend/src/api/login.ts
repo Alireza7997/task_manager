@@ -27,7 +27,7 @@ const login = (backend: string, setErrors: (value: Record<string, string[]>) => 
         .then((results) => {
             const data = results.data as loginResponse
             auth.authenticate(data.session_id? data.session_id: "", data.token? data.token: "")
-            Router.push("/me")
+            if (Router.pathname !== "/dashboard") Router.push("/dashboard")
         })
         .catch((reason: Error | AxiosError) => {
             const data = CatchErrorWithoutRepeat(reason)

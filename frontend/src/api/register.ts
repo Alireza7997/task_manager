@@ -24,7 +24,7 @@ const register = (backend: string, setErrors: (value: Record<string, string[]>) 
     axios.post<RegisterRequestResponse>(address, data)
     .then(() => {
         createNotification(200, "Now try to log into your account.", "Register Succeed", 0)
-        Router.push("/login")
+        if (Router.pathname !== "/login") Router.push("/login")
     }).catch((reason) => {
         const data = CatchErrorWithoutRepeat(reason)
         if (data !== null) {

@@ -107,10 +107,7 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 			Router.pathname !== "/login" &&
 			Router.pathname !== "/register"
 		) {
-			// ! Temporary, change dashboard to login
-			if (Router.pathname !== "/dashboard") {
-				Router.push("/dashboard");
-			}
+			Router.push("/login");
 		}
 	});
 
@@ -119,7 +116,7 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 			value.is_authenticated &&
 			(Router.pathname === "/login" || Router.pathname === "/register")
 		) {
-			Router.push("/me");
+			Router.push("/dashboard");
 		}
 	});
 

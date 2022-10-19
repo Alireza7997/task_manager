@@ -28,7 +28,7 @@ function me(backend: string, auth: Auth): () => void {
                 const data = CatchErrorWithoutRepeat(reason)
                 auth.reset()
                 if (data !== null) {
-                    Router.push("/login")
+                    if (Router.pathname !== "/login") Router.push("/login")
                 }
             });
         }

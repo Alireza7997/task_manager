@@ -22,7 +22,7 @@ const Me: React.FC = () => {
 
 	const onLogout = (event: React.MouseEvent) => {
 		auth.reset();
-		Router.push("/login");
+		if (Router.pathname !== "/login") Router.push("/login");
 	};
 
 	const storeUsername = auth.user?.username;
