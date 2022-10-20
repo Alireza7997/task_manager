@@ -10,6 +10,10 @@
 }
 
 .task-row:hover {
+	@apply bg-[#6cb7f5];
+}
+
+.task-row:active {
 	@apply scale-y-[.97] scale-x-[.99];
 
 	/* Blur */
