@@ -20,11 +20,25 @@
 	@apply bg-opacity-80 backdrop-blur-[5px];
 }
 
+.button-icon {
+	@apply p-[2px] rounded-sm bg-[#ff4d4d] hover:scale-[110%] transition-all;
+}
+
 .task-title {
-	@apply font-semibold mb-2;
+	@apply font-semibold mb-2 flex-grow text-slate-900;
+
+	/* Clip one line */
+	@apply overflow-hidden overflow-ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	line-clamp: 1;
+	-webkit-box-orient: vertical;
 }
 
 .task-description {
+	@apply text-slate-700;
+
+	/* Clip two lines */
 	@apply overflow-hidden overflow-ellipsis;
 	display: -webkit-box;
 	-webkit-line-clamp: 2;

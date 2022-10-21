@@ -25,16 +25,18 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 
 	return (
 		<div className={styles["task-row"]}>
-			<h5 className={styles["task-title"]}>{props.name}</h5>
+			<div className="flex items-center">
+				<h5 className={styles["task-title"]}>{props.name}</h5>
+				<button
+					onClick={() => {
+						delete_task(globals.backend, props.id, props.setTasks);
+					}}
+					className={styles["button-icon"]}
+				>
+					<RiDeleteBin2Line className="w-5 h-5" color="#111111" />
+				</button>
+			</div>
 			<p className={styles["task-description"]}>{props.description}</p>
-			<button
-				onClick={() => {
-					delete_task(globals.backend, props.id, props.setTasks);
-				}}
-				className="p-[2px] rounded-sm bg-[#ff4d4d] hover:scale-[110%] transition-all"
-			>
-				<RiDeleteBin2Line className="w-5 h-5" color="#111111" />
-			</button>
 		</div>
 	);
 };

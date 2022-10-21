@@ -15,7 +15,7 @@
 }
 
 .table-buttons > button {
-	@apply bg-[#5488ba] h-full text-white w-full;
+	@apply bg-[#5488ba] h-full text-white w-full font-normal;
 	@apply transition-all;
 
 	/* Round */
