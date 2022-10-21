@@ -6,6 +6,7 @@ import Squares from "./Squares";
 
 interface GlassmorphismFormProps extends React.PropsWithChildren {
 	addSquares: boolean;
+	className?: string;
 	onSubmit?: React.FormEventHandler<HTMLFormElement>;
 }
 
@@ -14,7 +15,10 @@ const GlassmorphismForm: React.FC<GlassmorphismFormProps> = (
 ) => {
 	return (
 		<Squares addSquares={props.addSquares}>
-			<form className={styles["glassmorphism-form"]} onSubmit={props.onSubmit}>
+			<form
+				className={`${styles["glassmorphism-form"]} ${props.className}`}
+				onSubmit={props.onSubmit}
+			>
 				{props.children}
 			</form>
 		</Squares>

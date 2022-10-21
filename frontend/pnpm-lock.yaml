@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/core': ^7.0.0
+  '@mui/icons-material': ^5.10.9
   '@mui/material': ^5.10.10
   '@types/lodash': ^4.14.186
   '@types/node': 18.6.4
@@ -36,6 +37,7 @@ specifiers:
 
 dependencies:
   '@babel/core': 7.19.3
+  '@mui/icons-material': 5.10.9_ohxsigpuiqegqpxcechr3jk7e4
   '@mui/material': 5.10.10_gmdara3347obbdyxwbfxx4kw6a
   axios: 0.27.2
   date-fns: 2.29.3
@@ -532,8 +534,8 @@ packages:
     resolution: {integrity: sha512-aDuE2PNEh+hAndxEWlZgq7uiFPZKJtnkPDX7v6kSCrMXA32ZaQ6rZi5olmC7DUHt/BaOSxb7N/im/ss0XBkDhA==}
     dev: false
 
-  /@mui/icons-material/5.10.6_ohxsigpuiqegqpxcechr3jk7e4:
-    resolution: {integrity: sha512-QwxdRmLA46S94B0hExPDx0td+A2unF+33bQ6Cs+lNpJKVsm1YeHwNdYXYcnpWeHeQQ07055OXl7IB2GKDd0MfA==}
+  /@mui/icons-material/5.10.9_ohxsigpuiqegqpxcechr3jk7e4:
+    resolution: {integrity: sha512-sqClXdEM39WKQJOQ0ZCPTptaZgqwibhj2EFV9N0v7BU1PO8y4OcX/a2wIQHn4fNuDjIZktJIBrmU23h7aqlGgg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@mui/material': ^5.0.0
@@ -544,7 +546,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.19.0
-      '@mui/material': 5.10.10_2ellyn3b3dbgauxbtou56rllhe
+      '@mui/material': 5.10.10_gmdara3347obbdyxwbfxx4kw6a
       '@types/react': 18.0.16
       react: 18.2.0
     dev: false
@@ -3667,7 +3669,7 @@ packages:
       - react-router-dom
     dev: false
 
-  /ra-ui-materialui/4.4.0_xvwfb3nnqekmlke5yt3tf5c5am:
+  /ra-ui-materialui/4.4.0_bbatz7xzkocgobejlb74z7cb7m:
     resolution: {integrity: sha512-TgIxfsgeVnHVZn/o+QCvrEskO1lftjvbe0kncDsjpHOQYIC+BpHJCyivxhnV/BqUJmtMcrShNP9oCIDuWlogPg==}
     peerDependencies:
       '@mui/icons-material': ^5.0.1
@@ -3679,7 +3681,7 @@ packages:
       react-router: ^6.1.0
       react-router-dom: ^6.1.0
     dependencies:
-      '@mui/icons-material': 5.10.6_ohxsigpuiqegqpxcechr3jk7e4
+      '@mui/icons-material': 5.10.9_ohxsigpuiqegqpxcechr3jk7e4
       '@mui/material': 5.10.10_2ellyn3b3dbgauxbtou56rllhe
       autosuggest-highlight: 3.3.4
       clsx: 1.2.1
@@ -3740,13 +3742,13 @@ packages:
     dependencies:
       '@emotion/react': 11.10.4_o73kite7bxvaubol6vx26rnlhy
       '@emotion/styled': 11.10.4_p4ao3hnbchsbwwsnpjiapdvpiq
-      '@mui/icons-material': 5.10.6_ohxsigpuiqegqpxcechr3jk7e4
+      '@mui/icons-material': 5.10.9_ohxsigpuiqegqpxcechr3jk7e4
       '@mui/material': 5.10.10_2ellyn3b3dbgauxbtou56rllhe
       history: 5.3.0
       ra-core: 4.4.0_mh34gi7ckswaldvgyhl74jgefq
       ra-i18n-polyglot: 4.4.0_mh34gi7ckswaldvgyhl74jgefq
       ra-language-english: 4.4.0_mh34gi7ckswaldvgyhl74jgefq
-      ra-ui-materialui: 4.4.0_xvwfb3nnqekmlke5yt3tf5c5am
+      ra-ui-materialui: 4.4.0_bbatz7xzkocgobejlb74z7cb7m
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-hook-form: 7.36.1_react@18.2.0

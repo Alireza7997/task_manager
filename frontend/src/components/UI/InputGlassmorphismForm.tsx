@@ -10,6 +10,7 @@ export interface InputGlassmorphismFormProps {
 	label: string;
 	placeHolder?: string;
 	id: string;
+	className?: string;
 	values?: string[];
 	value?: any;
 	default?: string;
@@ -33,6 +34,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			value: props.value,
 			name: props.id,
 			ref: props.reff,
+			className: props.className + " font-normal",
 		},
 		functions: {
 			onFocus: () => setFocus(true),

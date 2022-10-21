@@ -46,7 +46,11 @@ const Register: React.FC = () => {
 			<Head>
 				<title>Register</title>
 			</Head>
-			<GlassmorphismForm addSquares={true} onSubmit={onRegisterSubmit}>
+			<GlassmorphismForm
+				addSquares={true}
+				onSubmit={onRegisterSubmit}
+				className={"bg-[#ffffff21]"}
+			>
 				<h3>Register</h3>
 				<InputGlassmorphismForm
 					id="username"

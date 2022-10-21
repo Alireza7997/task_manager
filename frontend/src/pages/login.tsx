@@ -60,7 +60,11 @@ const Login: React.FC = () => {
 			<Head>
 				<title>Login</title>
 			</Head>
-			<GlassmorphismForm addSquares={true} onSubmit={onLoginSubmit}>
+			<GlassmorphismForm
+				addSquares={true}
+				onSubmit={onLoginSubmit}
+				className={"bg-[#ffffff21]"}
+			>
 				<h3>welcome</h3>
 				<InputGlassmorphismForm
 					id="username"
