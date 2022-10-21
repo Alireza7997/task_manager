@@ -29,7 +29,7 @@ export interface Auth {
 	reset: () => void;
 	authenticate: (session_id: string, token: string) => void;
 	getAuthHeaders: () => AxiosRequestConfig;
-	addUser: (user: User) => void;
+	setUser: (user: User) => void;
 }
 
 export const AuthContext = createContext({ is_authenticated: false } as Auth);
@@ -77,10 +77,6 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 		setToken(token);
 	};
 
-	const addUser = (user: User) => {
-		setUser(user);
-	};
-
 	const getAuthHeaders: () => AxiosRequestConfig = () => {
 		return {
 			headers: {
@@ -97,7 +93,7 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (
 		user: user,
 		reset: reset,
 		authenticate: authenticate,
-		addUser: addUser,
+		setUser: setUser,
 		getAuthHeaders: getAuthHeaders,
 	} as Auth;
 

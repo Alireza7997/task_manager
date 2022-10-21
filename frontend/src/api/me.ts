@@ -8,7 +8,7 @@ import { CatchErrorWithoutRepeat } from "./utils/catch_error"
 // =============== Stores =============== //
 import { User, Auth } from "@/store/auth";
 
-interface MeResponse {
+export interface MeResponse {
 	username: string;
 	email: string;
 	created_at: string;
@@ -22,7 +22,7 @@ function me(backend: string, auth: Auth): () => void {
             .get<MeResponse>(address, auth.getAuthHeaders())
             .then((results) => {
                 const user: User = new User(results.data.username, results.data.email, results.data.created_at)
-                auth.addUser(user)
+                auth.setUser(user)
             })
             .catch((reason: Error | AxiosError) => {
                 const data = CatchErrorWithoutRepeat(reason)

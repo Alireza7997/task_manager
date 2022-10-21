@@ -40,7 +40,8 @@
 	"projects": [
 		{
 			"name": "First Project Ever",
-			"id": 1
+			"id": 1,
+			"created_at": "1999-01-02"
 		}
 	],
 	"tables": [

@@ -9,9 +9,12 @@ import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 
 // =============== Stores =============== //
 import { AuthContext } from "@/store/auth";
+import update_me from "@/api/update_me";
+import { GlobalContext } from "@/store/global";
 
 const Me: React.FC = () => {
 	const auth = useContext(AuthContext);
+	const globals = useContext(GlobalContext);
 	const usernameRef = useRef<HTMLInputElement>();
 	const emailRef = useRef<HTMLInputElement>();
 	const passwordRef = useRef<HTMLInputElement>();
@@ -30,6 +33,16 @@ const Me: React.FC = () => {
 
 	const onMeSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+
+		update_me(
+			globals.backend,
+			{
+				username: usernameRef.current?.value ? usernameRef.current?.value : "",
+				email: emailRef.current?.value ? emailRef.current?.value : "",
+				password: passwordRef.current?.value ? passwordRef.current?.value : "",
+			},
+			auth.setUser
+		);
 	};
 
 	return (
