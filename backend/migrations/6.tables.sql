@@ -7,5 +7,5 @@ CREATE TABLE tables (
     created_at  TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );
---+ migrate Down
+-- +migrate Down
 DROP TABLE tables;

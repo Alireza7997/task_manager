@@ -6,5 +6,5 @@ CREATE TABLE tasks (
     done    BOOLEAN NOT NULL,
     table_id INT NOT NULL
 );
---+ migrate Down
+-- +migrate Down
 DROP TABLE tasks;

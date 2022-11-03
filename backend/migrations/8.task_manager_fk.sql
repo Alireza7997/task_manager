@@ -8,7 +8,11 @@ ADD CONSTRAINT fk_tables FOREIGN KEY (project_id) REFERENCES projects (id);
 ALTER TABLE tasks 
 ADD CONSTRAINT fk_tasks FOREIGN KEY (table_id) REFERENCES tables (id);
 -- +migrate Down
-ALTER TABLE sessions
+ALTER TABLE projects
 DROP CONSTRAINT fk_projects;
+
+ALTER TABLE tables
 DROP CONSTRAINT fk_tables;
+
+ALTER TABLE tasks
 DROP CONSTRAINT fk_tasks;
