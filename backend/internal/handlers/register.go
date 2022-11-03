@@ -27,7 +27,7 @@ func Register(c *gin.Context) {
 	// Validate user input
 	if errors := validators.RegisterValidator.Validate(*req); errors != nil {
 		utils.Response(c, 400,
-			"Invalid credentials",
+			"Invalid request",
 			"Fields are not filled properly",
 			errors)
 		return

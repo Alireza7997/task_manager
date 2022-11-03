@@ -19,4 +19,18 @@ func SetUpRouters(r *gin.Engine) {
 	// private
 	private := r.Group("/user", middleware.Auth)
 	private.GET("me", handlers.Me)
+	// task manager
+	// group 1
+	managerPost := r.Group("/manager", middleware.Auth)
+	managerPost.POST("/project", handlers.ProjectPOST)
+	managerPost.POST("/table", handlers.TablePOST)
+	managerPost.POST("/task", handlers.TaskPOST)
+	// group 2
+	manager := r.Group("/manager", middleware.Auth /* + second middleware */)
+	manager.GET("/projects", handlers.ProjectGET)
+	manager.DELETE("/project/:id", handlers.ProjectDelete)
+	manager.GET("/tables/:id", handlers.TableGET)
+	manager.DELETE("/table/:id", handlers.TableDelete)
+	manager.GET("/tasks/:id", handlers.TaskGET)
+	manager.DELETE("/task/:id", handlers.TaskDelete)
 }
