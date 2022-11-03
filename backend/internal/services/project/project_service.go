@@ -20,7 +20,7 @@ func (p *ProjectService) CreateProject(db *goqu.Database, proj models.Project) (
 		return nil, errors.New("")
 	}
 
-	project, err := p.GetProject(db, proj.UserID)
+	project, err := p.GetProject(db, proj.ID)
 	if err != nil {
 		return nil, errors.New("")
 	}
