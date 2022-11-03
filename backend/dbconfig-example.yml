@@ -1,0 +1,5 @@
+development:
+  dialect: postgres
+  datasource: dbname=example sslmode=disable user=postgres password=password
+  dir: migrations
+  table: gorp_migrations
