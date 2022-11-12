@@ -8,7 +8,6 @@ import { GlobalContext } from "@/store/global";
 import { useContext, useEffect, useState } from "react";
 
 // =============== API =============== //
-import getTasks, { TaskResponse } from "@/api/tasks";
 import delete_table from "@/api/delete_table";
 import add_task from "@/api/add_task";
 
@@ -17,12 +16,17 @@ import Task from "@/components/TaskManager/Task";
 import Popup, { getInputValues } from "./Popup";
 import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
 
+// =============== Types =============== //
+import { action, TaskData } from "@/types/task_manager";
+
 interface TableProps {
 	id: number | string;
 	title: string;
 	description: string;
 	created_at: string;
 	updated_at: string;
+	tasks: TaskData[];
+	dispatchTables: (value: action) => void;
 	deleteTable: (id: number | string) => void;
 }
 
@@ -30,10 +34,6 @@ const Table: React.FC<TableProps> = (props) => {
 	const globals = useContext(GlobalContext);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
 	const [showAddPopup, setShowAddPopup] = useState(false);
-	const [tasks, setTasks] = useState<TaskResponse[]>([]);
-	useEffect(() => {
-		getTasks(globals.backend, props.id, setTasks);
-	}, []);
 
 	const deleteClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
@@ -45,7 +45,7 @@ const Table: React.FC<TableProps> = (props) => {
 		e.preventDefault();
 		const values = getInputValues(addInputs);
 		values["table_id"] = props.id.toString();
-		add_task(globals.backend, values, setTasks);
+		add_task(globals.backend, values, props.id, props.dispatchTables);
 		setShowAddPopup(false);
 	};
 
@@ -128,12 +128,12 @@ const Table: React.FC<TableProps> = (props) => {
 				</div>
 
 				<div className={styles["tasks"]}>
-					{tasks.length === 0 && (
+					{props.tasks.length === 0 && (
 						<div className="p-3 ">
 							<p className="text-center text-slate-200 font-bold">NO TASK</p>
 						</div>
 					)}
-					{tasks.map((value, index) => {
+					{props.tasks.map((value, index) => {
 						return (
 							<Task
 								key={value.id}
@@ -141,7 +141,8 @@ const Table: React.FC<TableProps> = (props) => {
 								index={index}
 								name={value.name}
 								description={value.description}
-								setTasks={setTasks}
+								dispatchTables={props.dispatchTables}
+								table_id={props.id}
 							/>
 						);
 					})}

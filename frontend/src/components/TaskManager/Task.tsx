@@ -3,7 +3,6 @@ import styles from "@/styles/TaskManager/Task.module.css";
 
 // =============== API =============== //
 import delete_task from "@/api/delete_task";
-import { TaskResponse } from "@/api/tasks";
 
 // =============== Stores =============== //
 import { GlobalContext } from "@/store/global";
@@ -12,12 +11,16 @@ import { GlobalContext } from "@/store/global";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
+// =============== Types =============== //
+import { action } from "@/types/task_manager";
+
 interface TaskProps extends React.PropsWithChildren {
 	id: number | string;
+	table_id: number | string;
 	index: number;
 	name: string;
 	description: string;
-	setTasks: Dispatch<SetStateAction<TaskResponse[]>>;
+	dispatchTables: (value: action) => void;
 }
 
 const Task: React.FC<TaskProps> = (props: TaskProps) => {
@@ -29,7 +32,12 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 				<h5 className={styles["task-title"]}>{props.name}</h5>
 				<button
 					onClick={() => {
-						delete_task(globals.backend, props.id, props.setTasks);
+						delete_task(
+							globals.backend,
+							props.id,
+							props.table_id,
+							props.dispatchTables
+						);
 					}}
 					className={styles["button-icon"]}
 				>

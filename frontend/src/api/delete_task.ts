@@ -1,25 +1,29 @@
 // =============== Libraries =============== //
 import axios, { AxiosError } from "axios";
-import { remove } from "lodash";
-import { Dispatch, SetStateAction } from "react";
-import { TaskResponse } from "./tasks";
+import remove from "lodash/remove";
 
 // =============== Utils =============== //
 import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
+// =============== Types =============== //
+import { action } from "@/types/task_manager";
+
 const delete_task = (
-    backend: string,
+	backend: string,
 	id: number | string,
-	setTasks: Dispatch<SetStateAction<TaskResponse[]>>
+	table_id: number | string,
+	dispatchTables: (value: action) => void
 ) => {
 	const address = backend + `/tasks/${id}`;
 
 	axios
 		.delete(address)
 		.then(() => {
-			setTasks((prev) => {
-                return remove(prev, (value) => value.id !== id);
-            });
+			dispatchTables({
+				id: table_id,
+				task_id: id,
+				method: "DeleteTask",
+			} as action);
 		})
 		.catch((reason: Error | AxiosError) => {
 			CatchErrorWithoutRepeat(reason);

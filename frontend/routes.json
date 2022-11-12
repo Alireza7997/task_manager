@@ -1,6 +1,6 @@
 {
-	"/tables/:id": "/tables?project_id=:id",
-	"/tasks/:id": "/tasks?table_id=:id",
+	"/projects/:id/tables": "/tables?project_id=:id",
+	"/tables/:id/tasks": "/tasks?table_id=:id",
 
 	"/auth/methods": "/methods",
 	"/auth/register": "/users",

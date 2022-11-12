@@ -1,22 +1,32 @@
 // =============== Libraries =============== //
 import axios, { AxiosError } from "axios";
-import { Dispatch, SetStateAction } from "react";
-import { TaskResponse } from "./tasks";
 
 // =============== Utils =============== //
-import { CatchErrorWithoutRepeat } from "./utils/catch_error"
+import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
-const add_task = (backend: string, data: Record<string, string>, setTasks: Dispatch<SetStateAction<TaskResponse[]>>) => {
-    const address = backend + `/tasks`;
+// =============== Types =============== //
+import { action, TaskData } from "@/types/task_manager";
 
-    axios
-        .post<TaskResponse>(address, data)
-        .then((results) => {
-            setTasks((prev) => [...prev, results.data])
-        })
-        .catch((reason: Error | AxiosError) => {
-            CatchErrorWithoutRepeat(reason)
-        });
-}
+const add_task = (
+	backend: string,
+	data: Record<string, string>,
+	table_id: number | string,
+	dispatchTables: (value: action) => void
+) => {
+	const address = backend + `/tasks`;
+
+	axios
+		.post<TaskData>(address, data)
+		.then((results) => {
+			dispatchTables({
+				id: table_id,
+				method: "AddTask",
+				tasks: [results.data],
+			} as action);
+		})
+		.catch((reason: Error | AxiosError) => {
+			CatchErrorWithoutRepeat(reason);
+		});
+};
 
 export default add_task;

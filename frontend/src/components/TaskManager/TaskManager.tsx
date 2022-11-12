@@ -10,14 +10,59 @@ import Popup, { getInputValues } from "./Popup";
 import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismForm";
 
 // =============== API =============== //
-import getTables, { TableResponse } from "@/api/tables";
+import getTables from "@/api/tables";
+import getTasks from "@/api/tasks";
 import add_table from "@/api/add_table";
 
 // =============== Libraries =============== //
 import { useParams } from "react-router-dom";
 import { useGetOne, useRedirect, Title } from "react-admin";
-import { get, remove } from "lodash";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
+import findIndex from "lodash/findIndex";
+import get from "lodash/get";
+
+// =============== Types =============== //
+import { TableData, action } from "@/types/task_manager";
+
+const updateTasks = (prevState: TableData[], action: action): TableData[] => {
+	const index = findIndex(prevState, (value) => {
+		return value.id === action.id;
+	});
+	switch (action.method) {
+		case "Add":
+			for (let i = 0; i < action.tables.length; i++) {
+				action.tables[i].tasks = [];
+			}
+			return [...prevState, ...action.tables];
+		case "Delete":
+			if (index === -1) return prevState;
+			return [...prevState.slice(0, index), ...prevState.slice(index + 1)];
+		case "Replace":
+			for (let i = 0; i < action.tables.length; i++) {
+				action.tables[i].tasks = [];
+			}
+			return action.tables;
+		case "ReplaceTasks":
+			if (index === -1) return prevState;
+			prevState[index].tasks = action.tasks;
+			return [...prevState];
+		case "AddTask":
+			if (index === -1) return prevState;
+			prevState[index].tasks = [...prevState[index].tasks, ...action.tasks];
+			return [...prevState];
+		case "DeleteTask":
+			if (index === -1) return prevState;
+			const taskIndex = findIndex(prevState[index].tasks, (value) => {
+				return value.id === action.task_id;
+			});
+			if (taskIndex === -1) return prevState;
+			prevState[index].tasks = [
+				...prevState[index].tasks.slice(0, taskIndex),
+				...prevState[index].tasks.slice(taskIndex + 1),
+			];
+			return [...prevState];
+	}
+};
 
 const TaskManager: React.FC = () => {
 	const { id } = useParams();
@@ -30,13 +75,21 @@ const TaskManager: React.FC = () => {
 		{ onError: () => redirect("list", "projects") }
 	);
 	const name = get(data, "name");
-	const [tables, setTables] = useState<TableResponse[]>([] as TableResponse[]);
+	const [tables, dispatchTables] = useReducer(updateTasks, []);
 	useEffect(() => {
-		getTables(globals.backend, id!, setTables);
+		getTables(globals.backend, id!, dispatchTables);
 	}, []);
+	useEffect(() => {
+		if (tables.length === 0) return;
+		for (let i = 0; i < tables.length; i++) {
+			const element = tables[i];
+			if (element.tasks?.length > 0) return;
+			getTasks(globals.backend, element.id, dispatchTables);
+		}
+	}, [tables]);
 
 	const deleteTable = (id: number | string) => {
-		setTables(remove(tables, (value) => value.id.toString() !== id.toString()));
+		dispatchTables({ id: id, method: "Delete" } as action);
 	};
 
 	const actualTables = tables.map((value) => {
@@ -49,6 +102,8 @@ const TaskManager: React.FC = () => {
 				created_at={value.created_at}
 				updated_at={value.updated_at}
 				deleteTable={deleteTable}
+				tasks={value.tasks ? value.tasks : []}
+				dispatchTables={dispatchTables}
 			/>
 		);
 	});
@@ -57,7 +112,7 @@ const TaskManager: React.FC = () => {
 		e.preventDefault();
 		const values = getInputValues(addInputs);
 		values["project_id"] = id!;
-		add_table(globals.backend, values, setTables);
+		add_table(globals.backend, values, dispatchTables);
 		setShowAddPopup(false);
 	};
 

@@ -4,24 +4,26 @@ import axios, { AxiosError } from "axios";
 // =============== Utils =============== //
 import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
-export interface TaskResponse {
-	id: number;
-	name: string;
-	description: string;
-	done: boolean
-}
+// =============== Types =============== //
+import { TaskData, action } from "@/types/task_manager";
 
 const tasks = (
-    backend: string,
+	backend: string,
 	table_id: number | string,
-	setTables: (value: TaskResponse[]) => void
+	dispatchTables: (value: action) => void
 ) => {
-	const address = backend + `/tasks/${table_id}`;
+	const address = backend + `/tables/${table_id}/tasks`;
 
 	axios
-		.get<TaskResponse[]>(address)
+		.get<TaskData[]>(address)
 		.then((results) => {
-			setTables(results.data);
+			if (results.data.length > 0) {
+				dispatchTables({
+					id: table_id,
+					method: "ReplaceTasks",
+					tasks: results.data,
+				} as action);
+			}
 		})
 		.catch((reason: Error | AxiosError) => {
 			CatchErrorWithoutRepeat(reason);

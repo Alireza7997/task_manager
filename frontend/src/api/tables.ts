@@ -4,25 +4,23 @@ import axios, { AxiosError } from "axios";
 // =============== Utils =============== //
 import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
-export interface TableResponse {
-	id: number;
-	title: string;
-	description: string;
-	created_at: string;
-	updated_at: string;
-}
+// =============== Types =============== //
+import { TableData, action } from "@/types/task_manager";
 
 const tables = (
-    backend: string,
+	backend: string,
 	project_id: string | number,
-	setTables: (value: TableResponse[]) => void
+	dispatchTables: (value: action) => void
 ) => {
-	const address = backend + `/tables/${project_id}`;
+	const address = backend + `/projects/${project_id}/tables`;
 
 	axios
-		.get<TableResponse[]>(address)
+		.get<TableData[]>(address)
 		.then((results) => {
-			setTables(results.data);
+			dispatchTables({
+				method: "Replace",
+				tables: results.data,
+			} as action);
 		})
 		.catch((reason: Error | AxiosError) => {
 			CatchErrorWithoutRepeat(reason);

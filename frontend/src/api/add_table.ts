@@ -1,18 +1,20 @@
 // =============== Libraries =============== //
 import axios, { AxiosError } from "axios";
 import { Dispatch, SetStateAction } from "react";
-import { TableResponse } from "./tables";
 
 // =============== Utils =============== //
 import { CatchErrorWithoutRepeat } from "./utils/catch_error"
 
-const add_table = (backend: string, data: Record<string, string>, setTables: Dispatch<SetStateAction<TableResponse[]>>) => {
+// =============== Types =============== //
+import { TableData, action } from "@/types/task_manager";
+
+const add_table = (backend: string, data: Record<string, string>, dispatchTables: (value: action) => void) => {
     const address = backend + `/tables`;
 
     axios
-        .post<TableResponse>(address, data)
+        .post<TableData>(address, data)
         .then((results) => {
-            setTables((prev) => [...prev, results.data])
+            dispatchTables({method: "Add", tables: [results.data]} as action)
         })
         .catch((reason: Error | AxiosError) => {
             CatchErrorWithoutRepeat(reason)
