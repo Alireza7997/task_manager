@@ -39,7 +39,7 @@ func TaskPOST(c *gin.Context) {
 	}
 
 	// Getting table's ID from the url
-	param := c.Param("id")
+	param := c.Param("table_id")
 	id, err := strconv.Atoi(param)
 	if err != nil {
 		utils.Response(c, 400,

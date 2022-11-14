@@ -39,7 +39,7 @@ func TablePOST(c *gin.Context) {
 	}
 
 	// Getting project's ID from url
-	param := c.Param("id")
+	param := c.Param("project_id")
 	id, err := strconv.Atoi(param)
 	if err != nil {
 		utils.Response(c, 400,
