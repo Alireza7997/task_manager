@@ -23,8 +23,8 @@ func SetUpRouters(r *gin.Engine) {
 	// group 1
 	managerPost := r.Group("/", middleware.Auth)
 	managerPost.POST("/projects", handlers.ProjectPOST)
-	managerPost.POST("/tables", handlers.TablePOST)
-	managerPost.POST("/tasks", handlers.TaskPOST)
+	managerPost.POST("/tables/:id", handlers.TablePOST)
+	managerPost.POST("/tasks/:id", handlers.TaskPOST)
 	// group 2
 	manager := r.Group("/", middleware.Auth /* + second middleware */)
 	manager.GET("/projects", handlers.ProjectGET)

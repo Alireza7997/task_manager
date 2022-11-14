@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/alireza/api/internal/database"
@@ -39,19 +40,20 @@ func ProjectPOST(c *gin.Context) {
 
 	// Getting user from the header
 	user := c.MustGet("user").(*models.User)
+	fmt.Println(user)
 
 	// Creating a project
-	model := &models.Project{
+	model := models.Project{
 		Name:   req.Name,
 		UserID: user.ID,
 	}
 
-	project, err := p.CreateProject(database.DB, *model)
+	project, err := p.CreateProject(database.DB, model)
 	if err != nil {
 		utils.Response(c, 500,
 			"Internal Error",
 			"",
-			nil)
+			err.Error())
 		return
 	}
 
@@ -73,7 +75,8 @@ func ProjectGET(c *gin.Context) {
 		utils.Response(c, 500,
 			"Internal Error",
 			"",
-			nil)
+			err.Error())
+		return
 	}
 
 	utils.Response(c, 200,

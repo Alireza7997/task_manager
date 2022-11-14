@@ -17,34 +17,34 @@ func (p *ProjectService) CreateProject(db *goqu.Database, proj models.Project) (
 	proj.CreatedAt = time.Now().Local()
 	_, err := db.Insert(models.ProjectName).Rows(proj).Executor().Exec()
 	if err != nil {
-		return nil, errors.New("")
+		return nil, errors.New(err.Error())
 	}
 
-	project, err := p.GetProject(db, proj.ID)
+	project, err := p.GetProject(db, proj.CreatedAt)
 	if err != nil {
-		return nil, errors.New("")
+		return nil, errors.New(err.Error())
 	}
 	return project, nil
 }
 
-func (p *ProjectService) GetProject(db *goqu.Database, projectID uint) (*models.Project, error) {
+func (p *ProjectService) GetProject(db *goqu.Database, findBy any) (*models.Project, error) {
 	project := &models.Project{}
-	ok, _ := db.From(models.ProjectName).Where(goqu.Ex{
-		"id": projectID,
-	}).Executor().ScanStruct(&project)
-	if !ok {
-		return nil, errors.New("")
+	_, err := db.From(models.ProjectName).Where(goqu.Ex{
+		"created_at": findBy,
+	}).Executor().ScanStruct(project)
+	if err != nil {
+		return nil, errors.New(err.Error())
 	}
 	return project, nil
 }
 
 func (p *ProjectService) GetProjects(db *goqu.Database, userID uint) ([]models.Project, error) {
 	projects := []models.Project{}
-	ok, _ := db.From(models.ProjectName).Where(goqu.Ex{
+	err := db.From(models.ProjectName).Where(goqu.Ex{
 		"user_id": userID,
-	}).Executor().ScanStruct(&projects)
-	if !ok {
-		return nil, errors.New("")
+	}).Executor().ScanStructs(&projects)
+	if err != nil {
+		return nil, errors.New(err.Error())
 	}
 	return projects, nil
 }
@@ -54,7 +54,7 @@ func (p *ProjectService) DeleteProject(db *goqu.Database, projectID uint) error 
 		"id": projectID,
 	}).Executor().Exec()
 	if err != nil {
-		return errors.New("")
+		return errors.New("5")
 	}
 	return nil
 }

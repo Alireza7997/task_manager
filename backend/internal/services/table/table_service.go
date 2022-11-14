@@ -20,18 +20,18 @@ func (t *TableService) CreateTable(db *goqu.Database, tbl models.Table) (*models
 	if err != nil {
 		return nil, errors.New("")
 	}
-	table, err := t.GetTable(db, tbl.ID)
+	table, err := t.GetTable(db, tbl.CreatedAt)
 	if err != nil {
 		return nil, errors.New("")
 	}
 	return table, nil
 }
 
-func (t *TableService) GetTable(db *goqu.Database, tableID uint) (*models.Table, error) {
+func (t *TableService) GetTable(db *goqu.Database, findBy any) (*models.Table, error) {
 	table := &models.Table{}
 	ok, _ := db.From(models.TableName).Where(goqu.Ex{
-		"id": tableID,
-	}).Executor().ScanStruct(&table)
+		"created_at": findBy,
+	}).Executor().ScanStruct(table)
 	if !ok {
 		return nil, errors.New("")
 	}
@@ -40,10 +40,10 @@ func (t *TableService) GetTable(db *goqu.Database, tableID uint) (*models.Table,
 
 func (t *TableService) GetTables(db *goqu.Database, projectID uint) ([]models.Table, error) {
 	tables := []models.Table{}
-	ok, _ := db.From(models.TableName).Where(goqu.Ex{
+	err := db.From(models.TableName).Where(goqu.Ex{
 		"project_id": projectID,
-	}).Executor().ScanStruct(&tables)
-	if !ok {
+	}).Executor().ScanStructs(&tables)
+	if err != nil {
 		return nil, errors.New("")
 	}
 	return tables, nil
