@@ -76,7 +76,7 @@ func TableGET(c *gin.Context) {
 	t := tableService.New()
 
 	// Getting project's ID from url
-	param := c.Param("id")
+	param := c.Param("project_id")
 	id, err := strconv.Atoi(param)
 	if err != nil {
 		utils.Response(c, 400,
@@ -106,7 +106,7 @@ func TableDelete(c *gin.Context) {
 	t := tableService.New()
 
 	// Getting table's ID from url
-	param := c.Param("id")
+	param := c.Param("table_id")
 	id, err := strconv.Atoi(param)
 	if err != nil {
 		utils.Response(c, 400,

@@ -21,17 +21,28 @@ func (t *TaskService) CreateTask(db *goqu.Database, tsk models.Task) (*models.Ta
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	task, err := t.GetTask(db, tsk.CreatedAt)
+	task, err := t.GetTaskByCA(db, tsk.CreatedAt)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
 	return task, nil
 }
 
-func (t *TaskService) GetTask(db *goqu.Database, findBy any) (*models.Task, error) {
+func (t *TaskService) GetTaskByCA(db *goqu.Database, timestamp time.Time) (*models.Task, error) {
 	task := &models.Task{}
 	_, err := db.From(models.TaskName).Where(goqu.Ex{
-		"created_at": findBy,
+		"created_at": timestamp,
+	}).Executor().ScanStruct(task)
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	return task, nil
+}
+
+func (t *TaskService) GetTaskByID(db *goqu.Database, id uint) (*models.Task, error) {
+	task := &models.Task{}
+	_, err := db.From(models.TaskName).Where(goqu.Ex{
+		"id": id,
 	}).Executor().ScanStruct(task)
 	if err != nil {
 		return nil, errors.New(err.Error())

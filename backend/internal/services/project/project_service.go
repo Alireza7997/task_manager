@@ -20,24 +20,33 @@ func (p *ProjectService) CreateProject(db *goqu.Database, proj models.Project) (
 		return nil, errors.New(err.Error())
 	}
 
-	project, err := p.GetProject(db, proj.CreatedAt)
+	project, err := p.GetProjectByCA(db, proj.CreatedAt)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
 	return project, nil
 }
 
-func (p *ProjectService) GetProject(db *goqu.Database, findBy any) (*models.Project, error) {
+func (p *ProjectService) GetProjectByCA(db *goqu.Database, timestamp time.Time) (*models.Project, error) {
 	project := &models.Project{}
 	_, err := db.From(models.ProjectName).Where(goqu.Ex{
-		"created_at": findBy,
+		"created_at": timestamp,
 	}).Executor().ScanStruct(project)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
 	return project, nil
 }
-
+func (p *ProjectService) GetProjectByID(db *goqu.Database, id uint) (*models.Project, error) {
+	project := &models.Project{}
+	_, err := db.From(models.ProjectName).Where(goqu.Ex{
+		"id": id,
+	}).Executor().ScanStruct(project)
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	return project, nil
+}
 func (p *ProjectService) GetProjects(db *goqu.Database, userID uint) ([]models.Project, error) {
 	projects := []models.Project{}
 	err := db.From(models.ProjectName).Where(goqu.Ex{

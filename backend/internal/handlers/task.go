@@ -74,7 +74,7 @@ func TaskGET(c *gin.Context) {
 	t := taskService.New()
 
 	// Getting table's Id from the url
-	param := c.Param("id")
+	param := c.Param("table_id")
 	id, err := strconv.Atoi(param)
 	if err != nil {
 		utils.Response(c, 400,
@@ -103,7 +103,7 @@ func TaskDelete(c *gin.Context) {
 	t := taskService.New()
 
 	// Getting task's ID from the url
-	param := c.Param("id")
+	param := c.Param("task_id")
 	id, err := strconv.Atoi(param)
 	if err != nil {
 		utils.Response(c, 400,

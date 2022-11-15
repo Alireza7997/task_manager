@@ -20,17 +20,28 @@ func (t *TableService) CreateTable(db *goqu.Database, tbl models.Table) (*models
 	if err != nil {
 		return nil, errors.New("")
 	}
-	table, err := t.GetTable(db, tbl.CreatedAt)
+	table, err := t.GetTableByCA(db, tbl.CreatedAt)
 	if err != nil {
 		return nil, errors.New("")
 	}
 	return table, nil
 }
 
-func (t *TableService) GetTable(db *goqu.Database, findBy any) (*models.Table, error) {
+func (t *TableService) GetTableByCA(db *goqu.Database, timestamp time.Time) (*models.Table, error) {
 	table := &models.Table{}
 	ok, _ := db.From(models.TableName).Where(goqu.Ex{
-		"created_at": findBy,
+		"created_at": timestamp,
+	}).Executor().ScanStruct(table)
+	if !ok {
+		return nil, errors.New("")
+	}
+	return table, nil
+}
+
+func (t *TableService) GetTableByID(db *goqu.Database, id uint) (*models.Table, error) {
+	table := &models.Table{}
+	ok, _ := db.From(models.TableName).Where(goqu.Ex{
+		"id": id,
 	}).Executor().ScanStruct(table)
 	if !ok {
 		return nil, errors.New("")
