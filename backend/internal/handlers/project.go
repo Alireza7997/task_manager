@@ -53,7 +53,7 @@ func ProjectPOST(c *gin.Context) {
 		utils.Response(c, 500,
 			"Internal Error",
 			"",
-			err.Error())
+			nil)
 		return
 	}
 
@@ -75,7 +75,7 @@ func ProjectGET(c *gin.Context) {
 		utils.Response(c, 500,
 			"Internal Error",
 			"",
-			err.Error())
+			nil)
 		return
 	}
 
