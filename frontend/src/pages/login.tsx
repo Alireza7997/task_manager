@@ -11,7 +11,7 @@ import GlassmorphismForm from "@/components/UI/GlassmorphismForm";
 import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 
 // =============== API =============== //
-import methods from "@/api/methods";
+import get_methods from "@/api/get_methods";
 import login from "@/api/login";
 
 // =============== Stores =============== //
@@ -27,7 +27,7 @@ const Login: React.FC = () => {
 	const password = useRef<HTMLInputElement>();
 	const auth = useContext(AuthContext);
 	useEffect(() => {
-		methods(globals.backend, setMethods)();
+		get_methods(setMethods)();
 	}, []);
 
 	useEffect(() => {
