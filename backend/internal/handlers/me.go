@@ -10,8 +10,6 @@ func Me(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	utils.Response(c, 200,
 		"User",
-		gin.H{
-			"user": user.UserDetails,
-		},
+		user.UserDetails,
 		nil)
 }

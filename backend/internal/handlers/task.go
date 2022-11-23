@@ -95,7 +95,7 @@ func TaskGET(c *gin.Context) {
 
 	utils.Response(c, 200,
 		"",
-		gin.H{"Tasks": tasks},
+		tasks,
 		nil)
 }
 

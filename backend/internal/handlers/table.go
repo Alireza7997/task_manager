@@ -98,7 +98,7 @@ func TableGET(c *gin.Context) {
 
 	utils.Response(c, 200,
 		"",
-		gin.H{"Tables": tables},
+		tables,
 		nil)
 }
 

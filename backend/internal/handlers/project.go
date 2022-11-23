@@ -81,7 +81,7 @@ func ProjectGET(c *gin.Context) {
 
 	utils.Response(c, 200,
 		"",
-		gin.H{"Projects": projects},
+		projects,
 		nil)
 }
 
