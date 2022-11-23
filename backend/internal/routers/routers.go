@@ -18,7 +18,7 @@ func SetUpRouters(r *gin.Engine) {
 	authorization.GET("/logout", handlers.Logout)
 	// private
 	private := r.Group("/user", middleware.Auth)
-	private.GET("me", handlers.Me)
+	private.GET("/me", handlers.Me)
 	// task manager
 	// group 1
 	managerPost := r.Group("/", middleware.Auth)

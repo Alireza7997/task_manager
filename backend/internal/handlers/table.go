@@ -98,7 +98,7 @@ func TableGET(c *gin.Context) {
 
 	utils.Response(c, 200,
 		"",
-		tables,
+		gin.H{"Tables": tables},
 		nil)
 }
 
@@ -127,7 +127,7 @@ func TableDelete(c *gin.Context) {
 	}
 
 	utils.Response(c, 200,
-		"Task Deleted",
+		"Table Deleted",
 		"",
 		nil)
 }

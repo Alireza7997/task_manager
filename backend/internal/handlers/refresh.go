@@ -127,8 +127,8 @@ func Refresh(c *gin.Context) {
 	utils.Response(c, 200,
 		"New Tokens",
 		gin.H{
-			"new access token":  accessToken,
-			"new refresh token": refreshToken,
+			"new_access_token":  accessToken,
+			"new_refresh_token": refreshToken,
 		},
 		nil)
 }

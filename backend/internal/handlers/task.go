@@ -84,7 +84,7 @@ func TaskGET(c *gin.Context) {
 		return
 	}
 
-	tables, err := t.GetTasks(*database.DB, uint(id))
+	tasks, err := t.GetTasks(*database.DB, uint(id))
 	if err != nil {
 		utils.Response(c, 500,
 			"Internal Error",
@@ -95,7 +95,7 @@ func TaskGET(c *gin.Context) {
 
 	utils.Response(c, 200,
 		"",
-		tables,
+		gin.H{"Tasks": tasks},
 		nil)
 }
 

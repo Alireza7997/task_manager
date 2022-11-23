@@ -11,7 +11,7 @@ func Me(c *gin.Context) {
 	utils.Response(c, 200,
 		"User",
 		gin.H{
-			"User": user.UserDetails,
+			"user": user.UserDetails,
 		},
 		nil)
 }
