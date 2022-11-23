@@ -13,11 +13,7 @@ import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 // =============== API =============== //
 import register from "@/api/register";
 
-// =============== Stores =============== //
-import { GlobalContext } from "@/store/global";
-
 const Register: React.FC = () => {
-	const globals = useContext(GlobalContext);
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const usernameRef = useRef<HTMLInputElement>();
 	const emailRef = useRef<HTMLInputElement>();
@@ -33,14 +29,13 @@ const Register: React.FC = () => {
 			? passwordRef.current?.value
 			: "";
 
-		register(globals.backend, setErrors, {
+		register(setErrors, {
 			username: username,
 			email: email,
 			password: password,
 		});
 	};
 
-	register;
 	return (
 		<>
 			<Head>

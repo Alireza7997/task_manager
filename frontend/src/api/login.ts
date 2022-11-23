@@ -1,40 +1,53 @@
 // =============== Libraries =============== //
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import Router from "next/router";
 
 // =============== Utils =============== //
-import { CatchErrorWithoutRepeat } from "./utils/catch_error"
+import axios from "./axios";
+import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
 // =============== Stores =============== //
-import { Auth } from "@/store/auth";
+import AuthType from "@/types/auth";
+
+// =============== Types =============== //
+import ResponseType from "@/types/response";
 
 interface loginResponse {
-    token?: string
-    session_id?: string
+	access_token?: string;
+	refresh_token?: string;
+	session_id?: string;
 }
 
 interface loginRequest {
-    username: string | undefined,
-    password: string | undefined,
-    method: string | undefined
+	username: string | undefined;
+	password: string | undefined;
+	method: string | undefined;
 }
 
-const login = (backend: string, setErrors: (value: Record<string, string[]>) => void, data: loginRequest, auth: Auth) => {
-    const address = backend + `/auth/login`
+const login = (
+	setErrors: (value: Record<string, string[]>) => void,
+	data: loginRequest,
+	auth: AuthType
+) => {
+	axios
+		.post<ResponseType>("/auth/login", data)
+		.then((results) => {
+			const data = results.data.message as loginResponse;
+			auth.authenticate(
+				data.session_id ? data.session_id : "",
+				data.access_token ? data.access_token : "",
+				data.refresh_token ? data.refresh_token : ""
+			);
+			if (Router.pathname !== "/dashboard") Router.push("/dashboard");
+		})
+		.catch((reason: Error | AxiosError) => {
+			const data = CatchErrorWithoutRepeat(reason);
+			if (data?.status_code === 400) {
+				setErrors(data.error_message as Record<string, string[]>);
+			} else {
+				setErrors({});
+			}
+		});
+};
 
-    axios
-        .post<loginResponse>(address, data)
-        .then((results) => {
-            const data = results.data as loginResponse
-            auth.authenticate(data.session_id? data.session_id: "", data.token? data.token: "")
-            if (Router.pathname !== "/dashboard") Router.push("/dashboard")
-        })
-        .catch((reason: Error | AxiosError) => {
-            const data = CatchErrorWithoutRepeat(reason)
-            if (data !== null) {
-                setErrors(data.errors)
-            }
-        });
-}
-
-export default login
+export default login;

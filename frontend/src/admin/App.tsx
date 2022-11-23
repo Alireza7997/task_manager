@@ -1,7 +1,6 @@
 // =============== Libraries =============== //
-import { Admin, Resource } from "react-admin";
+import { Admin, fetchUtils, Options, Resource } from "react-admin";
 import jsonServerProvider from "ra-data-simple-rest";
-import { useContext } from "react";
 
 // =============== Components =============== //
 import TaskManager from "@/components/TaskManager/TaskManager";
@@ -11,17 +10,32 @@ import PostEdit from "@/components/TaskManager/PostEdit";
 import Me from "@/pages/me";
 import Logout from "@/pages/logout";
 
-// =============== Stores =============== //
-import { GlobalContext } from "@/store/global";
-
 // =============== Icons =============== //
 import { TableChart, AccountCircle, MeetingRoom } from "@mui/icons-material";
+import { useContext } from "react";
+import { AuthContext } from "@/store/auth";
+
+const address = process.env.NEXT_PUBLIC_BACKEND
+	? process.env.NEXT_PUBLIC_BACKEND
+	: "http://127.0.0.1:5000";
 
 const App = () => {
-	const globals = useContext(GlobalContext);
+	const auth = useContext(AuthContext);
+
+	const fetchJson = (url: string, options: Options = {}) => {
+		if (!options.headers) {
+			options.headers = new Headers({ Accept: "application/json" });
+		}
+		options.headers = new Headers({
+			...options.headers,
+			jwt: auth.accessToken,
+			session_id: auth.sessionID,
+		});
+		return fetchUtils.fetchJson(url, options);
+	};
 
 	return (
-		<Admin dataProvider={jsonServerProvider(globals.backend)}>
+		<Admin dataProvider={jsonServerProvider(address, fetchJson)}>
 			<Resource
 				name="projects"
 				list={ProjectsList}

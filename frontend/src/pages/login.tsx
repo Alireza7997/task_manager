@@ -16,10 +16,8 @@ import login from "@/api/login";
 
 // =============== Stores =============== //
 import { AuthContext } from "@/store/auth";
-import { GlobalContext } from "@/store/global";
 
 const Login: React.FC = () => {
-	const globals = useContext(GlobalContext);
 	const [methodsList, setMethods] = useState<string[]>([]);
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const [method, setMethod] = useState<string>();
@@ -40,7 +38,6 @@ const Login: React.FC = () => {
 		event.preventDefault();
 
 		login(
-			globals.backend,
 			setErrors,
 			{
 				username: username.current?.value,

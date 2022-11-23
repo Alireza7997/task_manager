@@ -1,12 +1,15 @@
 // =============== Libraries =============== //
-import axios, { AxiosError } from "axios";
+import { AxiosError, AxiosRequestConfig } from "axios";
 import Router from "next/router";
 
 // =============== Utils =============== //
-import { CatchErrorWithoutRepeat } from "./utils/catch_error"
+import axios from "./axios";
+import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
-// =============== Stores =============== //
-import { User, Auth } from "@/store/auth";
+// =============== Types =============== //
+import UserType from "@/types/user";
+import ResponseType from "@/types/response";
+import AuthType from "@/types/auth";
 
 export interface MeResponse {
 	username: string;
@@ -14,24 +17,22 @@ export interface MeResponse {
 	created_at: string;
 }
 
-function me(backend: string, auth: Auth): () => void {
-    const address = backend + `/user/me`
-
-    return () => {
-        axios
-            .get<MeResponse>(address, auth.getAuthHeaders())
-            .then((results) => {
-                const user: User = new User(results.data.username, results.data.email, results.data.created_at)
-                auth.setUser(user)
-            })
-            .catch((reason: Error | AxiosError) => {
-                const data = CatchErrorWithoutRepeat(reason)
-                auth.reset()
-                if (data !== null) {
-                    if (Router.pathname !== "/login") Router.push("/login")
-                }
-            });
-        }
+function me(auth: AuthType): () => void {
+	return () => {
+		axios
+			.get<ResponseType>("/user/me", auth.getAuthHeaders())
+			.then((results) => {
+				const data = results.data.message as MeResponse;
+				console.log(data);
+				auth.setUser(new UserType(data.username, data.email, data.created_at));
+			})
+			.catch((reason: Error | AxiosError) => {
+				const data = CatchErrorWithoutRepeat(reason);
+				if (data?.status_code === 401)
+					auth.refreshJWT((auth: AuthType) => me(auth)());
+				else auth.resetAuth();
+			});
+	};
 }
 
-export default me
+export default me;
