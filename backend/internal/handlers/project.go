@@ -63,7 +63,7 @@ func ProjectPOST(c *gin.Context) {
 		nil)
 }
 
-func ProjectGET(c *gin.Context) {
+func ProjectGETALL(c *gin.Context) {
 	p := projectService.New()
 
 	// Getting user from the header
@@ -82,6 +82,36 @@ func ProjectGET(c *gin.Context) {
 	utils.Response(c, 200,
 		"",
 		projects,
+		nil)
+}
+
+func ProjectGET(c *gin.Context) {
+	p := projectService.New()
+
+	//Getting project's ID from the url
+	param := c.Param("project_id")
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		utils.Response(c, 400,
+			"Bad URL",
+			"",
+			nil)
+		return
+	}
+
+	//Getting project from the database by ID
+	project, err := p.GetProjectByID(database.DB, uint(id))
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	utils.Response(c, 200,
+		"",
+		project,
 		nil)
 }
 

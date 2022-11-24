@@ -72,7 +72,7 @@ func TablePOST(c *gin.Context) {
 
 }
 
-func TableGET(c *gin.Context) {
+func TableGETALL(c *gin.Context) {
 	t := tableService.New()
 
 	// Getting project's ID from url
@@ -99,6 +99,36 @@ func TableGET(c *gin.Context) {
 	utils.Response(c, 200,
 		"",
 		tables,
+		nil)
+}
+
+func TableGET(c *gin.Context) {
+	t := tableService.New()
+
+	// Getting table's ID from the url
+	param := c.Param("table_id")
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		utils.Response(c, 400,
+			"Bad URL",
+			"",
+			nil)
+		return
+	}
+
+	// Getting table from the Database by ID
+	table, err := t.GetTableByID(database.DB, uint(id))
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	utils.Response(c, 200,
+		"",
+		table,
 		nil)
 }
 

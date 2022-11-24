@@ -71,7 +71,7 @@ func TaskPOST(c *gin.Context) {
 		nil)
 }
 
-func TaskGET(c *gin.Context) {
+func TaskGETALL(c *gin.Context) {
 	t := taskService.New()
 
 	// Getting table's Id from the url
@@ -97,6 +97,36 @@ func TaskGET(c *gin.Context) {
 	utils.Response(c, 200,
 		"",
 		tasks,
+		nil)
+}
+
+func TaskGET(c *gin.Context) {
+	t := taskService.New()
+
+	//Getting task's ID from the url
+	param := c.Param("task_id")
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		utils.Response(c, 400,
+			"Bad URL",
+			"",
+			nil)
+		return
+	}
+
+	//Getting task form the database by ID
+	task, err := t.GetTaskByID(database.DB, uint(id))
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	utils.Response(c, 200,
+		"",
+		task,
 		nil)
 }
 
