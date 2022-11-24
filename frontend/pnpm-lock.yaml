@@ -21,8 +21,8 @@ specifiers:
   moment: ^2.29.4
   next: 12.2.4
   postcss: ^8.4.16
+  query-string: ^7.1.1
   ra-core: ^4.0.0
-  ra-data-simple-rest: ^4.4.0
   react: 18.2.0
   react-admin: ^4.4.0
   react-beautiful-dnd: ^13.1.1
@@ -45,8 +45,8 @@ dependencies:
   lodash: 4.17.21
   moment: 2.29.4
   next: 12.2.4_6tziyx3dehkoeijunclpkpolha
+  query-string: 7.1.1
   ra-core: 4.4.0_mh34gi7ckswaldvgyhl74jgefq
-  ra-data-simple-rest: 4.4.0_ra-core@4.4.0
   react: 18.2.0
   react-admin: 4.4.0_s6fgg5xac33fgmsg2posdz63z4
   react-beautiful-dnd: 13.1.1_biqbaboplfbrettd7655fr4n2y
@@ -3629,15 +3629,6 @@ packages:
       react-router-dom: 6.4.1_biqbaboplfbrettd7655fr4n2y
     transitivePeerDependencies:
       - react-native
-    dev: false
-
-  /ra-data-simple-rest/4.4.0_ra-core@4.4.0:
-    resolution: {integrity: sha512-nJm8l16VnLS+vPrgqqE6mV8EyM7AvpnctOHTC2BJyljXsyfNp96X4SGnGpxMxvWgHnw9s1brtz0ZQu/OqXF3Sg==}
-    peerDependencies:
-      ra-core: ^4.0.0
-    dependencies:
-      query-string: 7.1.1
-      ra-core: 4.4.0_mh34gi7ckswaldvgyhl74jgefq
     dev: false
 
   /ra-i18n-polyglot/4.4.0_mh34gi7ckswaldvgyhl74jgefq:

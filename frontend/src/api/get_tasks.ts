@@ -1,27 +1,29 @@
 // =============== Libraries =============== //
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 // =============== Utils =============== //
+import axios from "./axios";
 import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
 // =============== Types =============== //
 import { TaskData, action } from "@/types/task_manager";
+import ResponseType from "@/types/response";
+import Auth from "@/types/auth";
 
-const tasks = (
-	backend: string,
+const get_tasks = (
+	auth: Auth,
 	table_id: number | string,
 	dispatchTables: (value: action) => void
 ) => {
-	const address = backend + `/tables/${table_id}/tasks`;
-
 	axios
-		.get<TaskData[]>(address)
+		.get<ResponseType>(`/tables/${table_id}/tasks`, auth.getAuthHeaders())
 		.then((results) => {
-			if (results.data.length > 0) {
+			const data = results.data.message as TaskData[];
+			if (data.length > 0) {
 				dispatchTables({
 					id: table_id,
 					method: "ReplaceTasks",
-					tasks: results.data,
+					tasks: data,
 				} as action);
 			}
 		})
@@ -30,4 +32,4 @@ const tasks = (
 		});
 };
 
-export default tasks;
+export default get_tasks;

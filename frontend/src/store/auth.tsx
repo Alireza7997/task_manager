@@ -11,23 +11,9 @@ export const AuthContext = createContext({
 } as AuthType);
 
 const AuthProvider: React.FC<React.PropsWithChildren> = (props) => {
-	const [sessionID, setSessionID] = useState(
-		typeof window !== "undefined" && localStorage.getItem("SessionID") !== null
-			? localStorage.getItem("SessionID")!
-			: ""
-	);
-	const [accessToken, setAccessToken] = useState(
-		typeof window !== "undefined" &&
-			localStorage.getItem("AccessToken") !== null
-			? localStorage.getItem("AccessToken")!
-			: ""
-	);
-	const [refreshToken, setRefreshToken] = useState(
-		typeof window !== "undefined" &&
-			localStorage.getItem("RefreshToken") !== null
-			? localStorage.getItem("RefreshToken")!
-			: ""
-	);
+	const [sessionID, setSessionID] = useState("");
+	const [accessToken, setAccessToken] = useState("");
+	const [refreshToken, setRefreshToken] = useState("");
 	const [user, setUser] = useState<UserType | null>(null);
 
 	const auth = new AuthType(sessionID, accessToken, refreshToken, user, {
@@ -38,26 +24,29 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (props) => {
 	});
 
 	useEffect(() => {
-		if (
-			!auth.is_authenticated &&
-			Router.pathname !== "/login" &&
-			Router.pathname !== "/register"
-		) {
-			Router.push("/login");
+		let accessTokenTemp =
+			localStorage.getItem("accessToken") !== null
+				? localStorage.getItem("accessToken")!
+				: "";
+		let refreshTokenTemp =
+			localStorage.getItem("refreshToken") !== null
+				? localStorage.getItem("refreshToken")!
+				: "";
+		let sessionIDTemp =
+			localStorage.getItem("sessionID") !== null
+				? localStorage.getItem("sessionID")!
+				: "";
+		setAccessToken(accessTokenTemp);
+		setRefreshToken(refreshTokenTemp);
+		setSessionID(sessionIDTemp);
+		if (accessTokenTemp.length === 0 && sessionIDTemp.length === 0) {
+			if (Router.pathname !== "/login" && Router.pathname !== "/register")
+				Router.push("/login");
+		} else {
+			if (Router.pathname === "/login" || Router.pathname === "/register")
+				Router.push("/dashboard");
 		}
-	});
-
-	useEffect(() => {
-		if (
-			auth.is_authenticated &&
-			(Router.pathname === "/login" || Router.pathname === "/register")
-		) {
-			Router.push("/dashboard");
-		}
-	});
-
-	console.log(auth);
-	console.log(auth.user);
+	}, []);
 
 	return (
 		<AuthContext.Provider value={auth}>{props.children}</AuthContext.Provider>

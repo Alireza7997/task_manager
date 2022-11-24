@@ -1,18 +1,20 @@
 // =============== Libraries =============== //
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 // =============== Utils =============== //
+import axios from "./axios";
 import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
+// =============== Types =============== //
+import Auth from "@/types/auth";
+
 const delete_table = (
-    backend: string,
+	auth: Auth,
 	table_id: number | string,
 	deleteTable: (id: number | string) => void
 ) => {
-	const address = backend + `/tables/${table_id}`;
-
 	axios
-		.delete(address)
+		.delete(`/tables/${table_id}`, auth.getAuthHeaders())
 		.then(() => {
 			deleteTable(table_id);
 		})

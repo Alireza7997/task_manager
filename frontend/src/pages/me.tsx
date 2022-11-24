@@ -3,18 +3,21 @@ import Head from "next/head";
 import moment from "moment";
 import React, { useContext, useEffect, useRef } from "react";
 
+// =============== Utils =============== //
+import createNotification from "@/notification/notifier";
+
 // =============== Components =============== //
 import GlassmorphismForm from "@/components/UI/GlassmorphismForm";
 import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 
 // =============== Stores =============== //
 import { AuthContext } from "@/store/auth";
+
+// =============== API =============== //
 import update_me from "@/api/update_me";
-import { GlobalContext } from "@/store/global";
 
 const Me: React.FC = () => {
 	const auth = useContext(AuthContext);
-	const globals = useContext(GlobalContext);
 	const usernameRef = useRef<HTMLInputElement>();
 	const emailRef = useRef<HTMLInputElement>();
 	const passwordRef = useRef<HTMLInputElement>();
@@ -34,15 +37,16 @@ const Me: React.FC = () => {
 	const onMeSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		update_me(
-			globals.backend,
-			{
-				username: usernameRef.current?.value ? usernameRef.current?.value : "",
-				email: emailRef.current?.value ? emailRef.current?.value : "",
-				password: passwordRef.current?.value ? passwordRef.current?.value : "",
-			},
-			auth.setUser
-		);
+		createNotification(400, "Still Work In Progress Bitch", "Nope...", 0);
+		// update_me(
+		// 	globals.backend,
+		// 	{
+		// 		username: usernameRef.current?.value ? usernameRef.current?.value : "",
+		// 		email: emailRef.current?.value ? emailRef.current?.value : "",
+		// 		password: passwordRef.current?.value ? passwordRef.current?.value : "",
+		// 	},
+		// 	auth.setUser
+		// );
 	};
 
 	return (

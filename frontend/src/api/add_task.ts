@@ -1,27 +1,33 @@
 // =============== Libraries =============== //
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 // =============== Utils =============== //
+import axios from "./axios";
 import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
 // =============== Types =============== //
 import { action, TaskData } from "@/types/task_manager";
+import Auth from "@/types/auth";
+import ResponseType from "@/types/response";
 
 const add_task = (
-	backend: string,
+	auth: Auth,
 	data: Record<string, string>,
 	table_id: number | string,
 	dispatchTables: (value: action) => void
 ) => {
-	const address = backend + `/tasks`;
-
 	axios
-		.post<TaskData>(address, data)
+		.post<ResponseType>(
+			`/tables/${table_id}/tasks`,
+			data,
+			auth.getAuthHeaders()
+		)
 		.then((results) => {
+			const data = results.data.message as TaskData;
 			dispatchTables({
 				id: table_id,
 				method: "AddTask",
-				tasks: [results.data],
+				tasks: [data],
 			} as action);
 		})
 		.catch((reason: Error | AxiosError) => {

@@ -14,7 +14,7 @@ const Logout: React.FC = () => {
 	const auth = useContext(AuthContext);
 	const onLogout = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		auth.reset();
+		auth.resetAuth();
 		if (Router.pathname !== "/login") Router.push("/login");
 	};
 

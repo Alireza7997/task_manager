@@ -5,10 +5,10 @@ import styles from "@/styles/TaskManager/Task.module.css";
 import delete_task from "@/api/delete_task";
 
 // =============== Stores =============== //
-import { GlobalContext } from "@/store/global";
+import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
-import { Dispatch, SetStateAction, useContext } from "react";
+import { useContext } from "react";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
 // =============== Types =============== //
@@ -24,7 +24,7 @@ interface TaskProps extends React.PropsWithChildren {
 }
 
 const Task: React.FC<TaskProps> = (props: TaskProps) => {
-	const globals = useContext(GlobalContext);
+	const auth = useContext(AuthContext);
 
 	return (
 		<div className={styles["task-row"]}>
@@ -32,12 +32,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 				<h5 className={styles["task-title"]}>{props.name}</h5>
 				<button
 					onClick={() => {
-						delete_task(
-							globals.backend,
-							props.id,
-							props.table_id,
-							props.dispatchTables
-						);
+						delete_task(auth, props.id, props.table_id, props.dispatchTables);
 					}}
 					className={styles["button-icon"]}
 				>

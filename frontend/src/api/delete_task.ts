@@ -1,23 +1,22 @@
 // =============== Libraries =============== //
-import axios, { AxiosError } from "axios";
-import remove from "lodash/remove";
+import { AxiosError } from "axios";
 
 // =============== Utils =============== //
+import axios from "./axios";
 import { CatchErrorWithoutRepeat } from "./utils/catch_error";
 
 // =============== Types =============== //
 import { action } from "@/types/task_manager";
+import Auth from "@/types/auth";
 
 const delete_task = (
-	backend: string,
+	auth: Auth,
 	id: number | string,
 	table_id: number | string,
 	dispatchTables: (value: action) => void
 ) => {
-	const address = backend + `/tasks/${id}`;
-
 	axios
-		.delete(address)
+		.delete(`/tasks/${id}`, auth.getAuthHeaders())
 		.then(() => {
 			dispatchTables({
 				id: table_id,

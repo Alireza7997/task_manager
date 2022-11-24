@@ -74,7 +74,7 @@ export default class Auth {
 			createNotification(400, "Need to login again", "Session Expired", 0);
 			Router.push("/login");
 		} else if (this.accessToken !== "" && this.refreshToken !== "") {
-			refresh({ token: this.accessToken }, this, operation);
+			refresh({ token: this.accessToken }, this, operation)();
 		}
 	}
 

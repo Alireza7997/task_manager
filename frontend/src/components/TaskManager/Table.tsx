@@ -2,7 +2,7 @@
 import styles from "@/styles/TaskManager/Table.module.css";
 
 // =============== Stores =============== //
-import { GlobalContext } from "@/store/global";
+import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
 import { useContext, useEffect, useState } from "react";
@@ -31,21 +31,20 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = (props) => {
-	const globals = useContext(GlobalContext);
+	const auth = useContext(AuthContext);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 
 	const deleteClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
-		delete_table(globals.backend, props.id, props.deleteTable);
+		delete_table(auth, props.id, props.deleteTable);
 		setShowDeletePopup(false);
 	};
 
 	const addClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
 		const values = getInputValues(addInputs);
-		values["table_id"] = props.id.toString();
-		add_task(globals.backend, values, props.id, props.dispatchTables);
+		add_task(auth, values, props.id, props.dispatchTables);
 		setShowAddPopup(false);
 	};
 

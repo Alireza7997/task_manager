@@ -10,8 +10,13 @@ import ResponseType from "@/types/response";
 const CatchError = (func: () => void, reason: Error | AxiosError) => {
 	if (axios.isAxiosError(reason)) {
 		if (reason.response !== undefined && reason.response.data) {
-			const data = reason.response?.data as ResponseType;
-			createNotification(reason.response.status, data.title, "", 0);
+			const data = reason.response.data as ResponseType;
+			createNotification(
+				reason.response.status,
+				data.message as string,
+				data.title,
+				0
+			);
 		} else {
 			createNotification(
 				500,
@@ -36,8 +41,13 @@ export function CatchErrorWithoutRepeat(
 ): ResponseType | null {
 	if (axios.isAxiosError(reason)) {
 		if (reason.response !== undefined && reason.response.data) {
-			const data = reason.response?.data as ResponseType;
-			createNotification(reason.response.status, data.title, "", 0);
+			const data = reason.response.data as ResponseType;
+			createNotification(
+				reason.response.status,
+				data.message as string,
+				data.title,
+				0
+			);
 			return data;
 		} else {
 			createNotification(
@@ -64,7 +74,7 @@ export const CatchErrorRepeatedly = (
 ) => {
 	if (axios.isAxiosError(reason)) {
 		if (reason.response !== undefined && reason.response.data) {
-			const data = reason.response?.data as ResponseType;
+			const data = reason.response.data as ResponseType;
 			createNotification(
 				reason.response.status,
 				data.title + ", retry in 10 seconds",

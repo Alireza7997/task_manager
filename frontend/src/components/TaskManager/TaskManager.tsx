@@ -2,7 +2,7 @@
 import styles from "@/styles/TaskManager/TaskManager.module.css";
 
 // =============== Stores =============== //
-import { GlobalContext } from "@/store/global";
+import { AuthContext } from "@/store/auth";
 
 // =============== Components =============== //
 import Table from "./Table";
@@ -10,8 +10,8 @@ import Popup, { getInputValues } from "./Popup";
 import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismForm";
 
 // =============== API =============== //
-import getTables from "@/api/tables";
-import getTasks from "@/api/tasks";
+import get_tables from "@/api/get_tables";
+import get_tasks from "@/api/get_tasks";
 import add_table from "@/api/add_table";
 
 // =============== Libraries =============== //
@@ -67,7 +67,7 @@ const updateTasks = (prevState: TableData[], action: action): TableData[] => {
 const TaskManager: React.FC = () => {
 	const { id } = useParams();
 	const redirect = useRedirect();
-	const globals = useContext(GlobalContext);
+	const auth = useContext(AuthContext);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const { data, isLoading } = useGetOne(
 		"projects",
@@ -77,14 +77,14 @@ const TaskManager: React.FC = () => {
 	const name = get(data, "name");
 	const [tables, dispatchTables] = useReducer(updateTasks, []);
 	useEffect(() => {
-		getTables(globals.backend, id!, dispatchTables);
+		get_tables(auth, id!, dispatchTables);
 	}, []);
 	useEffect(() => {
 		if (tables.length === 0) return;
 		for (let i = 0; i < tables.length; i++) {
 			const element = tables[i];
 			if (element.tasks?.length > 0) return;
-			getTasks(globals.backend, element.id, dispatchTables);
+			get_tasks(auth, element.id, dispatchTables);
 		}
 	}, [tables]);
 
@@ -111,8 +111,7 @@ const TaskManager: React.FC = () => {
 	const addClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
 		const values = getInputValues(addInputs);
-		values["project_id"] = id!;
-		add_table(globals.backend, values, dispatchTables);
+		add_table(auth, values, id!, dispatchTables);
 		setShowAddPopup(false);
 	};
 
