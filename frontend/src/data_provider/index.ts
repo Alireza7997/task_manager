@@ -34,7 +34,7 @@ import { fetchUtils, DataProvider } from "ra-core";
  *
  * export default App;
  */
-export default (
+const data_provider = (
 	apiUrl: string,
 	httpClient = fetchUtils.fetchJson,
 	countHeader: string = "Content-Range"
@@ -204,3 +204,5 @@ export default (
 			}),
 		})),
 });
+
+export default data_provider;

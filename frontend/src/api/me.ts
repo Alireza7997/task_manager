@@ -23,7 +23,6 @@ function me(auth: AuthType): () => void {
 			.get<ResponseType>("/user/me", auth.getAuthHeaders())
 			.then((results) => {
 				const data = results.data.message as MeResponse;
-				console.log(data);
 				auth.setUser(new UserType(data.username, data.email, data.created_at));
 			})
 			.catch((reason: Error | AxiosError) => {
