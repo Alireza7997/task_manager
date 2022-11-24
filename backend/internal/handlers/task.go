@@ -36,6 +36,7 @@ func TaskPOST(c *gin.Context) {
 			"Fields are not filled properly",
 			errors,
 		)
+		return
 	}
 
 	// Getting table's ID from the url
