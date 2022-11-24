@@ -26,6 +26,8 @@ allow_origins:
   - {ALLOW_ORIGIN}
 # 30 days
 expire_token_after_seconds: 2592000
+access_token_expiry_seconds: 2592000
+refresh_token_expiry_seconds: 2592000
 secret_key: {SECRET_KEY}
 '''
 
