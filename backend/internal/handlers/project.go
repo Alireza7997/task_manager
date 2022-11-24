@@ -38,7 +38,7 @@ func ProjectPOST(c *gin.Context) {
 		return
 	}
 
-	// Getting user from the header
+	// Getting user from the context
 	user := c.MustGet("user").(*models.User)
 	fmt.Println(user)
 
@@ -66,7 +66,7 @@ func ProjectPOST(c *gin.Context) {
 func ProjectGETALL(c *gin.Context) {
 	p := projectService.New()
 
-	// Getting user from the header
+	// Getting user from the context
 	user := c.MustGet("user").(*models.User)
 
 	// Getting project from database bu user's ID
@@ -79,10 +79,18 @@ func ProjectGETALL(c *gin.Context) {
 		return
 	}
 
-	utils.Response(c, 200,
-		"",
-		projects,
-		nil)
+	count := len(projects)
+	c.Set("topic", "Projects")
+	c.Set("from", 0)
+	c.Set("to", count)
+	c.Set("count", count)
+	c.Set("send", func() {
+		utils.Response(c, 200,
+			"",
+			projects,
+			nil)
+	})
+
 }
 
 func ProjectGET(c *gin.Context) {
