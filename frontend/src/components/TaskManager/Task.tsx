@@ -9,7 +9,7 @@ import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
 import { useContext } from "react";
-import { RiDeleteBin2Line } from "react-icons/ri";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 // =============== Types =============== //
 import { action } from "@/types/task_manager";
@@ -36,7 +36,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 					}}
 					className={styles["button-icon"]}
 				>
-					<RiDeleteBin2Line className="w-5 h-5" color="#111111" />
+					<DeleteForeverIcon className="w-5 h-5" htmlColor="#e6e6e6" />
 				</button>
 			</div>
 			<p className={styles["task-description"]}>{props.description}</p>

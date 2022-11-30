@@ -23,6 +23,7 @@ import get from "lodash/get";
 
 // =============== Types =============== //
 import { TableData, action } from "@/types/task_manager";
+import Head from "next/head";
 
 const updateTasks = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
@@ -74,19 +75,28 @@ const TaskManager: React.FC = () => {
 		{ id },
 		{ onError: () => redirect("list", "projects") }
 	);
+	const [localIsLoading, setIsLoading] = useState(10000);
 	const name = get(data, "name");
 	const [tables, dispatchTables] = useReducer(updateTasks, []);
+	const tableLen = tables.length;
 	useEffect(() => {
-		get_tables(auth, id!, dispatchTables);
+		get_tables(auth, id!, dispatchTables, (count: number) => {
+			setIsLoading(count);
+		});
 	}, []);
 	useEffect(() => {
 		if (tables.length === 0) return;
-		for (let i = 0; i < tables.length; i++) {
-			const element = tables[i];
-			if (element.tasks?.length > 0) return;
-			get_tasks(auth, element.id, dispatchTables);
+		if (localIsLoading !== 0 && tableLen === localIsLoading) {
+			for (let i = 0; i < tables.length; i++) {
+				const element = tables[i];
+				get_tasks(auth, element.id, dispatchTables, () => {
+					setIsLoading((prev) => {
+						return prev - 1;
+					});
+				});
+			}
 		}
-	}, [tables]);
+	}, [tableLen]);
 
 	const deleteTable = (id: number | string) => {
 		dispatchTables({ id: id, method: "Delete" } as action);
@@ -148,23 +158,33 @@ const TaskManager: React.FC = () => {
 
 	return (
 		<>
-			{isLoading && <div>Loading...</div>}
-			{!isLoading && (
-				<div className={styles["task-manager-container"]}>
-					<Title title={name} />
-					{actualTables}
-					<div className={styles["add-table"]}>
-						<button
-							onClick={(e) => {
-								e.preventDefault();
-								setShowAddPopup(true);
-							}}
-						>
-							+
-						</button>
-					</div>
-				</div>
-			)}
+			<Head>
+				<title>{name} Project</title>
+			</Head>
+			<div className={styles["task-manager-container"]}>
+				<Title title={name} />
+				{isLoading ||
+					(localIsLoading !== 0 && (
+						<div className="w-full flex flex-col justify-center items-center">
+							<h3>Loading...</h3>
+						</div>
+					))}
+				{!isLoading && localIsLoading === 0 && (
+					<>
+						{actualTables}
+						<div className={styles["add-table"]}>
+							<button
+								onClick={(e) => {
+									e.preventDefault();
+									setShowAddPopup(true);
+								}}
+							>
+								+
+							</button>
+						</div>
+					</>
+				)}
+			</div>
 			{showAddPopup && (
 				<Popup
 					addSquares={false}

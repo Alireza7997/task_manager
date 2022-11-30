@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 				<meta
 					name="description"
-					content="Just a collaboration of maktoobgar and alireza"
+					content="Simple task manager created by maktoobgar and alireza"
 				/>
 			</Head>
 			<ReactNotifications />

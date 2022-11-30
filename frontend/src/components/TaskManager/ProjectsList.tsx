@@ -1,4 +1,5 @@
 // =============== Libraries =============== //
+import Head from "next/head";
 import React from "react";
 import {
 	List,
@@ -11,15 +12,20 @@ import {
 
 const ProjectsList: React.FC = () => {
 	return (
-		<List resource="projects">
-			<Datagrid rowClick="show">
-				<TextField source="id" label="ID" />
-				<TextField source="name" />
-				<DateField source="created_at" />
-				<EditButton />
-				<DeleteButton mutationMode="pessimistic" resource="projects" />
-			</Datagrid>
-		</List>
+		<>
+			<Head>
+				<title>Task Manager</title>
+			</Head>
+			<List resource="projects">
+				<Datagrid rowClick="show">
+					<TextField source="id" label="ID" />
+					<TextField source="name" />
+					<DateField source="created_at" />
+					<EditButton />
+					<DeleteButton mutationMode="pessimistic" resource="projects" />
+				</Datagrid>
+			</List>
+		</>
 	);
 };
 

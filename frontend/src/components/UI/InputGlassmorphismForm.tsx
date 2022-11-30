@@ -3,7 +3,8 @@ import styles from "@/styles/UI/InputGlassmorphismForm.module.css";
 
 // =============== Libraries =============== //
 import { useState } from "react";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export interface InputGlassmorphismFormProps {
 	type: "password" | "text" | "button" | "submit" | "email" | "date" | "radio";
@@ -79,9 +80,14 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 						onClick={showHidePassword}
 					>
 						<div id={props.id} className={styles["eye"]}>
-							{hide && <AiFillEye color="black" className="w-full h-full" />}
+							{hide && (
+								<VisibilityIcon htmlColor="#000000" className="w-full h-full" />
+							)}
 							{!hide && (
-								<AiFillEyeInvisible color="black" className="w-full h-full" />
+								<VisibilityOffIcon
+									htmlColor="#000000"
+									className="w-full h-full"
+								/>
 							)}
 						</div>
 					</div>

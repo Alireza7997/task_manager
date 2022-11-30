@@ -13,7 +13,8 @@ import Auth from "@/types/auth";
 const get_tasks = (
 	auth: Auth,
 	table_id: number | string,
-	dispatchTables: (value: action) => void
+	dispatchTables: (value: action) => void,
+	callback: () => void
 ) => {
 	axios
 		.get<ResponseType>(`/tables/${table_id}/tasks`, auth.getAuthHeaders())
@@ -26,6 +27,7 @@ const get_tasks = (
 					tasks: data,
 				} as action);
 			}
+			callback();
 		})
 		.catch((reason: Error | AxiosError) => {
 			CatchErrorWithoutRepeat(reason);

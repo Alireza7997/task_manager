@@ -21,7 +21,7 @@ const Logout: React.FC = () => {
 	return (
 		<>
 			<Head>
-				<title>Me</title>
+				<title>Logout</title>
 			</Head>
 			<GlassmorphismForm
 				addSquares={true}

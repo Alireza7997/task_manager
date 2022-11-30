@@ -13,7 +13,8 @@ import Auth from "@/types/auth";
 const get_tables = (
 	auth: Auth,
 	project_id: string | number,
-	dispatchTables: (value: action) => void
+	dispatchTables: (value: action) => void,
+	callback: (count: number) => void
 ) => {
 	axios
 		.get<ResponseType>(`/projects/${project_id}/tables`, auth.getAuthHeaders())
@@ -23,6 +24,7 @@ const get_tables = (
 				method: "Replace",
 				tables: data,
 			} as action);
+			callback(data.length);
 		})
 		.catch((reason: Error | AxiosError) => {
 			CatchErrorWithoutRepeat(reason);

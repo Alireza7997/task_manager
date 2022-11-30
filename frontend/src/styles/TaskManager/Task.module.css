@@ -21,7 +21,7 @@
 }
 
 .button-icon {
-	@apply p-[2px] rounded-sm bg-[#ff4d4d] hover:scale-[110%] transition-all;
+	@apply p-[2px] rounded-sm bg-[#c04d4d] hover:scale-[110%] transition-all;
 }
 
 .task-title {
