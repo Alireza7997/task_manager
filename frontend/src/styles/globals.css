@@ -4,8 +4,7 @@
 
 /* General Designs */
 body {
-	/* Fonts */
-	@apply bg-[#080710] text-white outline-none border-none font-[Poppins,sans-serif] tracking-[0.5px];
+	@apply text-white outline-none border-none font-[Poppins,sans-serif] tracking-[0.5px];
 }
 h3 {
 	@apply text-3xl font-medium text-center capitalize;
@@ -33,6 +32,9 @@ button {
 }
 a {
 	@apply capitalize;
+}
+li {
+	@apply list-none;
 }
 /* End Of General Designs */
 

@@ -39,13 +39,14 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (props) => {
 		setAccessToken(accessTokenTemp);
 		setRefreshToken(refreshTokenTemp);
 		setSessionID(sessionIDTemp);
-		if (accessTokenTemp.length === 0 && sessionIDTemp.length === 0) {
-			if (Router.pathname !== "/login" && Router.pathname !== "/register")
-				Router.push("/login");
-		} else {
-			if (Router.pathname === "/login" || Router.pathname === "/register")
-				Router.push("/dashboard");
-		}
+		//! turned off rout pushing
+		// if (accessTokenTemp.length === 0 && sessionIDTemp.length === 0) {
+		// 	if (Router.pathname !== "/login" && Router.pathname !== "/register")
+		// 		Router.push("/login");
+		// } else {
+		// 	if (Router.pathname === "/login" || Router.pathname === "/register")
+		// 		Router.push("/dashboard");
+		// }
 	}, []);
 
 	return (

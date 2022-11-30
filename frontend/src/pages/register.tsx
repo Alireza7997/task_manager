@@ -4,7 +4,7 @@ import styles from "@/styles/pages/login-register.module.css";
 // =============== Libraries =============== //
 import Link from "next/link";
 import Head from "next/head";
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 // =============== Components =============== //
 import GlassmorphismForm from "@/components/UI/GlassmorphismForm";
@@ -37,7 +37,7 @@ const Register: React.FC = () => {
 	};
 
 	return (
-		<>
+		<div className="bg-[#080710] h-screen">
 			<Head>
 				<title>Register</title>
 			</Head>
@@ -80,7 +80,7 @@ const Register: React.FC = () => {
 					</div>
 				</div>
 			</GlassmorphismForm>
-		</>
+		</div>
 	);
 };
 

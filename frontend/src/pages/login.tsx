@@ -53,7 +53,7 @@ const Login: React.FC = () => {
 	};
 
 	return (
-		<>
+		<div className="bg-[#080710] h-screen">
 			<Head>
 				<title>Login</title>
 			</Head>
@@ -98,7 +98,7 @@ const Login: React.FC = () => {
 					</div>
 				</div>
 			</GlassmorphismForm>
-		</>
+		</div>
 	);
 };
 
