@@ -2,10 +2,10 @@
 import DashboardContainer from "@/components/Dashboard/DashboardContainer";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 
-const TaskManager = () => {
-	return <DashboardContainer>Task Manager</DashboardContainer>;
+const Profile = () => {
+	return <DashboardContainer>Profile Page</DashboardContainer>;
 };
 
-TaskManager.DashboardLayout = DashboardLayout;
+Profile.DashboardLayout = DashboardLayout;
 
-export default TaskManager;
+export default Profile;

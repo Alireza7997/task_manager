@@ -40,7 +40,6 @@ const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 	}, []);
 
 	useEffect(() => {
-		if (selectedOption === "") return;
 		Router.push("/dashboard/" + selectedOption.replaceAll(" ", "_"));
 	}, [selectedOption]);
 
