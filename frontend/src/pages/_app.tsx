@@ -3,26 +3,22 @@ import "../styles/globals.css";
 import "react-notifications-component/dist/theme.css";
 
 // =============== Libraries =============== //
-import { useState } from "react";
+import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ReactNotifications } from "react-notifications-component";
 
-// =============== Components =============== //
-import { DashboardLayoutProps } from "@/components/Dashboard/DashboardLayout";
-
 // =============== Stores =============== //
 import AuthProvider from "@/store/auth";
+import DashboardProvider from "@/store/dashboard";
 
 type ComponentWithPageLayout = AppProps & {
 	Component: AppProps["Component"] & {
-		DashboardLayout?: React.ComponentType<DashboardLayoutProps>;
+		DashboardLayout?: React.ComponentType<React.PropsWithChildren>;
 	};
 };
 
 function MyApp({ Component, pageProps }: ComponentWithPageLayout) {
-	const [fullDashboard, setFullDashboard] = useState(false);
-
 	return (
 		<>
 			<Head>
@@ -35,16 +31,11 @@ function MyApp({ Component, pageProps }: ComponentWithPageLayout) {
 			<ReactNotifications />
 			<AuthProvider>
 				{Component.DashboardLayout ? (
-					<Component.DashboardLayout
-						fullDashboard={fullDashboard}
-						setFullDashboard={setFullDashboard}
-					>
-						<Component
-							{...pageProps}
-							fullDashboard={fullDashboard}
-							setFullDashboard={setFullDashboard}
-						/>
-					</Component.DashboardLayout>
+					<DashboardProvider>
+						<Component.DashboardLayout>
+							<Component {...pageProps} />
+						</Component.DashboardLayout>
+					</DashboardProvider>
 				) : (
 					<Component {...pageProps} />
 				)}

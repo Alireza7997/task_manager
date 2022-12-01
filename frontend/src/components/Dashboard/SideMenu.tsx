@@ -11,26 +11,17 @@ import SideMenuUL from "./SideMenuUL";
 
 // =============== Store =============== //
 import { AuthContext } from "@/store/auth";
+import { DashboardContext } from "@/store/dashboard";
 
-const list = ["task manager", "profile"];
-const listIcons = [
-	<TableChartIcon key="1" className="mr-3" />,
-	<AccountBoxIcon key="2" className="mr-3" />,
-];
-
-interface SideMenuProps {
-	showDashboard: () => void;
-}
-
-const SideMenu: React.FC<SideMenuProps> = (props) => {
+const SideMenu: React.FC = () => {
 	const auth = useContext(AuthContext);
-	const [activeList, setActiveList] = useState(list[0]);
+	const dashboard = useContext(DashboardContext);
 
 	return (
 		<div className="flex flex-col w-[335px] bg-[#2C3748] p-6 h-screen text-[#b3bac5]">
 			<MenuIcon
 				className="h-[30px] w-[30px] mt-3 mb-[40px] cursor-pointer"
-				onClick={() => props.showDashboard()}
+				onClick={() => dashboard.setFullDashboard((prev) => !prev)}
 			/>
 
 			<div className="flex mb-[25px]">
@@ -50,13 +41,13 @@ const SideMenu: React.FC<SideMenuProps> = (props) => {
 			<div className="h-[1px] bg-slate-100" />
 			<div className="flex flex-col flex-grow">
 				<ul className="space-y-2 flex-grow">
-					{list.map((element, i) => (
+					{dashboard.list.map((element, i) => (
 						<SideMenuUL
 							key={element}
-							active={activeList === element}
-							onClick={() => setActiveList(element)}
+							active={dashboard.selectedOption === element}
+							onClick={() => dashboard.setSelectedOption(element)}
 						>
-							{listIcons[i]}
+							{dashboard.listIcons[i]}
 							{element}
 						</SideMenuUL>
 					))}
