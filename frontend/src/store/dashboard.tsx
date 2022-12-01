@@ -35,6 +35,7 @@ const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 			.replaceAll("_", " ");
 		if (listIcons[name] !== undefined) {
 			Router.push("/dashboard/" + name.replaceAll(" ", "_"));
+			setSelectedOption(name as pageOptions);
 		}
 	}, []);
 
