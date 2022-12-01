@@ -32,11 +32,9 @@ export default class Auth {
 	setRefreshToken: (value: string) => void;
 
 	authenticate(sessionID: string, accessToken: string, refreshToken: string) {
-		if (typeof window !== "undefined") {
-			localStorage.setItem("sessionID", sessionID);
-			localStorage.setItem("accessToken", accessToken);
-			localStorage.setItem("refreshToken", refreshToken);
-		}
+		localStorage.setItem("sessionID", sessionID);
+		localStorage.setItem("accessToken", accessToken);
+		localStorage.setItem("refreshToken", refreshToken);
 		this.setSessionID(sessionID);
 		this.setAccessToken(accessToken);
 		this.setRefreshToken(refreshToken);
@@ -44,6 +42,7 @@ export default class Auth {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		me(this)();
+		Router.push("/dashboard");
 	}
 
 	refreshAccessRefreshToken(accessToken: string, refreshToken: string) {
@@ -54,11 +53,9 @@ export default class Auth {
 	}
 
 	resetAuth() {
-		if (typeof window !== "undefined") {
-			localStorage.setItem("sessionID", "");
-			localStorage.setItem("accessToken", "");
-			localStorage.setItem("refreshToken", "");
-		}
+		localStorage.setItem("sessionID", "");
+		localStorage.setItem("accessToken", "");
+		localStorage.setItem("refreshToken", "");
 		this.setSessionID("");
 		this.setAccessToken("");
 		this.setRefreshToken("");
@@ -67,6 +64,7 @@ export default class Auth {
 		this.accessToken = "";
 		this.refreshToken = "";
 		this.user = null;
+		Router.push("/login");
 	}
 
 	refreshJWT(operation: (auth: Auth) => void) {

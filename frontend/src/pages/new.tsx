@@ -17,9 +17,9 @@ const Example: React.FC = () => {
 		)
 	);
 
-	if (isLoading) return <>"Loading..."</>;
+	if (isLoading) return <>Loading...</>;
 
-	if (error) return <>"An error has occurred: " + error</>;
+	if (error) return <>{`An error has occurred: ${error}`}</>;
 
 	return (
 		<div>

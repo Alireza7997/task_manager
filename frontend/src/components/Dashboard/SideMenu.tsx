@@ -1,17 +1,21 @@
 // =============== Libraries =============== //
-import { useState } from "react";
+import { useContext, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import Image from "next/image";
 
 // =============== Components =============== //
 import SideMenuUL from "./SideMenuUL";
 
+// =============== Store =============== //
+import { AuthContext } from "@/store/auth";
+
 const list = ["task manager", "profile"];
 const listIcons = [
-	<TableChartIcon className="mr-3" />,
-	<AccountBoxIcon className="mr-3" />,
+	<TableChartIcon key="1" className="mr-3" />,
+	<AccountBoxIcon key="2" className="mr-3" />,
 ];
 
 interface SideMenuProps {
@@ -19,6 +23,7 @@ interface SideMenuProps {
 }
 
 const SideMenu: React.FC<SideMenuProps> = (props) => {
+	const auth = useContext(AuthContext);
 	const [activeList, setActiveList] = useState(list[0]);
 
 	return (
@@ -29,10 +34,12 @@ const SideMenu: React.FC<SideMenuProps> = (props) => {
 			/>
 
 			<div className="flex mb-[25px]">
-				<img
+				<Image
 					src="/mafia.png"
 					alt="profile pic"
-					className="w-[100px] rounded-full"
+					className="rounded-full"
+					width={100}
+					height={100}
 				/>
 				<div className="flex-grow flex flex-col ml-5 justify-center">
 					<p className="font-bold text-[#d7deeb]">Mahmood Heidari</p>
@@ -57,9 +64,7 @@ const SideMenu: React.FC<SideMenuProps> = (props) => {
 				<SideMenuUL
 					active={false}
 					color="error"
-					onClick={() => {
-						console.log("exit");
-					}}
+					onClick={() => auth.resetAuth()}
 				>
 					<ExitToAppIcon className="mr-3" />
 					Logout

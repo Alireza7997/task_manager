@@ -15,8 +15,6 @@ import get_tasks from "@/api/get_tasks";
 import add_table from "@/api/add_table";
 
 // =============== Libraries =============== //
-import { useParams } from "react-router-dom";
-import { useGetOne, useRedirect, Title } from "react-admin";
 import { useContext, useEffect, useReducer, useState } from "react";
 import findIndex from "lodash/findIndex";
 import get from "lodash/get";
@@ -66,21 +64,15 @@ const updateTasks = (prevState: TableData[], action: action): TableData[] => {
 };
 
 const TaskManager: React.FC = () => {
-	const { id } = useParams();
-	const redirect = useRedirect();
 	const auth = useContext(AuthContext);
 	const [showAddPopup, setShowAddPopup] = useState(false);
-	const { data, isLoading } = useGetOne(
-		"projects",
-		{ id },
-		{ onError: () => redirect("list", "projects") }
-	);
-	const [localIsLoading, setIsLoading] = useState(10000);
-	const name = get(data, "name");
+	const [isLoading, setIsLoading] = useState(10000);
+	const [localIsLoading, setLocalIsLoading] = useState(10000);
 	const [tables, dispatchTables] = useReducer(updateTasks, []);
 	const tableLen = tables.length;
 	useEffect(() => {
-		get_tables(auth, id!, dispatchTables, (count: number) => {
+		//! Table_id comes instead of 1
+		get_tables(auth, 1, dispatchTables, (count: number) => {
 			setIsLoading(count);
 		});
 	}, []);
@@ -121,7 +113,8 @@ const TaskManager: React.FC = () => {
 	const addClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
 		const values = getInputValues(addInputs);
-		add_table(auth, values, id!, dispatchTables);
+		//! Table_id comes instead of 1
+		add_table(auth, values, 1!, dispatchTables);
 		setShowAddPopup(false);
 	};
 
@@ -159,10 +152,10 @@ const TaskManager: React.FC = () => {
 	return (
 		<>
 			<Head>
-				<title>{name} Project</title>
+				{/*! Table name comes instead of 1 */}
+				<title>1 Project</title>
 			</Head>
 			<div className={styles["task-manager-container"]}>
-				<Title title={name} />
 				{isLoading ||
 					(localIsLoading !== 0 && (
 						<div className="w-full flex flex-col justify-center items-center">
