@@ -7,6 +7,7 @@ import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ReactNotifications } from "react-notifications-component";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 // =============== Stores =============== //
 import AuthProvider from "@/store/auth";
@@ -19,6 +20,8 @@ type ComponentWithPageLayout = AppProps & {
 };
 
 function MyApp({ Component, pageProps }: ComponentWithPageLayout) {
+	const client = new QueryClient();
+
 	return (
 		<>
 			<Head>
@@ -28,18 +31,21 @@ function MyApp({ Component, pageProps }: ComponentWithPageLayout) {
 					content="Simple task manager created by maktoobgar and alireza"
 				/>
 			</Head>
-			<ReactNotifications />
-			<AuthProvider>
-				{Component.DashboardLayout ? (
-					<DashboardProvider>
-						<Component.DashboardLayout>
-							<Component {...pageProps} />
-						</Component.DashboardLayout>
-					</DashboardProvider>
-				) : (
-					<Component {...pageProps} />
-				)}
-			</AuthProvider>
+			{/* <ReactNotifications /> */}
+
+			<QueryClientProvider client={client}>
+				<AuthProvider>
+					{Component.DashboardLayout ? (
+						<DashboardProvider>
+							<Component.DashboardLayout>
+								<Component {...pageProps} />
+							</Component.DashboardLayout>
+						</DashboardProvider>
+					) : (
+						<Component {...pageProps} />
+					)}
+				</AuthProvider>
+			</QueryClientProvider>
 		</>
 	);
 }

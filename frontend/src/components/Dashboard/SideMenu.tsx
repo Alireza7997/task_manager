@@ -51,7 +51,7 @@ const SideMenu: React.FC = () => {
 								)
 							}
 						>
-							{dashboard.listIcons[i]}
+							{dashboard.listIcons[element]}
 							{element}
 						</SideMenuUL>
 					))}

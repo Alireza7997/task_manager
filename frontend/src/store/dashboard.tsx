@@ -24,22 +24,27 @@ interface contextValue {
 export const DashboardContext = createContext({} as contextValue);
 
 const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-	const [selectedOption, setSelectedOption] = useState<pageOptions>("");
+	const [selectedOption, setSelectedOption] = useState<pageOptions | null>(
+		null
+	);
 	const [fullDashboard, setFullDashboard] = useState(false);
 
 	useEffect(() => {
 		const name = Router.pathname
 			.replace("/dashboard", "")
 			.replaceAll("?*", "")
-			.replace("/", "")
-			.replaceAll("_", " ");
-		if (listIcons[name] !== undefined) {
-			Router.push("/dashboard/" + name.replaceAll(" ", "_"));
-			setSelectedOption(name as pageOptions);
+			.replace("/", "");
+		const nameWithSpace = name.replaceAll("_", " ");
+		if (listIcons[nameWithSpace] !== undefined) {
+			const path = "/dashboard/" + name;
+			if (selectedOption !== nameWithSpace)
+				setSelectedOption(nameWithSpace as pageOptions);
+			if (Router.pathname !== path) Router.push(path);
 		}
 	}, []);
 
 	useEffect(() => {
+		if (selectedOption === null) return;
 		Router.push("/dashboard/" + selectedOption.replaceAll(" ", "_"));
 	}, [selectedOption]);
 

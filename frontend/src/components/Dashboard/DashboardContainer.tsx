@@ -5,7 +5,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 // =============== Store =============== //
 import { DashboardContext } from "@/store/dashboard";
 
-const DashboardContainer = (props: React.PropsWithChildren) => {
+interface DashboardContainerProps extends React.PropsWithChildren {
+	title: string;
+}
+
+const DashboardContainer = (props: DashboardContainerProps) => {
 	const dashboard = useContext(DashboardContext);
 
 	return (
@@ -19,13 +23,20 @@ const DashboardContainer = (props: React.PropsWithChildren) => {
 					dashboard.fullDashboard ? "rounded-none" : "rounded-3xl"
 				}`}
 			>
-				<MenuIcon
-					className="h-[30px] w-[30px] mt-3 mb-[40px] cursor-pointer"
-					onClick={() => {
-						dashboard.setFullDashboard((prev) => !prev);
-					}}
-				/>
-				{props.children}
+				<div className="flex flex-col">
+					<div className="flex">
+						<MenuIcon
+							className="h-[30px] w-[30px] mt-3 mb-[40px] cursor-pointer"
+							onClick={() => {
+								dashboard.setFullDashboard((prev) => !prev);
+							}}
+						/>
+						<h2 className="capitalize font-bold text-3xl ml-8 mt-2">
+							{props.title}
+						</h2>
+					</div>
+					{props.children}
+				</div>
 			</div>
 		</div>
 	);

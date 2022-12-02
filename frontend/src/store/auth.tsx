@@ -40,14 +40,16 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (props) => {
 		setRefreshToken(refreshTokenTemp);
 		setSessionID(sessionIDTemp);
 
+		if (Router.pathname !== "/dashboard/task_manager")
+			Router.push("/dashboard/task_manager");
 		// Route Pushing
-		if (accessTokenTemp.length === 0 && sessionIDTemp.length === 0) {
-			if (Router.pathname !== "/login" && Router.pathname !== "/register")
-				Router.push("/login");
-		} else {
-			if (Router.pathname === "/login" || Router.pathname === "/register")
-				Router.push("/dashboard");
-		}
+		// if (accessTokenTemp.length === 0 && sessionIDTemp.length === 0) {
+		// 	if (Router.pathname !== "/login" && Router.pathname !== "/register")
+		// 		Router.push("/login");
+		// } else {
+		// 	if (Router.pathname === "/login" || Router.pathname === "/register")
+		// 		Router.push("/dashboard");
+		// }
 	}, []);
 
 	return (
