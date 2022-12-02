@@ -6,7 +6,7 @@ import InputGlassmorphismForm, {
 
 // =============== Libraries =============== //
 import { PropsWithChildren } from "react";
-import { createPortal } from "react-dom";
+import Modal from "./Modal";
 
 interface PopupProps extends PropsWithChildren {
 	inputs: InputGlassmorphismFormProps[];
@@ -17,9 +17,8 @@ interface PopupProps extends PropsWithChildren {
 }
 
 const Popup: React.FC<PopupProps> = (props) => {
-	return createPortal(
-		<div className="screen fixed inset-0 z-50">
-			<div className="full bg-[#000000bd]" onClick={props.hide}></div>
+	return (
+		<Modal hide={props.hide}>
 			<div className="full">
 				<GlassmorphismForm addSquares={props.addSquares}>
 					<h3>{props.title}</h3>
@@ -33,8 +32,7 @@ const Popup: React.FC<PopupProps> = (props) => {
 					</div>
 				</GlassmorphismForm>
 			</div>
-		</div>,
-		document.getElementsByTagName("body")[0]
+		</Modal>
 	);
 };
 

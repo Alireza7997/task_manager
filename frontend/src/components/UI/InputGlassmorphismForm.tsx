@@ -18,6 +18,7 @@ export interface InputGlassmorphismFormProps {
 	errors?: string[];
 	readonly?: boolean;
 	reff?: React.MutableRefObject<any | undefined>;
+	onChange?: React.ChangeEventHandler<HTMLInputElement>;
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 	onRadioButtonChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
@@ -41,6 +42,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			onFocus: () => setFocus(true),
 			onBlur: (e: React.FocusEvent<HTMLInputElement>) =>
 				setFocus(e.currentTarget.value.length !== 0),
+			onChange: props.onChange,
 		},
 		errors: props.errors,
 	};

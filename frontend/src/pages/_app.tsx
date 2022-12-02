@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: ComponentWithPageLayout) {
 					content="Simple task manager created by maktoobgar and alireza"
 				/>
 			</Head>
-			{/* <ReactNotifications /> */}
+			<ReactNotifications />
 
 			<QueryClientProvider client={client}>
 				<AuthProvider>

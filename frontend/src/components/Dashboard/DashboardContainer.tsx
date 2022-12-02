@@ -14,12 +14,12 @@ const DashboardContainer = (props: DashboardContainerProps) => {
 
 	return (
 		<div
-			className={`bg-[#2C3748] flex-grow z-10 transition-all mdMax:p-0 ${
+			className={`bg-[#2C3748] flex-grow z-10 transition-all xlMax:p-0 ${
 				dashboard.fullDashboard ? "p-0" : "p-[20px]"
 			}`}
 		>
 			<div
-				className={`bg-[#343442] h-full shadow-[0_0_30px_#0000004f] p-6 transition-all mdMax:rounded-none ${
+				className={`bg-[#343442] h-full shadow-[0_0_30px_#0000004f] p-6 overflow-scroll transition-all xlMax:rounded-none ${
 					dashboard.fullDashboard ? "rounded-none" : "rounded-3xl"
 				}`}
 			>

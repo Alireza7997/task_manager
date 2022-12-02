@@ -11,10 +11,10 @@ const DashboardLayout: React.FC<React.PropsWithChildren> = (props) => {
 	const dashboard = useContext(DashboardContext);
 
 	return (
-		<div className="flex h-screen">
+		<div className="flex h-screen overflow-y-scroll">
 			{/* Invisible Div to on and off Side Menu visibility */}
 			<div
-				className={`transition-all mdMax:min-w-[0px] ${
+				className={`transition-all xlMax:min-w-[0px] ${
 					dashboard.fullDashboard ? "min-w-[0px]" : "min-w-[335px]"
 				}`}
 			></div>

@@ -1,11 +1,11 @@
+// =============== Libraries =============== //
+import moment from "moment";
+
 // =============== Components =============== //
 import TableOfDataHeaderAttribute from "./TableOfDataHeaderAttribute";
 import TableOfDataHeaderRow from "./TableOfDataHeaderRow";
 import TableOfDataRow from "./TableOfDataRow";
 import TableOfDataRowAttribute from "./TableOfDataRowAttribute";
-
-// =============== Types =============== //
-import Project from "@/types/project";
 
 interface TableOfDataProps {
 	headerList: string[];
@@ -20,7 +20,7 @@ const TableOfData = ({ headerList, list }: TableOfDataProps) => {
 					{headerList.map((value) =>
 						value !== "user_id" ? (
 							<TableOfDataHeaderAttribute key={value}>
-								{value}
+								{value === "id" ? "ID" : value.replaceAll("_", " ")}
 							</TableOfDataHeaderAttribute>
 						) : null
 					)}
@@ -32,7 +32,9 @@ const TableOfData = ({ headerList, list }: TableOfDataProps) => {
 						{headerList.map((key, i) =>
 							key !== "user_id" ? (
 								<TableOfDataRowAttribute key={i}>
-									{item[key]}
+									{item[key] instanceof Date
+										? moment(item[key]).format("YYYY-MM-DD")
+										: item[key]}
 								</TableOfDataRowAttribute>
 							) : null
 						)}
