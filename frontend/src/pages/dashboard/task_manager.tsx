@@ -25,6 +25,9 @@ const TaskManager = () => {
 	const auth = useContext(AuthContext);
 	const [showAdd, setShowAdd] = useState(false);
 	const [projectName, setProjectName] = useState("");
+	const [showDelete, setShowDelete] = useState(false);
+	const [projectDelete, setProjectDelete] = useState<Project | null>(null);
+	const [projectEdit, setProjectEdit] = useState<Project | null>(null);
 	const { data, status, refetch } = useQuery(
 		["projects", auth.is_authenticated],
 		() =>
@@ -47,8 +50,7 @@ const TaskManager = () => {
 					return output;
 				})
 	);
-
-	const { mutate, isSuccess } = useMutation(() =>
+	const { mutate: mutatePost, isSuccess: isSuccessPost } = useMutation(() =>
 		axios
 			.post<ResponseType>(
 				"/projects",
@@ -57,12 +59,24 @@ const TaskManager = () => {
 			)
 			.finally(() => setProjectName(""))
 	);
+	const { mutate: mutateDelete, isSuccess: isSuccessDelete } = useMutation(() =>
+		axios
+			.delete<ResponseType>(
+				"/projects/" + projectDelete?.id,
+				auth.getAuthHeaders()
+			)
+			.finally(() => setProjectDelete(null))
+	);
 
 	useEffect(() => {
-		if (isSuccess) refetch();
-	}, [isSuccess]);
+		if (isSuccessPost) refetch();
+	}, [isSuccessPost]);
 
-	const inputs: InputGlassmorphismFormProps[] = [
+	useEffect(() => {
+		if (isSuccessDelete) refetch();
+	}, [isSuccessDelete]);
+
+	const addInputs: InputGlassmorphismFormProps[] = [
 		{
 			id: "name",
 			label: "name",
@@ -72,14 +86,14 @@ const TaskManager = () => {
 		},
 	];
 
-	const buttons: InputGlassmorphismFormProps[] = [
+	const addButtons: InputGlassmorphismFormProps[] = [
 		{
 			id: "submit",
 			label: "submit",
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				mutate();
+				mutatePost();
 				setShowAdd(false);
 			},
 		},
@@ -93,16 +107,47 @@ const TaskManager = () => {
 		},
 	];
 
+	const deleteButtons: InputGlassmorphismFormProps[] = [
+		{
+			id: "submit",
+			label: "submit",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				mutateDelete();
+				setShowDelete(false);
+			},
+		},
+		{
+			id: "cancel",
+			label: "cancel",
+			type: "button",
+			onClick: () => {
+				setShowDelete(false);
+				setProjectDelete(null);
+			},
+		},
+	];
+
 	return (
 		<>
+			{showDelete && projectDelete && (
+				<Popup
+					title={`Delete Project ${projectDelete.name}`}
+					addSquares={false}
+					hide={() => setShowDelete(false)}
+					inputs={[]}
+					buttons={deleteButtons}
+				/>
+			)}
 			{showAdd && (
 				<Popup
 					title="Add Project"
 					addSquares={false}
 					hide={() => setShowAdd(false)}
-					inputs={inputs}
-					buttons={buttons}
-				></Popup>
+					inputs={addInputs}
+					buttons={addButtons}
+				/>
 			)}
 			<DashboardContainer title="task manager - projects">
 				<div className="flex-grow overflow-y-scroll">
@@ -110,17 +155,23 @@ const TaskManager = () => {
 						<TableOfData
 							headerList={data.length > 0 ? Object.keys(data[0]) : []}
 							list={data}
+							onDeleteClick={(value: Project) => {
+								setProjectDelete(value);
+								setShowDelete(true);
+							}}
+							onEditClick={(value: Project) => console.log(value)}
 						/>
 					) : (
 						<></>
 					)}
 					<Button
-						className="fixed h-[80px] w-[80px] right-8 bottom-8 rounded-full p-0"
+						className="fixed h-[80px] w-[80px] right-8 bottom-8 rounded-full p-0 bg-[#4C70FF]"
+						variant="contained"
 						onClick={() => {
 							setShowAdd(true);
 						}}
 					>
-						<AddCircleIcon className="h-full w-full" htmlColor="#4C70FF" />
+						<AddCircleIcon className="h-full w-full" />
 					</Button>
 				</div>
 			</DashboardContainer>

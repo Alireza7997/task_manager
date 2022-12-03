@@ -10,14 +10,16 @@ import TableOfDataRowAttribute from "./TableOfDataRowAttribute";
 interface TableOfDataProps {
 	headerList: string[];
 	list: any[];
+	onDeleteClick: (value: any) => void;
+	onEditClick: (value: any) => void;
 }
 
-const TableOfData = ({ headerList, list }: TableOfDataProps) => {
+const TableOfData = (props: TableOfDataProps) => {
 	return (
 		<table className="w-full bg-slate-600 rounded-t-lg">
 			<thead>
 				<TableOfDataHeaderRow>
-					{headerList.map((value) =>
+					{props.headerList.map((value) =>
 						value !== "user_id" ? (
 							<TableOfDataHeaderAttribute key={value}>
 								{value === "id" ? "ID" : value.replaceAll("_", " ")}
@@ -27,9 +29,14 @@ const TableOfData = ({ headerList, list }: TableOfDataProps) => {
 				</TableOfDataHeaderRow>
 			</thead>
 			<tbody className="bg-[#4F617A]">
-				{list.map((item) => (
-					<TableOfDataRow key={item.id}>
-						{headerList.map((key, i) =>
+				{props.list.map((item) => (
+					<TableOfDataRow
+						key={item.id}
+						onDeleteClick={props.onDeleteClick}
+						onEditClick={props.onEditClick}
+						value={item}
+					>
+						{props.headerList.map((key, i) =>
 							key !== "user_id" ? (
 								<TableOfDataRowAttribute key={i}>
 									{item[key] instanceof Date
