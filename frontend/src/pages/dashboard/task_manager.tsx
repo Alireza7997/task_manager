@@ -109,8 +109,8 @@ const TaskManager = () => {
 
 	const deleteButtons: InputGlassmorphismFormProps[] = [
 		{
-			id: "submit",
-			label: "submit",
+			id: "confirm",
+			label: "confirm",
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
@@ -133,7 +133,7 @@ const TaskManager = () => {
 		<>
 			{showDelete && projectDelete && (
 				<Popup
-					title={`Delete Project ${projectDelete.name}`}
+					title={`Delete ${projectDelete.name}?`}
 					addSquares={false}
 					hide={() => setShowDelete(false)}
 					inputs={[]}
