@@ -128,12 +128,10 @@ const Table: React.FC<TableProps> = (props) => {
 						return (
 							<Task
 								key={value.id}
-								id={value.id}
 								index={index}
-								name={value.name}
-								description={value.description}
 								dispatchTables={props.dispatchTables}
-								table_id={props.table.id}
+								task={value}
+								table={props.table}
 							/>
 						);
 					})}

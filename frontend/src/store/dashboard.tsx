@@ -43,11 +43,6 @@ const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 		}
 	}, [pathName]);
 
-	useEffect(() => {
-		if (selectedOption === null) return;
-		Router.push("/" + selectedOption.replaceAll(" ", "_"));
-	}, [selectedOption]);
-
 	const value = {
 		selectedOption: selectedOption,
 		setSelectedOption: setSelectedOption,

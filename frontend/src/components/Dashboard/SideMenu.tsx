@@ -1,10 +1,9 @@
 // =============== Libraries =============== //
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import TableChartIcon from "@mui/icons-material/TableChart";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import Image from "next/image";
+import Router from "next/router";
 
 // =============== Components =============== //
 import SideMenuUL from "./SideMenuUL";
@@ -45,7 +44,10 @@ const SideMenu: React.FC = () => {
 						<SideMenuUL
 							key={element}
 							active={dashboard.selectedOption === element}
-							onClick={() => dashboard.setSelectedOption((prev) => element)}
+							onClick={() => {
+								dashboard.setSelectedOption(element);
+								Router.push("/" + element.replaceAll(" ", "_"));
+							}}
 						>
 							{dashboard.listIcons[element]}
 							{element}
