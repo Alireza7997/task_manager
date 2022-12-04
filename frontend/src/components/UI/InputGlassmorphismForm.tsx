@@ -6,12 +6,13 @@ import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-export interface InputGlassmorphismFormProps {
+export interface InputGlassmorphismFormProps extends React.PropsWithChildren {
 	type: "password" | "text" | "button" | "submit" | "email" | "date" | "radio";
 	label: string;
 	placeHolder?: string;
-	id: string;
+	id?: string;
 	className?: string;
+	parentClassName?: string;
 	values?: string[];
 	value?: any;
 	default?: string;
@@ -24,7 +25,7 @@ export interface InputGlassmorphismFormProps {
 }
 
 const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
-	props: InputGlassmorphismFormProps
+	props
 ) => {
 	const [hide, setHide] = useState(true);
 	const [focus, setFocus] = useState(true);
@@ -55,7 +56,7 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 		<div
 			className={`${styles["input-container"]} ${
 				props.type === "radio" && styles["radio-button-container"]
-			}`}
+			} ${props.parentClassName}`}
 		>
 			{/* Label */}
 			{props.type !== "button" && (
@@ -112,7 +113,11 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 
 			{/* Button, Submit input */}
 			{props.type === "button" && (
-				<button onClick={props.onClick} className="w-full">
+				<button
+					onClick={props.onClick}
+					className={`${props.className ? props.className : "w-full"}`}
+				>
+					{props.children}
 					{props.label}
 				</button>
 			)}

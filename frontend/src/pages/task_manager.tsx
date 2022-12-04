@@ -2,7 +2,6 @@
 import { useMutation, useQuery } from "react-query";
 import { useContext, useEffect, useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import Button from "@mui/material/Button";
 import Head from "next/head";
 
 // =============== Components =============== //
@@ -10,7 +9,9 @@ import DashboardContainer from "@/components/Dashboard/DashboardContainer";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import TableOfData from "@/components/UI/TableOfData";
 import Popup from "@/components/TaskManager/Popup";
-import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismForm";
+import InputGlassmorphismForm, {
+	InputGlassmorphismFormProps,
+} from "@/components/UI/InputGlassmorphismForm";
 
 // =============== Utils =============== //
 import axios from "@/api/axios";
@@ -171,15 +172,16 @@ const TaskManager = () => {
 					) : (
 						<></>
 					)}
-					<Button
-						className="fixed h-[80px] w-[80px] right-8 bottom-8 rounded-full p-0 bg-[#4C70FF]"
-						variant="contained"
+					<InputGlassmorphismForm
+						type="button"
+						label=""
+						className="fixed h-[80px] w-[80px] right-8 bottom-8 rounded-full p-0 text-white bg-[#4C70FF] hover:bg-[#1976D2] active:bg-[#1565C0]"
 						onClick={() => {
 							setShowAdd(true);
 						}}
 					>
 						<AddCircleIcon className="h-full w-full" />
-					</Button>
+					</InputGlassmorphismForm>
 				</div>
 			</DashboardContainer>
 		</>

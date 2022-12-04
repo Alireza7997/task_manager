@@ -1,8 +1,6 @@
-// =============== Libraries =============== //
-import Button from "@mui/material/Button";
-
 // =============== Components =============== //
 import TableOfDataRowAttribute from "./TableOfDataRowAttribute";
+import InputGlassmorphismForm from "@/components/UI/InputGlassmorphismForm";
 
 interface TableOfDataRow extends React.PropsWithChildren {
 	value: any;
@@ -19,28 +17,25 @@ const TableOfDataRow = (props: TableOfDataRow) => {
 		>
 			{props.children}
 			<TableOfDataRowAttribute>
-				<Button
-					variant="contained"
-					color="error"
-					className="bg-rose-500"
+				<InputGlassmorphismForm
+					type="button"
+					label="delete"
+					className="transition-[background-color] bg-[#D32F2F] active:bg-[#C62828] text-white py-[6px] px-[16px] font-thin uppercase"
 					onClick={(e) => {
 						e.stopPropagation();
 						props.onDeleteClick(props.value);
 					}}
-				>
-					Delete
-				</Button>
-				<Button
-					variant="contained"
-					color="info"
-					className="flex-grow bg-slate-700"
+				></InputGlassmorphismForm>
+				<InputGlassmorphismForm
+					type="button"
+					label="edit"
+					className="transition-[background-color] bg-slate-700 active:bg-slate-800 text-white py-[6px] px-[16px] font-thin uppercase"
+					parentClassName="flex-grow"
 					onClick={(e) => {
 						e.stopPropagation();
 						props.onEditClick(props.value);
 					}}
-				>
-					Edit
-				</Button>
+				></InputGlassmorphismForm>
 			</TableOfDataRowAttribute>
 		</tr>
 	);
