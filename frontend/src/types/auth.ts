@@ -10,7 +10,7 @@ import createNotification from "@/notification/notifier";
 
 // =============== API =============== //
 import me from "@/api/me";
-import refresh from "@/api/refresh";
+// import refresh from "@/api/refresh";
 
 interface setFunctions {
 	setUser: (user: UserType | null) => void;
@@ -72,7 +72,8 @@ export default class Auth {
 			createNotification(400, "Need to login again", "Session Expired", 0);
 			Router.push("/login");
 		} else if (this.accessToken !== "" && this.refreshToken !== "") {
-			refresh({ token: this.accessToken }, this, operation)();
+			//! Actual Refresh
+			// refresh({ token: this.accessToken }, this, operation)();
 		}
 	}
 

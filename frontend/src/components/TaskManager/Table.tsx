@@ -5,15 +5,20 @@ import styles from "@/styles/TaskManager/Table.module.css";
 import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import { useMutation } from "react-query";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
 import Popup, { getInputValues } from "./Popup";
 import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
 
+// =============== Utils =============== //
+import axios from "@/api/axios";
+
 // =============== Types =============== //
 import { action, TableData, TaskData } from "@/types/task_manager";
+import ResponseType from "@/types/response";
 
 interface TableProps {
 	table: TableData;
@@ -24,25 +29,44 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = (props) => {
 	const auth = useContext(AuthContext);
+	const [addTaskFields, setAddTableFields] = useState<{
+		name: string;
+		description: string;
+	}>({ name: "", description: "" });
 	const [showAddPopup, setShowAddPopup] = useState(false);
-
-	const addClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-		e.preventDefault();
-		const values = getInputValues(addInputs);
-		//! Add Task
-		setShowAddPopup(false);
-	};
+	const { mutateAsync: mutateAsyncAdd } = useMutation((id: number) =>
+		axios
+			.post<ResponseType>(
+				`/tables/${id}/tasks`,
+				addTaskFields,
+				auth.getAuthHeaders()
+			)
+			.then((value) => value.data.message as TaskData)
+	);
 
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{
 			id: "name",
 			label: "name",
 			type: "text",
+			value: addTaskFields.name,
+			onChange: (e) => {
+				setAddTableFields((prev) => {
+					console.log(e.target.value);
+					return { ...prev, name: e.target.value };
+				});
+			},
 		},
 		{
 			id: "description",
 			label: "description",
 			type: "text",
+			value: addTaskFields.description,
+			onChange: (e) => {
+				setAddTableFields((prev) => {
+					return { ...prev, description: e.target.value };
+				});
+			},
 		},
 	];
 
@@ -51,7 +75,18 @@ const Table: React.FC<TableProps> = (props) => {
 			id: "add",
 			label: "add",
 			type: "button",
-			onClick: addClick,
+			onClick: (e) => {
+				e.preventDefault();
+				mutateAsyncAdd(props.table.id).then((value) => {
+					props.dispatchTables({
+						id: props.table.id,
+						method: "AddTask",
+						tasks: [value],
+					} as action);
+				});
+				setAddTableFields({ name: "", description: "" });
+				setShowAddPopup(false);
+			},
 		},
 		{
 			id: "cancel",
@@ -59,6 +94,7 @@ const Table: React.FC<TableProps> = (props) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
+				setAddTableFields({ name: "", description: "" });
 				setShowAddPopup(false);
 			},
 		},

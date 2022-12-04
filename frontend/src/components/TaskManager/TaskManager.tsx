@@ -173,6 +173,7 @@ const TaskManager = ({ project }: { project: Project | null }) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
+				setAddTableFields({ title: "", description: "" });
 				setShowAddPopup(false);
 			},
 		},
