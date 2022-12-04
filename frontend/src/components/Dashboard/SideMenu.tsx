@@ -45,11 +45,7 @@ const SideMenu: React.FC = () => {
 						<SideMenuUL
 							key={element}
 							active={dashboard.selectedOption === element}
-							onClick={() =>
-								dashboard.setSelectedOption((prev) =>
-									prev === element ? "" : element
-								)
-							}
+							onClick={() => dashboard.setSelectedOption((prev) => element)}
 						>
 							{dashboard.listIcons[element]}
 							{element}

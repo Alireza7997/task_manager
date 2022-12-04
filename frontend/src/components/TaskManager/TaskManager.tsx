@@ -9,21 +9,21 @@ import Table from "./Table";
 import Popup, { getInputValues } from "./Popup";
 import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismForm";
 
-// =============== API =============== //
-import get_tables from "@/api/get_tables";
-import get_tasks from "@/api/get_tasks";
-import add_table from "@/api/add_table";
-
 // =============== Libraries =============== //
 import { useContext, useEffect, useReducer, useState } from "react";
 import findIndex from "lodash/findIndex";
-import get from "lodash/get";
+import { useMutation, useQuery } from "react-query";
+import find from "lodash/find";
 
 // =============== Types =============== //
 import { TableData, action } from "@/types/task_manager";
-import Head from "next/head";
+import Project from "@/types/project";
+import ResponseType from "@/types/response";
 
-const updateTasks = (prevState: TableData[], action: action): TableData[] => {
+// =============== Utils =============== //
+import axios from "@/api/axios";
+
+const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
 		return value.id === action.id;
 	});
@@ -38,7 +38,11 @@ const updateTasks = (prevState: TableData[], action: action): TableData[] => {
 			return [...prevState.slice(0, index), ...prevState.slice(index + 1)];
 		case "Replace":
 			for (let i = 0; i < action.tables.length; i++) {
-				action.tables[i].tasks = [];
+				const table = find(
+					prevState,
+					(value) => value.id === action.tables[i].id
+				);
+				action.tables[i].tasks = table && table.tasks ? table.tasks : [];
 			}
 			return action.tables;
 		case "ReplaceTasks":
@@ -63,46 +67,62 @@ const updateTasks = (prevState: TableData[], action: action): TableData[] => {
 	}
 };
 
-const TaskManager: React.FC = () => {
+const TaskManager = ({ project }: { project: Project | null }) => {
+	if (project === null) return <></>;
 	const auth = useContext(AuthContext);
 	const [showAddPopup, setShowAddPopup] = useState(false);
-	const [isLoading, setIsLoading] = useState(10000);
-	const [localIsLoading, setLocalIsLoading] = useState(10000);
-	const [tables, dispatchTables] = useReducer(updateTasks, []);
-	const tableLen = tables.length;
-	useEffect(() => {
-		//! Table_id comes instead of 1
-		get_tables(auth, 1, dispatchTables, (count: number) => {
-			setIsLoading(count);
-		});
-	}, []);
-	useEffect(() => {
-		if (tables.length === 0) return;
-		if (localIsLoading !== 0 && tableLen === localIsLoading) {
-			for (let i = 0; i < tables.length; i++) {
-				const element = tables[i];
-				get_tasks(auth, element.id, dispatchTables, () => {
-					setIsLoading((prev) => {
-						return prev - 1;
-					});
-				});
-			}
-		}
-	}, [tableLen]);
+	const [showDeletePopup, setShowDeletePopup] = useState(false);
+	const [tables, dispatchTables] = useReducer(taskReducer, []);
+	const [addTableFields, setAddTableFields] = useState<{
+		title: string;
+		description: string;
+	}>({ title: "", description: "" });
+	const [table, setTable] = useState<TableData | null>(null);
+	const { data, status } = useQuery(
+		[`tables-${project.id}`, auth.is_authenticated],
+		() =>
+			axios
+				.get<ResponseType>(
+					`/projects/${project.id}/tables`,
+					auth.getAuthHeaders()
+				)
+				.then((value) => value.data.message as TableData[])
+	);
+	const { mutateAsync: mutateAsyncDelete } = useMutation(
+		(tableId: number | string) =>
+			axios.delete<ResponseType>(`/tables/${tableId}`, auth.getAuthHeaders())
+	);
+	const { mutateAsync: mutateAsyncAdd } = useMutation(() =>
+		axios
+			.post<ResponseType>(
+				`/projects/${project.id}/tables`,
+				addTableFields,
+				auth.getAuthHeaders()
+			)
+			.then((value) => value.data.message as TableData)
+	);
 
-	const deleteTable = (id: number | string) => {
-		dispatchTables({ id: id, method: "Delete" } as action);
+	const dataLen = (data && data.length) || 0;
+	useEffect(() => {
+		if (dataLen > 0 && tables.length !== dataLen) {
+			dispatchTables({
+				id: project.id,
+				method: "Replace",
+				tables: data,
+			} as action);
+		}
+	}, [dataLen]);
+
+	const deleteTable = (value: TableData) => {
+		setTable(value);
+		setShowDeletePopup(true);
 	};
 
 	const actualTables = tables.map((value) => {
 		return (
 			<Table
 				key={value.id}
-				id={value.id}
-				title={value.title}
-				description={value.description}
-				created_at={value.created_at}
-				updated_at={value.updated_at}
+				table={value}
 				deleteTable={deleteTable}
 				tasks={value.tasks ? value.tasks : []}
 				dispatchTables={dispatchTables}
@@ -110,24 +130,26 @@ const TaskManager: React.FC = () => {
 		);
 	});
 
-	const addClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-		e.preventDefault();
-		const values = getInputValues(addInputs);
-		//! Table_id comes instead of 1
-		add_table(auth, values, 1!, dispatchTables);
-		setShowAddPopup(false);
-	};
-
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{
 			id: "title",
 			label: "title",
 			type: "text",
+			value: addTableFields.title,
+			onChange: (e) =>
+				setAddTableFields((prev) => {
+					return { ...prev, title: e.target.value };
+				}),
 		},
 		{
 			id: "description",
 			label: "description",
 			type: "text",
+			value: addTableFields.description,
+			onChange: (e) =>
+				setAddTableFields((prev) => {
+					return { ...prev, description: e.target.value };
+				}),
 		},
 	];
 
@@ -136,7 +158,14 @@ const TaskManager: React.FC = () => {
 			id: "add",
 			label: "add",
 			type: "button",
-			onClick: addClick,
+			onClick: (e) => {
+				e.preventDefault();
+				mutateAsyncAdd().then((value) =>
+					dispatchTables({ method: "Add", tables: [value] } as action)
+				);
+				setAddTableFields({ title: "", description: "" });
+				setShowAddPopup(false);
+			},
 		},
 		{
 			id: "cancel",
@@ -149,20 +178,59 @@ const TaskManager: React.FC = () => {
 		},
 	];
 
+	const deleteButtons: InputGlassmorphismFormProps[] = [
+		{
+			id: "delete",
+			label: "delete",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				const id = table!.id;
+				mutateAsyncDelete(id).then(() =>
+					dispatchTables({ id: id, method: "Delete" } as action)
+				);
+				setShowDeletePopup(false);
+			},
+		},
+		{
+			id: "cancel",
+			label: "cancel",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				setTable(null);
+				setShowDeletePopup(false);
+			},
+		},
+	];
+
 	return (
 		<>
-			<Head>
-				{/*! Table name comes instead of 1 */}
-				<title>1 Project</title>
-			</Head>
+			{showAddPopup && (
+				<Popup
+					addSquares={false}
+					title="Add Table"
+					inputs={addInputs}
+					buttons={addButtons}
+					hide={() => {
+						setShowAddPopup(false);
+					}}
+				/>
+			)}
+			{showDeletePopup && (
+				<Popup
+					addSquares={false}
+					title={`Delete ${table?.title}?`}
+					inputs={[]}
+					buttons={deleteButtons}
+					hide={() => {
+						setTable(null);
+						setShowDeletePopup(false);
+					}}
+				/>
+			)}
 			<div className={styles["task-manager-container"]}>
-				{isLoading ||
-					(localIsLoading !== 0 && (
-						<div className="w-full flex flex-col justify-center items-center">
-							<h3>Loading...</h3>
-						</div>
-					))}
-				{!isLoading && localIsLoading === 0 && (
+				{status === "success" && (
 					<>
 						{actualTables}
 						<div className={styles["add-table"]}>
@@ -178,17 +246,6 @@ const TaskManager: React.FC = () => {
 					</>
 				)}
 			</div>
-			{showAddPopup && (
-				<Popup
-					addSquares={false}
-					title="Add Table"
-					inputs={addInputs}
-					buttons={addButtons}
-					hide={() => {
-						setShowAddPopup(false);
-					}}
-				/>
-			)}
 		</>
 	);
 };

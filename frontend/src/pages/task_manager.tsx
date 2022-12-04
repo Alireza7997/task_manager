@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { useContext, useEffect, useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Button from "@mui/material/Button";
+import Head from "next/head";
 
 // =============== Components =============== //
 import DashboardContainer from "@/components/Dashboard/DashboardContainer";
@@ -20,6 +21,7 @@ import Project from "@/types/project";
 
 // =============== Store =============== //
 import { AuthContext } from "@/store/auth";
+import Router from "next/router";
 
 const TaskManager = () => {
 	const auth = useContext(AuthContext);
@@ -27,7 +29,6 @@ const TaskManager = () => {
 	const [projectName, setProjectName] = useState("");
 	const [showDelete, setShowDelete] = useState(false);
 	const [projectDelete, setProjectDelete] = useState<Project | null>(null);
-	const [projectEdit, setProjectEdit] = useState<Project | null>(null);
 	const { data, status, refetch } = useQuery(
 		["projects", auth.is_authenticated],
 		() =>
@@ -149,6 +150,9 @@ const TaskManager = () => {
 					buttons={addButtons}
 				/>
 			)}
+			<Head>
+				<title>Task Manager - Projects</title>
+			</Head>
 			<DashboardContainer title="task manager - projects">
 				<div className="flex-grow overflow-y-scroll">
 					{status === "success" ? (
@@ -160,6 +164,9 @@ const TaskManager = () => {
 								setShowDelete(true);
 							}}
 							onEditClick={(value: Project) => console.log(value)}
+							onClick={(value: Project) =>
+								Router.push("/task_manager/" + value.id)
+							}
 						/>
 					) : (
 						<></>

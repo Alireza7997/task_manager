@@ -2,12 +2,14 @@
 import { createContext, useEffect, useState } from "react";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import Router from "next/router";
 
-type pageOptions = "task manager" | "profile" | "";
+type pageOptions = "dashboard" | "task manager" | "profile";
 const listIcons: Record<string, React.ReactNode> = {
-	"task manager": <TableChartIcon key="1" className="mr-3" />,
-	profile: <AccountBoxIcon key="2" className="mr-3" />,
+	dashboard: <DashboardIcon key="1" className="mr-3" />,
+	"task manager": <TableChartIcon key="2" className="mr-3" />,
+	profile: <AccountBoxIcon key="3" className="mr-3" />,
 };
 
 interface contextValue {
@@ -29,23 +31,21 @@ const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 	);
 	const [fullDashboard, setFullDashboard] = useState(false);
 
+	const pathName = typeof window !== "undefined" ? Router.pathname : "";
 	useEffect(() => {
-		const name = Router.pathname
-			.replace("/dashboard", "")
-			.replaceAll("?*", "")
-			.replace("/", "");
+		const name = pathName.replaceAll("?*", "").replace("/", "");
 		const nameWithSpace = name.replaceAll("_", " ");
 		if (listIcons[nameWithSpace] !== undefined) {
-			const path = "/dashboard/" + name;
+			const path = "/" + name;
 			if (selectedOption !== nameWithSpace)
 				setSelectedOption(nameWithSpace as pageOptions);
-			if (Router.pathname !== path) Router.push(path);
+			if (pathName !== path) Router.push(path);
 		}
-	}, []);
+	}, [pathName]);
 
 	useEffect(() => {
 		if (selectedOption === null) return;
-		Router.push("/dashboard/" + selectedOption.replaceAll(" ", "_"));
+		Router.push("/" + selectedOption.replaceAll(" ", "_"));
 	}, [selectedOption]);
 
 	const value = {

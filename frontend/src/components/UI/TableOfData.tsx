@@ -12,6 +12,7 @@ interface TableOfDataProps {
 	list: any[];
 	onDeleteClick: (value: any) => void;
 	onEditClick: (value: any) => void;
+	onClick: (value: any) => void;
 }
 
 const TableOfData = (props: TableOfDataProps) => {
@@ -34,6 +35,7 @@ const TableOfData = (props: TableOfDataProps) => {
 						key={item.id}
 						onDeleteClick={props.onDeleteClick}
 						onEditClick={props.onEditClick}
+						onClick={props.onClick}
 						value={item}
 					>
 						{props.headerList.map((key, i) =>

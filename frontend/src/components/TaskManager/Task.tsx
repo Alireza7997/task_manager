@@ -1,9 +1,6 @@
 // =============== Styles =============== //
 import styles from "@/styles/TaskManager/Task.module.css";
 
-// =============== API =============== //
-import delete_task from "@/api/delete_task";
-
 // =============== Stores =============== //
 import { AuthContext } from "@/store/auth";
 
@@ -32,7 +29,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 				<h5 className={styles["task-title"]}>{props.name}</h5>
 				<button
 					onClick={() => {
-						delete_task(auth, props.id, props.table_id, props.dispatchTables);
+						//! delete Task
 					}}
 					className={styles["button-icon"]}
 				>
