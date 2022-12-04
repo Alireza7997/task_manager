@@ -42,12 +42,12 @@ export function getInputValues(
 	const output: Record<string, string> = {};
 	for (let i = 0; i < inputs.length; i++) {
 		const input = document.getElementById(
-			inputs[i].id
+			inputs[i].id!
 		) as HTMLInputElement | null;
 		if (!input) {
 			continue;
 		}
-		output[inputs[i].id] = input.value;
+		output[inputs[i].id!] = input.value;
 	}
 
 	return output;
