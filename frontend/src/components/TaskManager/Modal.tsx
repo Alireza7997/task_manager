@@ -3,11 +3,12 @@ import { createPortal } from "react-dom";
 
 interface ModalProps extends React.PropsWithChildren {
 	hide: () => void;
+	zIndex: number;
 }
 
 const Modal = (props: ModalProps) => {
 	return createPortal(
-		<div className="screen fixed inset-0 z-[1000]">
+		<div className="screen fixed inset-0" style={{ zIndex: props.zIndex }}>
 			<div className="full bg-[#000000bd]" onClick={props.hide}></div>
 			{props.children}
 		</div>,

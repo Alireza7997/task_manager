@@ -67,8 +67,7 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	}
 };
 
-const TaskManager = ({ project }: { project: Project | null }) => {
-	if (project === null) return <></>;
+const TaskManager = ({ project }: { project: Project }) => {
 	const auth = useContext(AuthContext);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);

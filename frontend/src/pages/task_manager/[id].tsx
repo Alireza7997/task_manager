@@ -43,7 +43,7 @@ const TaskManagerID = () => {
 					status === "success" ? `task manager - ${data.name}` : "loading..."
 				}
 			>
-				<TaskManager project={status === "success" ? data : null} />
+				{status === "success" ? <TaskManager project={data} /> : <></>}
 			</DashboardContainer>
 		</>
 	);

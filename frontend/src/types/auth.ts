@@ -31,7 +31,12 @@ export default class Auth {
 	setAccessToken: (value: string) => void;
 	setRefreshToken: (value: string) => void;
 
-	authenticate(sessionID: string, accessToken: string, refreshToken: string) {
+	authenticate(
+		sessionID: string,
+		accessToken: string,
+		refreshToken: string,
+		redirectToRoot: boolean = true
+	) {
 		localStorage.setItem("sessionID", sessionID);
 		localStorage.setItem("accessToken", accessToken);
 		localStorage.setItem("refreshToken", refreshToken);
@@ -41,8 +46,9 @@ export default class Auth {
 		this.sessionID = sessionID;
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
+		console.log(accessToken);
 		me(this)();
-		Router.push("/dashboard");
+		if (redirectToRoot) Router.push("/");
 	}
 
 	refreshAccessRefreshToken(accessToken: string, refreshToken: string) {

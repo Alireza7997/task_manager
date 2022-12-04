@@ -18,7 +18,7 @@ interface PopupProps extends PropsWithChildren {
 
 const Popup: React.FC<PopupProps> = (props) => {
 	return (
-		<Modal hide={props.hide}>
+		<Modal hide={props.hide} zIndex={1000}>
 			<div className="full">
 				<GlassmorphismForm addSquares={props.addSquares}>
 					<h3>{props.title}</h3>

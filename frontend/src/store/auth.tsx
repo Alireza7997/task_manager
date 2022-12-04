@@ -24,6 +24,10 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (props) => {
 	});
 
 	useEffect(() => {
+		let sessionIDTemp =
+			localStorage.getItem("sessionID") !== null
+				? localStorage.getItem("sessionID")!
+				: "";
 		let accessTokenTemp =
 			localStorage.getItem("accessToken") !== null
 				? localStorage.getItem("accessToken")!
@@ -32,13 +36,18 @@ const AuthProvider: React.FC<React.PropsWithChildren> = (props) => {
 			localStorage.getItem("refreshToken") !== null
 				? localStorage.getItem("refreshToken")!
 				: "";
-		let sessionIDTemp =
-			localStorage.getItem("sessionID") !== null
-				? localStorage.getItem("sessionID")!
-				: "";
-		setAccessToken(accessTokenTemp);
-		setRefreshToken(refreshTokenTemp);
-		setSessionID(sessionIDTemp);
+		if (accessTokenTemp.length > 0 || sessionIDTemp.length > 0)
+			auth.authenticate(
+				sessionIDTemp,
+				accessTokenTemp,
+				refreshTokenTemp,
+				false
+			);
+		else {
+			setAccessToken(accessTokenTemp);
+			setRefreshToken(refreshTokenTemp);
+			setSessionID(sessionIDTemp);
+		}
 
 		// Route Pushing
 		if (accessTokenTemp.length === 0 && sessionIDTemp.length === 0) {
