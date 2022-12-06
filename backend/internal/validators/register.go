@@ -6,11 +6,11 @@ import (
 	"github.com/golodash/galidator"
 )
 
-var RegisterValidator = g.Validator(galidator.Rules{
-	"Username": g.RuleSet().Required().Min(5).Max(64).Regex(`^(\w|\d|\s|_|-)+$`).Custom(galidator.Validators{"DuplicateUsername": DuplicateUsername}),
-	"Email":    g.RuleSet().Required().Email().Max(320).Custom(galidator.Validators{"DuplicateEmail": DuplicateEmail}),
-	"Password": g.RuleSet().Required().Password().Max(100),
-}, galidator.Messages{
+var RegisterValidator = g.Validator(g.R().Complex(galidator.Rules{
+	"Username": g.RuleSet("username").Required().Min(5).Max(64).Regex(`^(\w|\d|\s|_|-)+$`).Custom(galidator.Validators{"DuplicateUsername": DuplicateUsername}),
+	"Email":    g.RuleSet("email").Required().Email().Max(320).Custom(galidator.Validators{"DuplicateEmail": DuplicateEmail}),
+	"Password": g.RuleSet("password").Required().Password().Max(100),
+}), galidator.Messages{
 	"DuplicateUsername": "$value already exists",
 	"DuplicateEmail":    "$value already exists",
 })
