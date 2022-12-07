@@ -18,4 +18,6 @@ type TableInterface interface {
 	GetTables(db *goqu.Database, pID uint) ([]models.Table, error)
 	// Deletes a Table from Database by table's ID
 	DeleteTable(db *goqu.Database, tID uint) error
+	// Updates a table
+	UpdateTable(db *goqu.Database, tableID uint, tableTitle string, tableDesc string) (*models.Table, error)
 }

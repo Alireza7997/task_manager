@@ -15,6 +15,10 @@ type TaskRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
+type TaskUpdate struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
 
 func TaskPOST(c *gin.Context) {
 	t := taskService.New()
@@ -85,7 +89,7 @@ func TaskGETALL(c *gin.Context) {
 		return
 	}
 
-	tasks, err := t.GetTasks(*database.DB, uint(id))
+	tasks, err := t.GetTasks(database.DB, uint(id))
 	if err != nil {
 		utils.Response(c, 500,
 			"Internal Error",
@@ -130,7 +134,7 @@ func TaskGET(c *gin.Context) {
 		nil)
 }
 
-func TaskDelete(c *gin.Context) {
+func TaskDELETE(c *gin.Context) {
 	t := taskService.New()
 
 	// Getting task's ID from the url
@@ -144,7 +148,7 @@ func TaskDelete(c *gin.Context) {
 		return
 	}
 
-	err = t.DeleteTask(*database.DB, uint(id))
+	err = t.DeleteTask(database.DB, uint(id))
 	if err != nil {
 		utils.Response(c, 500,
 			"Internal Error",
@@ -155,5 +159,37 @@ func TaskDelete(c *gin.Context) {
 	utils.Response(c, 200,
 		"Task Deleted",
 		"",
+		nil)
+}
+
+func TaskPUT(c *gin.Context) {
+	req := &TaskUpdate{}
+	t := taskService.New()
+
+	// Parsing JSON
+	if !utils.ParseJson(req, c) {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	// Getting the task from the context
+	task := c.MustGet("task").(*models.Task)
+
+	// Updating the task based on the changes made
+	newTask, err := t.UpdateTask(database.DB, task.ID, req.Name, req.Description)
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	utils.Response(c, 200,
+		"",
+		newTask,
 		nil)
 }

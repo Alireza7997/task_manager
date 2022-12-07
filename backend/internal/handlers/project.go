@@ -16,6 +16,10 @@ type ProjectRequest struct {
 	Name string `json:"name"`
 }
 
+type ProjectUpdate struct {
+	Name string `json:"name"`
+}
+
 func ProjectPOST(c *gin.Context) {
 	req := &ProjectRequest{}
 	p := projectService.New()
@@ -123,7 +127,7 @@ func ProjectGET(c *gin.Context) {
 		nil)
 }
 
-func ProjectDelete(c *gin.Context) {
+func ProjectDELETE(c *gin.Context) {
 	p := projectService.New()
 
 	// Getting ID from the url
@@ -144,10 +148,43 @@ func ProjectDelete(c *gin.Context) {
 			"Internal Error",
 			"",
 			nil)
+		return
 	}
 
 	utils.Response(c, 200,
 		"Project Deleted",
 		"",
+		nil)
+}
+
+func ProjectPUT(c *gin.Context) {
+	req := &ProjectUpdate{}
+	p := projectService.New()
+
+	// Parsing JSON
+	if !utils.ParseJson(req, c) {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	// Getting the project from the context
+	project := c.MustGet("project").(*models.Project)
+
+	// Updating the project based on the changes made
+	newProject, err := p.UpdateProject(database.DB, project.ID, req.Name)
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	utils.Response(c, 200,
+		"",
+		newProject,
 		nil)
 }

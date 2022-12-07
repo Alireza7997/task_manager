@@ -70,6 +70,23 @@ func (t *TableService) DeleteTable(db *goqu.Database, tableID uint) error {
 	return nil
 }
 
+func (t *TableService) UpdateTable(db *goqu.Database, tableID uint, tableTitle string, tableDesc string) (*models.Table, error) {
+	_, err := db.From(models.TableName).Where(goqu.C("id").Eq(tableID)).Update().Set(goqu.Record{
+		"title":       tableTitle,
+		"description": tableDesc,
+	}).Executor().Exec()
+	if err != nil {
+		return nil, errors.New("")
+	}
+	table, err := t.GetTableByID(db, tableID)
+	if err != nil {
+		return nil, errors.New("")
+	}
+	table.UpdatedAt = time.Now().Local()
+
+	return table, nil
+}
+
 func New() contract.TableInterface {
 	return service
 }

@@ -15,6 +15,10 @@ type TableRequest struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
+type TableUpdate struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
 
 func TablePOST(c *gin.Context) {
 	req := &TableRequest{}
@@ -132,7 +136,7 @@ func TableGET(c *gin.Context) {
 		nil)
 }
 
-func TableDelete(c *gin.Context) {
+func TableDELETE(c *gin.Context) {
 	t := tableService.New()
 
 	// Getting table's ID from url
@@ -159,5 +163,37 @@ func TableDelete(c *gin.Context) {
 	utils.Response(c, 200,
 		"Table Deleted",
 		"",
+		nil)
+}
+
+func TablePUT(c *gin.Context) {
+	req := &TableUpdate{}
+	t := tableService.New()
+
+	// Parsing JSON
+	if !utils.ParseJson(req, c) {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	// Getting the table from the context
+	table := c.MustGet("table").(*models.Table)
+
+	// Updating the table based on the changes made
+	newTable, err := t.UpdateTable(database.DB, table.ID, req.Title, req.Description)
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	utils.Response(c, 200,
+		"",
+		newTable,
 		nil)
 }

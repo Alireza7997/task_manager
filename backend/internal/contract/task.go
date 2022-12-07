@@ -15,7 +15,9 @@ type TaskInterface interface {
 	// Gets a Task from Database by task's ID
 	GetTaskByID(db *goqu.Database, id uint) (*models.Task, error)
 	// Gets Task from Database by table's ID
-	GetTasks(db goqu.Database, tableID uint) ([]models.Task, error)
+	GetTasks(db *goqu.Database, tableID uint) ([]models.Task, error)
 	// Deletes a task by task's ID
-	DeleteTask(db goqu.Database, taskID uint) error
+	DeleteTask(db *goqu.Database, taskID uint) error
+	// Updates a task
+	UpdateTask(db *goqu.Database, taskID uint, taskName string, taskDesc string) (*models.Task, error)
 }

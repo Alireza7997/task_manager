@@ -18,4 +18,6 @@ type ProjectInterface interface {
 	GetProjects(db *goqu.Database, uID uint) ([]models.Project, error)
 	// Deletes a Project by project's ID
 	DeleteProject(db *goqu.Database, pID uint) error
+	// Updates a project
+	UpdateProject(db *goqu.Database, projectID uint, projectName string) (*models.Project, error)
 }

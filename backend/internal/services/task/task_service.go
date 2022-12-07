@@ -50,7 +50,7 @@ func (t *TaskService) GetTaskByID(db *goqu.Database, id uint) (*models.Task, err
 	return task, nil
 }
 
-func (t *TaskService) GetTasks(db goqu.Database, tableID uint) ([]models.Task, error) {
+func (t *TaskService) GetTasks(db *goqu.Database, tableID uint) ([]models.Task, error) {
 	tasks := []models.Task{}
 	err := db.From(models.TaskName).Where(goqu.Ex{
 		"table_id": tableID,
@@ -61,7 +61,7 @@ func (t *TaskService) GetTasks(db goqu.Database, tableID uint) ([]models.Task, e
 	return tasks, nil
 }
 
-func (t *TaskService) DeleteTask(db goqu.Database, taskID uint) error {
+func (t *TaskService) DeleteTask(db *goqu.Database, taskID uint) error {
 	_, err := db.Delete(models.TaskName).Where(goqu.Ex{
 		"id": taskID,
 	}).Executor().Exec()
@@ -69,6 +69,23 @@ func (t *TaskService) DeleteTask(db goqu.Database, taskID uint) error {
 		return errors.New("")
 	}
 	return nil
+}
+
+func (t *TaskService) UpdateTask(db *goqu.Database, taskID uint, taskName string, taskDesc string) (*models.Task, error) {
+	_, err := db.From(models.TaskName).Where(goqu.C("id").Eq(taskID)).Update().Set(goqu.Record{
+		"name":        taskName,
+		"description": taskDesc,
+	}).Executor().Exec()
+	if err != nil {
+		return nil, errors.New("")
+	}
+	task, err := t.GetTaskByID(db, taskID)
+	if err != nil {
+		return nil, errors.New("")
+	}
+	task.UpdatedAt = time.Now().Local()
+
+	return task, nil
 }
 
 func New() contract.TaskInterface {
