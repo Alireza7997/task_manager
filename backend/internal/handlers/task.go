@@ -11,14 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TaskRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-type TaskUpdate struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
+type (
+	TaskRequest struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+	TaskUpdate struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+	TaskDrag struct {
+		CurrentPrev uint `json:"current_prev"`
+		Prev        uint `json:"prev"`
+	}
+)
 
 func TaskPOST(c *gin.Context) {
 	t := taskService.New()
@@ -172,6 +178,16 @@ func TaskPUT(c *gin.Context) {
 			"Internal Error",
 			"",
 			nil)
+		return
+	}
+
+	// Validating the request
+	if errors := validators.TaskPUTValidator.Validate(*req); errors != nil {
+		utils.Response(c, 400,
+			"Invalid request",
+			"Fields are not filled properly",
+			errors,
+		)
 		return
 	}
 

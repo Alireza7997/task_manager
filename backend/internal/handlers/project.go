@@ -170,6 +170,16 @@ func ProjectPUT(c *gin.Context) {
 		return
 	}
 
+	// Validating the request
+	if errors := validators.ProjectPUTValidator.Validate(*req); errors != nil {
+		utils.Response(c, 400,
+			"Invalid request",
+			"Fields are not filled properly",
+			errors,
+		)
+		return
+	}
+
 	// Getting the project from the context
 	project := c.MustGet("project").(*models.Project)
 

@@ -179,6 +179,16 @@ func TablePUT(c *gin.Context) {
 		return
 	}
 
+	// Validating the request
+	if errors := validators.TablePUTValidator.Validate(*req); errors != nil {
+		utils.Response(c, 400,
+			"Invalid request",
+			"Fields are not filled properly",
+			errors,
+		)
+		return
+	}
+
 	// Getting the table from the context
 	table := c.MustGet("table").(*models.Table)
 
