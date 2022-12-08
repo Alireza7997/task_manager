@@ -1,6 +1,7 @@
 package taskService
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -13,19 +14,38 @@ type TaskService struct{}
 
 var service = &TaskService{}
 
-func (t *TaskService) CreateTask(db *goqu.Database, tsk models.Task) (*models.Task, error) {
+func (t *TaskService) CreateTask(db *goqu.Database, tsk models.Task) (task *models.Task, err error) {
 	tsk.Done = false
 	tsk.CreatedAt = time.Now().Local()
+	lastTask, err := t.GetLastTask(db)
+	if err == sql.ErrNoRows {
+		_, err = db.Insert(models.TaskName).Rows(tsk).Executor().Exec()
+		if err != nil {
+			return
+		}
+		task, err = t.GetTaskByCA(db, tsk.CreatedAt)
+		if err != nil {
+			return
+		}
+		return
+	} else if err != nil && err != sql.ErrNoRows {
+		return
+	} else {
+		err = t.dndUpdate(db, lastTask.ID, tsk.ID)
+		if err != nil {
+			return
+		}
 
-	_, err := db.Insert(models.TaskName).Rows(tsk).Executor().Exec()
-	if err != nil {
-		return nil, errors.New(err.Error())
+		_, err = db.Insert(models.TaskName).Rows(tsk).Executor().Exec()
+		if err != nil {
+			return
+		}
+		task, err = t.GetTaskByCA(db, tsk.CreatedAt)
+		if err != nil {
+			return
+		}
+		return
 	}
-	task, err := t.GetTaskByCA(db, tsk.CreatedAt)
-	if err != nil {
-		return nil, errors.New(err.Error())
-	}
-	return task, nil
 }
 
 func (t *TaskService) GetTaskByCA(db *goqu.Database, timestamp time.Time) (*models.Task, error) {
@@ -43,6 +63,17 @@ func (t *TaskService) GetTaskByID(db *goqu.Database, id uint) (*models.Task, err
 	task := &models.Task{}
 	_, err := db.From(models.TaskName).Where(goqu.Ex{
 		"id": id,
+	}).Executor().ScanStruct(task)
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	return task, nil
+}
+
+func (t *TaskService) GetLastTask(db *goqu.Database) (*models.Task, error) {
+	task := &models.Task{}
+	_, err := db.From(models.TaskName).Where(goqu.Ex{
+		"next": 0,
 	}).Executor().ScanStruct(task)
 	if err != nil {
 		return nil, errors.New(err.Error())
@@ -72,9 +103,11 @@ func (t *TaskService) DeleteTask(db *goqu.Database, taskID uint) error {
 }
 
 func (t *TaskService) UpdateTask(db *goqu.Database, taskID uint, taskName string, taskDesc string) (*models.Task, error) {
+	updateTime := time.Now().Local()
 	_, err := db.From(models.TaskName).Where(goqu.C("id").Eq(taskID)).Update().Set(goqu.Record{
 		"name":        taskName,
 		"description": taskDesc,
+		"updated_at":  updateTime,
 	}).Executor().Exec()
 	if err != nil {
 		return nil, errors.New("")
@@ -83,9 +116,63 @@ func (t *TaskService) UpdateTask(db *goqu.Database, taskID uint, taskName string
 	if err != nil {
 		return nil, errors.New("")
 	}
-	task.UpdatedAt = time.Now().Local()
 
 	return task, nil
+}
+
+func (t *TaskService) DragDrop(db *goqu.Database, taskID uint, toTable uint, cPrev uint, prev uint) error {
+	// Getting 3 tasks from the database
+	tasks, err := t.dndGet(db, taskID, cPrev, prev)
+	if err != nil {
+		return errors.New("")
+	}
+	// Updating given tasks
+	err = t.dndMainUpdate(db, tasks[0].ID, toTable, tasks[2].Next)
+	if err != nil {
+		return errors.New("")
+	}
+	err = t.dndUpdate(db, tasks[1].ID, tasks[0].Next)
+	if err != nil {
+		return errors.New("")
+	}
+	err = t.dndUpdate(db, tasks[2].ID, tasks[0].ID)
+	if err != nil {
+		return errors.New("")
+	}
+
+	return nil
+}
+
+func (t *TaskService) dndGet(db *goqu.Database, ID1, ID2, ID3 uint) ([]models.Task, error) {
+	tasks := []models.Task{}
+	err := db.From(models.TaskName).Where(goqu.Ex{"id": ID1}, goqu.Ex{"id": ID2}, goqu.Ex{"id": ID3}).Executor().ScanStructs(&tasks)
+	if err != nil {
+		return nil, errors.New("")
+	}
+	return tasks, nil
+}
+func (t *TaskService) dndUpdate(db *goqu.Database, taskID uint, next uint) error {
+	updateTime := time.Now().Local()
+	_, err := db.From(models.TaskName).Where(goqu.C("id").Eq(taskID)).Update().Set(goqu.Record{
+		"next":       next,
+		"updated_at": updateTime,
+	}).Executor().Exec()
+	if err != nil {
+		return errors.New("")
+	}
+	return nil
+}
+func (t *TaskService) dndMainUpdate(db *goqu.Database, taskID uint, toTable uint, next uint) error {
+	updateTime := time.Now().Local()
+	_, err := db.From(models.TaskName).Where(goqu.C("id").Eq(taskID)).Update().Set(goqu.Record{
+		"table_id":   toTable,
+		"next":       next,
+		"updated_at": updateTime,
+	}).Executor().Exec()
+	if err != nil {
+		return errors.New("")
+	}
+	return nil
 }
 
 func New() contract.TaskInterface {

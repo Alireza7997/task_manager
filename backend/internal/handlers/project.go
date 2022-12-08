@@ -26,10 +26,6 @@ func ProjectPOST(c *gin.Context) {
 
 	// Parsing JSON
 	if !utils.ParseJson(req, c) {
-		utils.Response(c, 500,
-			"Internal Error",
-			"Error while parsing JSON",
-			nil)
 		return
 	}
 
@@ -163,10 +159,6 @@ func ProjectPUT(c *gin.Context) {
 
 	// Parsing JSON
 	if !utils.ParseJson(req, c) {
-		utils.Response(c, 500,
-			"Internal Error",
-			"",
-			nil)
 		return
 	}
 

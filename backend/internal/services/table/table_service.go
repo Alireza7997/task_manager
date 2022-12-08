@@ -71,9 +71,11 @@ func (t *TableService) DeleteTable(db *goqu.Database, tableID uint) error {
 }
 
 func (t *TableService) UpdateTable(db *goqu.Database, tableID uint, tableTitle string, tableDesc string) (*models.Table, error) {
+	updateTime := time.Now().Local()
 	_, err := db.From(models.TableName).Where(goqu.C("id").Eq(tableID)).Update().Set(goqu.Record{
 		"title":       tableTitle,
 		"description": tableDesc,
+		"updated_at":  updateTime,
 	}).Executor().Exec()
 	if err != nil {
 		return nil, errors.New("")
@@ -82,7 +84,6 @@ func (t *TableService) UpdateTable(db *goqu.Database, tableID uint, tableTitle s
 	if err != nil {
 		return nil, errors.New("")
 	}
-	table.UpdatedAt = time.Now().Local()
 
 	return table, nil
 }

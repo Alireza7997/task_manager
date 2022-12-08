@@ -32,10 +32,6 @@ func TaskPOST(c *gin.Context) {
 
 	// Parsing JSON
 	if !utils.ParseJson(req, c) {
-		utils.Response(c, 500,
-			"Internal Error",
-			"Error while parsing JSON",
-			nil)
 		return
 	}
 
@@ -65,6 +61,7 @@ func TaskPOST(c *gin.Context) {
 		Name:        req.Name,
 		Description: req.Description,
 		TableID:     uint(id),
+		Next:        0,
 	}
 	task, err := t.CreateTask(database.DB, *model)
 	if err != nil {
@@ -174,10 +171,6 @@ func TaskPUT(c *gin.Context) {
 
 	// Parsing JSON
 	if !utils.ParseJson(req, c) {
-		utils.Response(c, 500,
-			"Internal Error",
-			"",
-			nil)
 		return
 	}
 
@@ -207,5 +200,60 @@ func TaskPUT(c *gin.Context) {
 	utils.Response(c, 200,
 		"",
 		newTask,
+		nil)
+}
+
+func DragAndDrop(c *gin.Context) {
+	t := taskService.New()
+	req := &TaskDrag{}
+
+	// Parsing JSON
+	if !utils.ParseJson(req, c) {
+		return
+	}
+
+	// Validating the request
+	if errors := validators.TaskDRAGValidator.Validate(*req); errors != nil {
+		utils.Response(c, 400,
+			"Invalid request",
+			"Fields are not filled properly",
+			errors,
+		)
+		return
+	}
+
+	// Getting table and task ID from the url
+	param := c.Param("task_id")
+	param2 := c.Param("table_id")
+	taskID, err := strconv.Atoi(param)
+	if err != nil {
+		utils.Response(c, 400,
+			"Bad URL",
+			"",
+			nil)
+		return
+	}
+	tableID, err := strconv.Atoi(param2)
+	if err != nil {
+		utils.Response(c, 400,
+			"Bad URL",
+			"",
+			nil)
+		return
+	}
+
+	// Moving the task
+	err = t.DragDrop(database.DB, uint(taskID), uint(tableID), req.CurrentPrev, req.Prev)
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			nil)
+		return
+	}
+
+	utils.Response(c, 200,
+		"Task Moved",
+		"",
 		nil)
 }

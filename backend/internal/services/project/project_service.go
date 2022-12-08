@@ -69,8 +69,10 @@ func (p *ProjectService) DeleteProject(db *goqu.Database, projectID uint) error 
 }
 
 func (p *ProjectService) UpdateProject(db *goqu.Database, projectID uint, projectName string) (*models.Project, error) {
+	updateTime := time.Now().Local()
 	_, err := db.From(models.ProjectName).Where(goqu.C("id").Eq(projectID)).Update().Set(goqu.Record{
-		"name": projectName,
+		"name":       projectName,
+		"updated_at": updateTime,
 	}).Executor().Exec()
 	if err != nil {
 		return nil, errors.New("")
@@ -79,7 +81,6 @@ func (p *ProjectService) UpdateProject(db *goqu.Database, projectID uint, projec
 	if err != nil {
 		return nil, errors.New("")
 	}
-	project.UpdatedAt = time.Now().Local()
 
 	return project, nil
 }

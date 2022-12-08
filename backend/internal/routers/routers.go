@@ -39,5 +39,5 @@ func SetUpRouters(r *gin.Engine) {
 	manager2.PUT("/projects/:project_id", handlers.ProjectPUT)
 	manager2.PUT("/tables/:table_id", handlers.TablePUT)
 	manager2.PUT("/tasks/:task_id", handlers.TaskPUT)
-	manager2.PUT("/tasks/:task_id/to_table/:table_id")
+	manager2.PUT("/tasks/:task_id/to_table/:table_id", handlers.DragAndDrop)
 }

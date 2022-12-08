@@ -4,4 +4,4 @@ ADD COLUMN next INT;
 
 -- +migrate Down
 ALTER TABLE tasks
-DROP COLUMN next
+DROP COLUMN next;
