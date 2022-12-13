@@ -5,3 +5,9 @@ api
 # Ignore python files
 
 __pycache__
+
+# Ignore docker files
+
+Dockerfile
+docker-compose.yml
+pg_data
