@@ -22,12 +22,12 @@ const Popup: React.FC<PopupProps> = (props) => {
 			<div className="full">
 				<GlassmorphismForm addSquares={props.addSquares}>
 					<h3>{props.title}</h3>
-					{props.inputs.map((value) => {
-						return <InputGlassmorphismForm {...value} key={value.id} />;
+					{props.inputs.map((value, index) => {
+						return <InputGlassmorphismForm {...value} key={index} />;
 					})}
 					<div className="space-y-3">
-						{props.buttons.map((value) => {
-							return <InputGlassmorphismForm {...value} key={value.id} />;
+						{props.buttons.map((value, index) => {
+							return <InputGlassmorphismForm {...value} key={index} />;
 						})}
 					</div>
 				</GlassmorphismForm>

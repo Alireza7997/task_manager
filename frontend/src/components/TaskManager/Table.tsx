@@ -7,6 +7,9 @@ import { AuthContext } from "@/store/auth";
 // =============== Libraries =============== //
 import { useContext, useState } from "react";
 import { useMutation } from "react-query";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
@@ -29,11 +32,13 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = (props) => {
 	const auth = useContext(AuthContext);
-	const [addTaskFields, setAddTableFields] = useState<{
+	const [addTaskFields, setAddTaskFields] = useState<{
 		name: string;
 		description: string;
 	}>({ name: "", description: "" });
+	const [tableFields, setTableFields] = useState<TableData | null>(null);
 	const [showAddPopup, setShowAddPopup] = useState(false);
+	const [showEditPopup, setShowEditPopup] = useState(false);
 	const { mutateAsync: mutateAsyncAdd } = useMutation((id: number) =>
 		axios
 			.post<ResponseType>(
@@ -44,6 +49,19 @@ const Table: React.FC<TableProps> = (props) => {
 			.then((value) => value.data.message as TaskData)
 	);
 
+	const { mutate: mutatePut } = useMutation((table: TableData) =>
+		axios
+			.put<ResponseType>(`/tables/${table.id}`, table, auth.getAuthHeaders())
+			.then((value) => {
+				const data = value.data.message as TableData;
+				props.dispatchTables({
+					id: table.id,
+					method: "ReplaceTable",
+					tables: [data],
+				} as action);
+			})
+	);
+
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{
 			id: "name",
@@ -51,7 +69,7 @@ const Table: React.FC<TableProps> = (props) => {
 			type: "text",
 			value: addTaskFields.name,
 			onChange: (e) => {
-				setAddTableFields((prev) => {
+				setAddTaskFields((prev) => {
 					console.log(e.target.value);
 					return { ...prev, name: e.target.value };
 				});
@@ -63,7 +81,7 @@ const Table: React.FC<TableProps> = (props) => {
 			type: "text",
 			value: addTaskFields.description,
 			onChange: (e) => {
-				setAddTableFields((prev) => {
+				setAddTaskFields((prev) => {
 					return { ...prev, description: e.target.value };
 				});
 			},
@@ -84,7 +102,7 @@ const Table: React.FC<TableProps> = (props) => {
 						tasks: [value],
 					} as action);
 				});
-				setAddTableFields({ name: "", description: "" });
+				setAddTaskFields({ name: "", description: "" });
 				setShowAddPopup(false);
 			},
 		},
@@ -94,8 +112,54 @@ const Table: React.FC<TableProps> = (props) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				setAddTableFields({ name: "", description: "" });
+				setAddTaskFields({ name: "", description: "" });
 				setShowAddPopup(false);
+			},
+		},
+	];
+
+	const editInputs: InputGlassmorphismFormProps[] = [
+		{
+			label: "title",
+			type: "text",
+			value: tableFields?.title,
+			onChange: (e) => {
+				setTableFields((prev) => {
+					return { ...prev!, title: e.target.value };
+				});
+			},
+		},
+		{
+			id: "description",
+			label: "description",
+			type: "text",
+			value: tableFields?.description,
+			onChange: (e) => {
+				setTableFields((prev) => {
+					return { ...prev!, description: e.target.value };
+				});
+			},
+		},
+	];
+
+	const editButtons: InputGlassmorphismFormProps[] = [
+		{
+			label: "submit",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				mutatePut(tableFields!);
+				setTableFields(null);
+				setShowEditPopup(false);
+			},
+		},
+		{
+			label: "cancel",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				setTableFields(null);
+				setShowEditPopup(false);
 			},
 		},
 	];
@@ -110,6 +174,18 @@ const Table: React.FC<TableProps> = (props) => {
 					buttons={addButtons}
 					hide={() => {
 						setShowAddPopup(false);
+					}}
+				/>
+			)}
+			{showEditPopup && (
+				<Popup
+					addSquares={false}
+					title="Edit Table"
+					inputs={editInputs}
+					buttons={editButtons}
+					hide={() => {
+						setShowEditPopup(false);
+						setTableFields(null);
 					}}
 				/>
 			)}
@@ -139,19 +215,29 @@ const Table: React.FC<TableProps> = (props) => {
 
 				<div className={styles["table-buttons"]}>
 					<button
+						className="p-2"
 						onClick={() => {
 							setShowAddPopup(true);
 						}}
 					>
-						add task
+						<AddCircleIcon className="h-[30px] w-[30px]" />
 					</button>
-
 					<button
+						className="p-2"
+						onClick={() => {
+							setTableFields(props.table);
+							setShowEditPopup(true);
+						}}
+					>
+						<ModeEditIcon className="h-[30px] w-[30px]" />
+					</button>
+					<button
+						className="p-2"
 						onClick={() => {
 							props.deleteTable(props.table);
 						}}
 					>
-						delete table
+						<DeleteIcon className="h-[30px] w-[30px]" />
 					</button>
 				</div>
 			</div>

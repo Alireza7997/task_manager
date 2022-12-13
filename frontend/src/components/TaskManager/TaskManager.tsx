@@ -22,6 +22,7 @@ import ResponseType from "@/types/response";
 
 // =============== Utils =============== //
 import axios from "@/api/axios";
+import { orderBy } from "lodash";
 
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
@@ -45,6 +46,14 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 				action.tables[i].tasks = table && table.tasks ? table.tasks : [];
 			}
 			return action.tables;
+		case "ReplaceTable":
+			if (index === -1 || action.tables.length === 0) return prevState;
+			action.tables[0].tasks = prevState[index].tasks;
+			return [
+				...prevState.slice(0, index),
+				action.tables[0],
+				...prevState.slice(index + 1),
+			];
 		case "ReplaceTasks":
 			if (index === -1) return prevState;
 			prevState[index].tasks = action.tasks;
@@ -118,7 +127,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 		setShowDeletePopup(true);
 	};
 
-	const actualTables = tables.map((value) => {
+	const actualTables = orderBy(tables, (value) => value.id).map((value) => {
 		return (
 			<Table
 				key={value.id}

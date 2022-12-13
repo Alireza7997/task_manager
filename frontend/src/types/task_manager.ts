@@ -21,6 +21,7 @@ export interface action {
 		| "Add"
 		| "Delete"
 		| "Replace"
+		| "ReplaceTable"
 		| "ReplaceTasks"
 		| "AddTask"
 		| "DeleteTask";

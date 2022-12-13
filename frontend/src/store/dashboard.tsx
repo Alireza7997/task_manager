@@ -33,13 +33,13 @@ const DashboardProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
 	const pathName = typeof window !== "undefined" ? Router.pathname : "";
 	useEffect(() => {
-		const name = pathName.replaceAll("?*", "").replace("/", "");
+		const name = pathName.split("/")[1];
 		const nameWithSpace = name.replaceAll("_", " ");
 		if (listIcons[nameWithSpace] !== undefined) {
 			const path = "/" + name;
 			if (selectedOption !== nameWithSpace)
 				setSelectedOption(nameWithSpace as pageOptions);
-			if (pathName !== path) Router.push(path);
+			if (!pathName.includes(path)) Router.push(path);
 		}
 	}, [pathName]);
 
