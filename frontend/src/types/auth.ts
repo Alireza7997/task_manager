@@ -46,7 +46,6 @@ export default class Auth {
 		this.sessionID = sessionID;
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
-		console.log(accessToken);
 		me(this)();
 		if (redirectToRoot) Router.push("/");
 	}

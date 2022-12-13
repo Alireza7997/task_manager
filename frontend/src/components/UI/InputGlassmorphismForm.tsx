@@ -14,7 +14,7 @@ export interface InputGlassmorphismFormProps extends React.PropsWithChildren {
 	className?: string;
 	parentClassName?: string;
 	values?: string[];
-	value?: any;
+	value?: string;
 	default?: string;
 	errors?: string[];
 	readonly?: boolean;

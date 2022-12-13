@@ -24,11 +24,12 @@ const TaskManagerID = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	const { data, status } = useQuery(
-		["project-" + id, auth.is_authenticated],
+		"project-" + id,
 		() =>
 			axios
 				.get<ResponseType>(`/projects/${id}`, auth.getAuthHeaders())
-				.then((value) => value.data.message as Project)
+				.then((value) => value.data.message as Project),
+		{ enabled: auth.is_authenticated && id !== undefined }
 	);
 
 	return (

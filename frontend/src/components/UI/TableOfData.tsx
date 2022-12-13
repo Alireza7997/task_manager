@@ -42,7 +42,9 @@ const TableOfData = (props: TableOfDataProps) => {
 							key !== "user_id" ? (
 								<TableOfDataRowAttribute key={i}>
 									{item[key] instanceof Date
-										? moment(item[key]).format("YYYY-MM-DD")
+										? moment(item[key]).format("YYYY-MM-DD") === "0001-01-01"
+											? "----------------"
+											: moment(item[key]).format("YYYY-MM-DD")
 										: item[key]}
 								</TableOfDataRowAttribute>
 							) : null

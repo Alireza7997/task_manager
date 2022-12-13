@@ -23,15 +23,18 @@ import Project from "@/types/project";
 // =============== Store =============== //
 import { AuthContext } from "@/store/auth";
 import Router from "next/router";
+import orderBy from "lodash/orderBy";
 
 const TaskManager = () => {
 	const auth = useContext(AuthContext);
 	const [showAdd, setShowAdd] = useState(false);
-	const [projectName, setProjectName] = useState("");
 	const [showDelete, setShowDelete] = useState(false);
+	const [showEdit, setShowEdit] = useState(false);
+	const [projectAdd, setProjectAdd] = useState<Project | null>(null);
 	const [projectDelete, setProjectDelete] = useState<Project | null>(null);
+	const [projectEdit, setProjectEdit] = useState<Project | null>(null);
 	const { data, status, refetch } = useQuery(
-		["projects", auth.is_authenticated],
+		"projects",
 		() =>
 			axios
 				.get<ResponseType>("/projects", auth.getAuthHeaders())
@@ -49,17 +52,14 @@ const TaskManager = () => {
 							)
 						);
 					}
-					return output;
-				})
+					return orderBy(output, (value) => value.id);
+				}),
+		{ enabled: auth.is_authenticated }
 	);
 	const { mutate: mutatePost, isSuccess: isSuccessPost } = useMutation(() =>
 		axios
-			.post<ResponseType>(
-				"/projects",
-				{ name: projectName },
-				auth.getAuthHeaders()
-			)
-			.finally(() => setProjectName(""))
+			.post<ResponseType>("/projects", projectAdd, auth.getAuthHeaders())
+			.finally(() => setProjectDelete(null))
 	);
 	const { mutate: mutateDelete, isSuccess: isSuccessDelete } = useMutation(() =>
 		axios
@@ -68,6 +68,15 @@ const TaskManager = () => {
 				auth.getAuthHeaders()
 			)
 			.finally(() => setProjectDelete(null))
+	);
+	const { mutate: mutateEdit, isSuccess: isSuccessEdit } = useMutation(() =>
+		axios
+			.put<ResponseType>(
+				"/projects/" + projectEdit?.id,
+				projectEdit,
+				auth.getAuthHeaders()
+			)
+			.finally(() => setProjectEdit(null))
 	);
 
 	useEffect(() => {
@@ -78,13 +87,20 @@ const TaskManager = () => {
 		if (isSuccessDelete) refetch();
 	}, [isSuccessDelete]);
 
+	useEffect(() => {
+		if (isSuccessEdit) refetch();
+	}, [isSuccessEdit]);
+
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{
 			id: "name",
 			label: "name",
 			type: "text",
-			value: projectName,
-			onChange: (e) => setProjectName(e.currentTarget.value),
+			value: projectAdd?.name,
+			onChange: (e) =>
+				setProjectAdd((prev) => {
+					return { ...prev, name: e.target.value } as Project;
+				}),
 		},
 	];
 
@@ -131,6 +147,41 @@ const TaskManager = () => {
 		},
 	];
 
+	const editInputs: InputGlassmorphismFormProps[] = [
+		{
+			id: "name",
+			label: "name",
+			type: "text",
+			value: projectEdit?.name,
+			onChange: (e) =>
+				setProjectEdit((prev) => {
+					return { ...prev, name: e.target.value } as Project;
+				}),
+		},
+	];
+
+	const editButtons: InputGlassmorphismFormProps[] = [
+		{
+			id: "confirm",
+			label: "confirm",
+			type: "button",
+			onClick: (e) => {
+				e.preventDefault();
+				mutateEdit();
+				setShowEdit(false);
+			},
+		},
+		{
+			id: "cancel",
+			label: "cancel",
+			type: "button",
+			onClick: () => {
+				setShowEdit(false);
+				setProjectEdit(null);
+			},
+		},
+	];
+
 	return (
 		<>
 			{showDelete && projectDelete && (
@@ -140,6 +191,15 @@ const TaskManager = () => {
 					hide={() => setShowDelete(false)}
 					inputs={[]}
 					buttons={deleteButtons}
+				/>
+			)}
+			{showEdit && projectEdit && (
+				<Popup
+					title={`Edit Project`}
+					addSquares={false}
+					hide={() => setShowEdit(false)}
+					inputs={editInputs}
+					buttons={editButtons}
 				/>
 			)}
 			{showAdd && (
@@ -164,7 +224,10 @@ const TaskManager = () => {
 								setProjectDelete(value);
 								setShowDelete(true);
 							}}
-							onEditClick={(value: Project) => console.log(value)}
+							onEditClick={(value: Project) => {
+								setProjectEdit(value);
+								setShowEdit(true);
+							}}
 							onClick={(value: Project) =>
 								Router.push("/task_manager/" + value.id)
 							}
