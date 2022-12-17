@@ -28,6 +28,12 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
 		return value.id === action.id;
 	});
+	const taskIndex =
+		index > -1
+			? findIndex(prevState[index].tasks, (value) => {
+					return value.id === action.task_id;
+			  })
+			: -1;
 	switch (action.method) {
 		case "Add":
 			for (let i = 0; i < action.tables.length; i++) {
@@ -64,15 +70,17 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 			return [...prevState];
 		case "DeleteTask":
 			if (index === -1) return prevState;
-			const taskIndex = findIndex(prevState[index].tasks, (value) => {
-				return value.id === action.task_id;
-			});
 			if (taskIndex === -1) return prevState;
 			prevState[index].tasks = [
 				...prevState[index].tasks.slice(0, taskIndex),
 				...prevState[index].tasks.slice(taskIndex + 1),
 			];
 			return [...prevState];
+		case "ReplaceTask":
+			if (index === -1) return prevState;
+			if (taskIndex === -1 || action.tasks.length !== 1) return prevState;
+			prevState[index].tasks[taskIndex] = action.tasks[0];
+			return [...prevState]
 	}
 };
 
@@ -133,7 +141,6 @@ const TaskManager = ({ project }: { project: Project }) => {
 				key={value.id}
 				table={value}
 				deleteTable={deleteTable}
-				tasks={value.tasks ? value.tasks : []}
 				dispatchTables={dispatchTables}
 			/>
 		);

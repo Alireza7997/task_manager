@@ -5,8 +5,8 @@ import styles from "@/styles/TaskManager/Table.module.css";
 import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
-import { useContext, useState } from "react";
-import { useMutation } from "react-query";
+import { useContext, useEffect, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,7 +25,6 @@ import ResponseType from "@/types/response";
 
 interface TableProps {
 	table: TableData;
-	tasks: TaskData[];
 	dispatchTables: (value: action) => void;
 	deleteTable: (value: TableData) => void;
 }
@@ -39,6 +38,15 @@ const Table: React.FC<TableProps> = (props) => {
 	const [tableFields, setTableFields] = useState<TableData | null>(null);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showEditPopup, setShowEditPopup] = useState(false);
+	const { data, isSuccess } = useQuery(`tasble-${props.table.id}`, () =>
+		axios
+			.get<ResponseType>(
+				`/tables/${props.table.id}/tasks`,
+				auth.getAuthHeaders()
+			)
+			.then((value) => value.data.message as TaskData[])
+	);
+
 	const { mutateAsync: mutateAsyncAdd } = useMutation((id: number) =>
 		axios
 			.post<ResponseType>(
@@ -61,6 +69,16 @@ const Table: React.FC<TableProps> = (props) => {
 				} as action);
 			})
 	);
+
+	useEffect(() => {
+		if (isSuccess && data.length !== props.table.tasks.length) {
+			props.dispatchTables({
+				id: props.table.id,
+				method: "ReplaceTasks",
+				tasks: data,
+			} as action);
+		}
+	}, [isSuccess]);
 
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{
@@ -195,12 +213,12 @@ const Table: React.FC<TableProps> = (props) => {
 				</div>
 
 				<div className={styles["tasks"]}>
-					{props.tasks.length === 0 && (
+					{props.table.tasks.length === 0 && (
 						<div className="p-3 ">
 							<p className="text-center text-slate-200 font-bold">NO TASK</p>
 						</div>
 					)}
-					{props.tasks.map((value, index) => {
+					{props.table.tasks.map((value, index) => {
 						return (
 							<Task
 								key={value.id}

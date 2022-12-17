@@ -13,15 +13,16 @@
 	@apply bg-[#6cb7f5];
 }
 
-.task-row:active {
-	@apply scale-y-[.97] scale-x-[.99];
+/*! Fricking active is off */
+/* .task-row:active {
+	@apply scale-y-[.97] scale-x-[.99]; */
 
-	/* Blur */
-	@apply bg-opacity-80 backdrop-blur-[5px];
-}
+/* Blur */
+/* 	@apply bg-opacity-80 backdrop-blur-[5px];
+} */
 
 .button-icon {
-	@apply p-[2px] rounded-sm bg-[#c04d4d] hover:scale-[110%] transition-all;
+	@apply p-[2px] rounded-sm hover:scale-[110%] transition-all flex justify-center items-center;
 }
 
 .task-title {

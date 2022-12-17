@@ -24,7 +24,8 @@ export interface action {
 		| "ReplaceTable"
 		| "ReplaceTasks"
 		| "AddTask"
-		| "DeleteTask";
+		| "DeleteTask"
+		| "ReplaceTask";
 	tasks: TaskData[];
 	tables: TableData[];
 }
