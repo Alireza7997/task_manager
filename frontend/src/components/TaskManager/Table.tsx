@@ -10,6 +10,8 @@ import { useMutation, useQuery } from "react-query";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import findIndex from "lodash/findIndex";
+import orderBy from "lodash/orderBy";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
@@ -22,6 +24,36 @@ import axios from "@/api/axios";
 // =============== Types =============== //
 import { action, TableData, TaskData } from "@/types/task_manager";
 import ResponseType from "@/types/response";
+
+const OrderTasks = (tasks: TaskData[]): TaskData[] => {
+	const nexts = tasks.map((value) => value.next);
+	let head: TaskData | null = null;
+	for (let index = 0; index < tasks.length; index++) {
+		const element = tasks[index];
+		if (!(element.id in nexts)) {
+			head = element;
+			break;
+		}
+	}
+	if (head === null) {
+		return tasks;
+	}
+	const output: TaskData[] = [head];
+	let j = 0;
+	for (let index = head.next; j < tasks.length; j++) {
+		if (index === 0) {
+			break;
+		}
+		const foundIndex = findIndex(tasks, (value) => value.id === index);
+		if (foundIndex === -1) {
+			return output;
+		} else {
+			output.push(tasks[foundIndex]);
+			index = tasks[foundIndex].next;
+		}
+	}
+	return output;
+};
 
 interface TableProps {
 	table: TableData;
@@ -38,13 +70,27 @@ const Table: React.FC<TableProps> = (props) => {
 	const [tableFields, setTableFields] = useState<TableData | null>(null);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showEditPopup, setShowEditPopup] = useState(false);
-	const { data, isSuccess } = useQuery(`tasble-${props.table.id}`, () =>
-		axios
-			.get<ResponseType>(
-				`/tables/${props.table.id}/tasks`,
-				auth.getAuthHeaders()
-			)
-			.then((value) => value.data.message as TaskData[])
+	useQuery(
+		`tasble-${props.table.id}`,
+		() =>
+			axios
+				.get<ResponseType>(
+					`/tables/${props.table.id}/tasks`,
+					auth.getAuthHeaders()
+				)
+				.then((value) => {
+					const data = orderBy(value.data.message as TaskData[], (value) => {
+						value.next;
+					}).reverse();
+					props.dispatchTables({
+						id: props.table.id,
+						method: "ReplaceTasks",
+						tasks: OrderTasks(data),
+					} as action);
+				}),
+		{
+			refetchOnWindowFocus: false,
+		}
 	);
 
 	const { mutateAsync: mutateAsyncAdd } = useMutation((id: number) =>
@@ -69,16 +115,6 @@ const Table: React.FC<TableProps> = (props) => {
 				} as action);
 			})
 	);
-
-	useEffect(() => {
-		if (isSuccess && data.length !== props.table.tasks.length) {
-			props.dispatchTables({
-				id: props.table.id,
-				method: "ReplaceTasks",
-				tasks: data,
-			} as action);
-		}
-	}, [isSuccess]);
 
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{

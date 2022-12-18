@@ -54,7 +54,7 @@ const TaskManager = () => {
 					}
 					return orderBy(output, (value) => value.id);
 				}),
-		{ enabled: auth.is_authenticated }
+		{ enabled: auth.is_authenticated, refetchOnWindowFocus: false }
 	);
 	const { mutate: mutatePost, isSuccess: isSuccessPost } = useMutation(() =>
 		axios

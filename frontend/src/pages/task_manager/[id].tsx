@@ -29,7 +29,10 @@ const TaskManagerID = () => {
 			axios
 				.get<ResponseType>(`/projects/${id}`, auth.getAuthHeaders())
 				.then((value) => value.data.message as Project),
-		{ enabled: auth.is_authenticated && id !== undefined }
+		{
+			enabled: auth.is_authenticated && id !== undefined,
+			refetchOnWindowFocus: false,
+		}
 	);
 
 	return (

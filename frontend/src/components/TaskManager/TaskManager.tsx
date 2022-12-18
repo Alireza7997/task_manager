@@ -65,8 +65,10 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 			prevState[index].tasks = action.tasks;
 			return [...prevState];
 		case "AddTask":
-			if (index === -1) return prevState;
-			prevState[index].tasks = [...prevState[index].tasks, ...action.tasks];
+			if (index === -1 || action.tasks.length !== 1) return prevState;
+			prevState[index].tasks[prevState[index].tasks.length - 1].next =
+				action.tasks[0].id;
+			prevState[index].tasks = [...prevState[index].tasks, action.tasks[0]];
 			return [...prevState];
 		case "DeleteTask":
 			if (index === -1) return prevState;
@@ -80,7 +82,7 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 			if (index === -1) return prevState;
 			if (taskIndex === -1 || action.tasks.length !== 1) return prevState;
 			prevState[index].tasks[taskIndex] = action.tasks[0];
-			return [...prevState]
+			return [...prevState];
 	}
 };
 
@@ -103,7 +105,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 					auth.getAuthHeaders()
 				)
 				.then((value) => value.data.message as TableData[]),
-		{ enabled: auth.is_authenticated }
+		{ enabled: auth.is_authenticated, refetchOnWindowFocus: false }
 	);
 	const { mutateAsync: mutateAsyncDelete } = useMutation(
 		(tableId: number | string) =>

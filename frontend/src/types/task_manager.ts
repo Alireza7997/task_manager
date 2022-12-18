@@ -2,6 +2,7 @@ export interface TaskData {
 	id: number;
 	name: string;
 	description: string;
+	next: number;
 	done: boolean;
 }
 
