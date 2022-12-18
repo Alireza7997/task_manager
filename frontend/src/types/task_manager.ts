@@ -15,6 +15,11 @@ export interface TableData {
 	tasks: TaskData[];
 }
 
+interface DnD {
+	tableID: number;
+	taskIndex: number;
+}
+
 export interface action {
 	id: number;
 	task_id: number;
@@ -26,7 +31,10 @@ export interface action {
 		| "ReplaceTasks"
 		| "AddTask"
 		| "DeleteTask"
-		| "ReplaceTask";
+		| "ReplaceTask"
+		| "DnD";
+	source: DnD;
+	destination: DnD;
 	tasks: TaskData[];
 	tables: TableData[];
 }

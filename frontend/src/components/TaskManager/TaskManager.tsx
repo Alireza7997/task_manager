@@ -6,13 +6,15 @@ import { AuthContext } from "@/store/auth";
 
 // =============== Components =============== //
 import Table from "./Table";
-import Popup, { getInputValues } from "./Popup";
+import Popup from "./Popup";
 import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismForm";
 
 // =============== Libraries =============== //
 import { useContext, useEffect, useReducer, useState } from "react";
-import findIndex from "lodash/findIndex";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useMutation, useQuery } from "react-query";
+import findIndex from "lodash/findIndex";
+import orderBy from "lodash/orderBy";
 import find from "lodash/find";
 
 // =============== Types =============== //
@@ -22,7 +24,6 @@ import ResponseType from "@/types/response";
 
 // =============== Utils =============== //
 import axios from "@/api/axios";
-import { orderBy } from "lodash";
 
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
@@ -66,8 +67,6 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 			return [...prevState];
 		case "AddTask":
 			if (index === -1 || action.tasks.length !== 1) return prevState;
-			prevState[index].tasks[prevState[index].tasks.length - 1].next =
-				action.tasks[0].id;
 			prevState[index].tasks = [...prevState[index].tasks, action.tasks[0]];
 			return [...prevState];
 		case "DeleteTask":
@@ -83,8 +82,40 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 			if (taskIndex === -1 || action.tasks.length !== 1) return prevState;
 			prevState[index].tasks[taskIndex] = action.tasks[0];
 			return [...prevState];
+		case "DnD":
+			const sourceTableIndex = findIndex(
+				prevState,
+				(value) => value.id === action.source.tableID
+			);
+			const sourceTaskIndex = action.source.taskIndex;
+			const task = prevState[sourceTableIndex].tasks[sourceTaskIndex];
+			prevState[sourceTableIndex].tasks = [
+				...prevState[sourceTableIndex].tasks.slice(0, sourceTaskIndex),
+				...prevState[sourceTableIndex].tasks.slice(sourceTaskIndex + 1),
+			];
+			const destinationTableIndex = findIndex(
+				prevState,
+				(value) => value.id === action.destination.tableID
+			);
+			const destinationTaskIndex = action.destination.taskIndex;
+			prevState[destinationTableIndex].tasks = [
+				...prevState[destinationTableIndex].tasks.slice(
+					0,
+					destinationTaskIndex
+				),
+				task,
+				...prevState[destinationTableIndex].tasks.slice(destinationTaskIndex),
+			];
+			return [...prevState];
 	}
 };
+
+interface DndProps {
+	tableID: number;
+	taskID: number;
+	cPrev: number;
+	prev: number;
+}
 
 const TaskManager = ({ project }: { project: Project }) => {
 	const auth = useContext(AuthContext);
@@ -120,6 +151,13 @@ const TaskManager = ({ project }: { project: Project }) => {
 			)
 			.then((value) => value.data.message as TableData)
 	);
+	const { mutateAsync: mutateDnDAsync } = useMutation((props: DndProps) =>
+		axios.put<ResponseType>(
+			`/tasks/${props.taskID}/to_table/${props.tableID}`,
+			{ current_prev: props.cPrev, prev: props.prev },
+			auth.getAuthHeaders()
+		)
+	);
 
 	const dataLen = (data && data.length) || 0;
 	useEffect(() => {
@@ -147,6 +185,55 @@ const TaskManager = ({ project }: { project: Project }) => {
 			/>
 		);
 	});
+
+	const DropFunction = async (result: DropResult) => {
+		const { source, destination } = result;
+		if (destination === null || destination === undefined) return;
+		if (
+			destination.droppableId === source.droppableId &&
+			destination.index === source.index
+		)
+			return;
+
+		const sourceTableID = parseInt(source.droppableId);
+		const destinationTableID = parseInt(destination.droppableId);
+
+		const sourceTableIndex = findIndex(
+			tables,
+			(value) => value.id === sourceTableID
+		);
+		const destinationTableIndex = findIndex(
+			tables,
+			(value) => value.id === destinationTableID
+		);
+		const taskID = tables[sourceTableIndex].tasks[source.index].id;
+		const cPrev =
+			source.index - 1 > -1
+				? tables[sourceTableIndex].tasks[source.index - 1].id
+				: 0;
+		const prev =
+			destination.index - 1 > -1
+				? tables[destinationTableIndex].tasks[destination.index - 1].id
+				: 0;
+		await mutateDnDAsync({
+			cPrev: cPrev,
+			prev: prev,
+			tableID: destinationTableID,
+			taskID: taskID,
+		}).then(() =>
+			dispatchTables({
+				method: "DnD",
+				source: {
+					tableID: parseInt(source.droppableId),
+					taskIndex: source.index,
+				},
+				destination: {
+					tableID: parseInt(destination.droppableId),
+					taskIndex: destination.index,
+				},
+			} as action)
+		);
+	};
 
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{
@@ -251,7 +338,9 @@ const TaskManager = ({ project }: { project: Project }) => {
 			<div className={styles["task-manager-container"]}>
 				{status === "success" && (
 					<>
-						{actualTables}
+						<DragDropContext onDragEnd={DropFunction}>
+							{actualTables}
+						</DragDropContext>
 						<div className={styles["add-table"]}>
 							<button
 								onClick={(e) => {

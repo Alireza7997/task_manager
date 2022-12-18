@@ -7,6 +7,7 @@ import { AuthContext } from "@/store/auth";
 // =============== Libraries =============== //
 import { useContext, useState } from "react";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Draggable } from "react-beautiful-dnd";
 import EditIcon from "@mui/icons-material/Edit";
 import { useMutation } from "react-query";
 
@@ -166,29 +167,42 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 					}}
 				/>
 			)}
-			<div className={styles["task-row"]}>
-				<div className="flex items-center">
-					<h5 className={styles["task-title"]}>{props.task.name}</h5>
-					<TaskIcon
-						onClick={() => {
-							setShowDeletePopup(true);
-						}}
-						className="bg-[#c04d4d]"
+			<Draggable draggableId={props.task.id.toString()} index={props.index}>
+				{(provided, snapshot) => (
+					<div
+						className={`${styles["task-row"]} ${
+							snapshot.isDragging ? styles["task-row-active"] : ""
+						}`}
+						{...provided.draggableProps}
+						{...provided.dragHandleProps}
+						ref={provided.innerRef}
 					>
-						<DeleteForeverIcon className="w-5 h-5" htmlColor="#e6e6e6" />
-					</TaskIcon>
-					<TaskIcon
-						onClick={() => {
-							setShowEditPopup(true);
-							setTaskFields(props.task);
-						}}
-						className="bg-[#4C70FF]"
-					>
-						<EditIcon className="w-5 h-5" htmlColor="#e6e6e6" />
-					</TaskIcon>
-				</div>
-				<p className={styles["task-description"]}>{props.task.description}</p>
-			</div>
+						<div className="flex items-center">
+							<h5 className={styles["task-title"]}>{props.task.name}</h5>
+							<TaskIcon
+								onClick={() => {
+									setShowDeletePopup(true);
+								}}
+								className="bg-[#c04d4d]"
+							>
+								<DeleteForeverIcon className="w-5 h-5" htmlColor="#e6e6e6" />
+							</TaskIcon>
+							<TaskIcon
+								onClick={() => {
+									setShowEditPopup(true);
+									setTaskFields(props.task);
+								}}
+								className="bg-[#4C70FF]"
+							>
+								<EditIcon className="w-5 h-5" htmlColor="#e6e6e6" />
+							</TaskIcon>
+						</div>
+						<p className={styles["task-description"]}>
+							{props.task.description}
+						</p>
+					</div>
+				)}
+			</Draggable>
 		</>
 	);
 };

@@ -1,5 +1,5 @@
 .task-row {
-	@apply bg-[#60a2d8] rounded-lg px-4 py-4 cursor-grab;
+	@apply bg-[#60a2d8] rounded-lg px-4 py-4 cursor-grab my-2;
 
 	@apply transition-all;
 
@@ -13,13 +13,10 @@
 	@apply bg-[#6cb7f5];
 }
 
-/*! Fricking active is off */
-/* .task-row:active {
-	@apply scale-y-[.97] scale-x-[.99]; */
-
-/* Blur */
-/* 	@apply bg-opacity-80 backdrop-blur-[5px];
-} */
+.task-row-active {
+	/* Blur */
+	@apply bg-opacity-80 backdrop-blur-[5px];
+}
 
 .button-icon {
 	@apply p-[2px] rounded-sm hover:scale-[110%] transition-all flex justify-center items-center;

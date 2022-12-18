@@ -5,17 +5,19 @@ import styles from "@/styles/TaskManager/Table.module.css";
 import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import { Droppable } from "react-beautiful-dnd";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import includes from "lodash/includes";
 import findIndex from "lodash/findIndex";
 import orderBy from "lodash/orderBy";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
-import Popup, { getInputValues } from "./Popup";
+import Popup from "./Popup";
 import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
 
 // =============== Utils =============== //
@@ -30,7 +32,7 @@ const OrderTasks = (tasks: TaskData[]): TaskData[] => {
 	let head: TaskData | null = null;
 	for (let index = 0; index < tasks.length; index++) {
 		const element = tasks[index];
-		if (!(element.id in nexts)) {
+		if (!includes(nexts, element.id)) {
 			head = element;
 			break;
 		}
@@ -39,6 +41,8 @@ const OrderTasks = (tasks: TaskData[]): TaskData[] => {
 		return tasks;
 	}
 	const output: TaskData[] = [head];
+	console.log(head);
+	console.log(output);
 	let j = 0;
 	for (let index = head.next; j < tasks.length; j++) {
 		if (index === 0) {
@@ -52,6 +56,7 @@ const OrderTasks = (tasks: TaskData[]): TaskData[] => {
 			index = tasks[foundIndex].next;
 		}
 	}
+	console.log(output);
 	return output;
 };
 
@@ -248,24 +253,35 @@ const Table: React.FC<TableProps> = (props) => {
 					<h4>{props.table.title}</h4>
 				</div>
 
-				<div className={styles["tasks"]}>
-					{props.table.tasks.length === 0 && (
-						<div className="p-3 ">
-							<p className="text-center text-slate-200 font-bold">NO TASK</p>
+				<Droppable droppableId={props.table.id.toString()}>
+					{(provided) => (
+						<div
+							className={styles["tasks"]}
+							ref={provided.innerRef}
+							{...provided.droppableProps}
+						>
+							{props.table.tasks.length === 0 && (
+								<div className="p-3 ">
+									<p className="text-center text-slate-200 font-bold">
+										NO TASK
+									</p>
+								</div>
+							)}
+							{props.table.tasks.map((value, index) => {
+								return (
+									<Task
+										key={value.id}
+										index={index}
+										dispatchTables={props.dispatchTables}
+										task={value}
+										table={props.table}
+									/>
+								);
+							})}
+							{provided.placeholder}
 						</div>
 					)}
-					{props.table.tasks.map((value, index) => {
-						return (
-							<Task
-								key={value.id}
-								index={index}
-								dispatchTables={props.dispatchTables}
-								task={value}
-								table={props.table}
-							/>
-						);
-					})}
-				</div>
+				</Droppable>
 
 				<div className={styles["table-buttons"]}>
 					<button
