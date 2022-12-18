@@ -4,12 +4,12 @@ import "github.com/golodash/galidator"
 
 var TaskValidator = g.ComplexValidator(galidator.Rules{
 	"Name":        g.RuleSet("name").Required().Max(64),
-	"Description": g.RuleSet("description").Required().Max(1000),
+	"Description": g.RuleSet("description").Max(1000),
 })
 
 var TaskPUTValidator = g.ComplexValidator(galidator.Rules{
-	"Name":        g.RuleSet("name").Required().Max(64),
-	"Description": g.RuleSet("description").Required().Max(1000),
+	"Name":        g.RuleSet("name").Max(64),
+	"Description": g.RuleSet("description").Max(1000),
 })
 
 var TaskDRAGValidator = g.ComplexValidator(galidator.Rules{
