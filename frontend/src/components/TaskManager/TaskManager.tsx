@@ -130,37 +130,20 @@ const TaskManager = ({ project }: { project: Project }) => {
 	const [tables, dispatchTables] = useReducer(taskReducer, []);
 	const [addTableFields, setAddTableFields] = useState({} as tableFields);
 	const [table, setTable] = useState<TableData | null>(null);
-	const tablesGet = useGetTables(project.id, headers, is_authenticated);
 	const tablesDelete = useDeleteTables(headers);
 	const tablesPost = usePostTables(project.id, headers);
 	const projectsDND = usePutProjectsDND(auth.getAuthHeaders());
-
-	const dataLen = (tablesGet.data && tablesGet.data.length) || 0;
-	useEffect(() => {
-		if (dataLen > 0 && tables.length !== dataLen) {
-			dispatchTables({
-				id: project.id,
-				method: "Replace",
-				tables: tablesGet.data,
-			} as action);
-		}
-	}, [dataLen]);
+	const tablesGet = useGetTables(
+		project.id,
+		headers,
+		is_authenticated,
+		dispatchTables
+	);
 
 	const deleteTable = (value: TableData) => {
 		setTable(value);
 		setShowDeletePopup(true);
 	};
-
-	const actualTables = orderBy(tables, (value) => value.id).map((value) => {
-		return (
-			<Table
-				key={value.id}
-				table={value}
-				deleteTable={deleteTable}
-				dispatchTables={dispatchTables}
-			/>
-		);
-	});
 
 	const DropFunction = async (result: DropResult) => {
 		const { source, destination } = result;
@@ -319,7 +302,18 @@ const TaskManager = ({ project }: { project: Project }) => {
 				{tablesGet.status === "success" && (
 					<>
 						<DragDropContext onDragEnd={DropFunction}>
-							{actualTables}
+							{/* Actual Tables */}
+							{orderBy(tables, (value) => value.id).map((value) => {
+								return (
+									<Table
+										key={value.id}
+										table={value}
+										deleteTable={deleteTable}
+										dispatchTables={dispatchTables}
+									/>
+								);
+							})}
+							{/* End Of Actual Tables */}
 						</DragDropContext>
 						<div className={styles["add-table"]}>
 							<button

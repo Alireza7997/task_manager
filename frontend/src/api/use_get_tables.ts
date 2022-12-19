@@ -8,13 +8,14 @@ import ResponseType from "@/types/response";
 
 // =============== Utils =============== //
 import axios from "./axios";
-import { TableData } from "@/types/task_manager";
+import { action, TableData } from "@/types/task_manager";
 import CreateNotification from "@/notification/notification";
 
 const useGetTables = (
 	projectID: number,
 	headers: AxiosRequestConfig,
-	enabled: boolean
+	enabled: boolean,
+	dispatchTables: (value: action) => void
 ) => {
 	const snackProvider = useSnackbar();
 	const { data, status } = useQuery(
@@ -22,7 +23,15 @@ const useGetTables = (
 		() =>
 			axios
 				.get<ResponseType>(`/projects/${projectID}/tables`, headers)
-				.then((value) => value.data.message as TableData[])
+				.then((value) => {
+					const data = value.data.message as TableData[];
+					dispatchTables({
+						id: projectID,
+						method: "Replace",
+						tables: data,
+					} as action);
+					return data;
+				})
 				.catch((reason: AxiosError) => {
 					const data = reason.response?.data as ResponseType;
 					CreateNotification(
