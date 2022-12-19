@@ -29,6 +29,7 @@ import axios from "@/api/axios";
 import useGetTables from "@/api/use_get_tables";
 import usePutProjectsDND from "@/api/use_put_projects_dnd";
 import useDeleteTables from "@/api/use_delete_tables";
+import usePostTables from "@/api/use_post_tables";
 
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
@@ -131,15 +132,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 	const [table, setTable] = useState<TableData | null>(null);
 	const tablesGet = useGetTables(project.id, headers, is_authenticated);
 	const tablesDelete = useDeleteTables(headers);
-	const { mutateAsync: mutateAsyncAdd } = useMutation(() =>
-		axios
-			.post<ResponseType>(
-				`/projects/${project.id}/tables`,
-				addTableFields,
-				auth.getAuthHeaders()
-			)
-			.then((value) => value.data.message as TableData)
-	);
+	const tablesPost = usePostTables(project.id, headers);
 	const projectsDND = usePutProjectsDND(auth.getAuthHeaders());
 
 	const dataLen = (tablesGet.data && tablesGet.data.length) || 0;
@@ -250,9 +243,11 @@ const TaskManager = ({ project }: { project: Project }) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				mutateAsyncAdd().then((value) =>
-					dispatchTables({ method: "Add", tables: [value] } as action)
-				);
+				tablesPost
+					.mutateAsync(addTableFields as TableData)
+					.then((value) =>
+						dispatchTables({ method: "Add", tables: [value] } as action)
+					);
 				setAddTableFields({ title: "", description: "" });
 				setShowAddPopup(false);
 			},
