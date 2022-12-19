@@ -25,6 +25,9 @@ import ResponseType from "@/types/response";
 // =============== Utils =============== //
 import axios from "@/api/axios";
 
+// =============== API =============== //
+import usePutProjectDND from "@/api/use_put_project_dnd";
+
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
 		return value.id === action.id;
@@ -110,13 +113,6 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	}
 };
 
-interface DndProps {
-	tableID: number;
-	taskID: number;
-	cPrev: number;
-	prev: number;
-}
-
 const TaskManager = ({ project }: { project: Project }) => {
 	const auth = useContext(AuthContext);
 	const [showAddPopup, setShowAddPopup] = useState(false);
@@ -151,13 +147,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 			)
 			.then((value) => value.data.message as TableData)
 	);
-	const { mutateAsync: mutateDnDAsync } = useMutation((props: DndProps) =>
-		axios.put<ResponseType>(
-			`/tasks/${props.taskID}/to_table/${props.tableID}`,
-			{ current_prev: props.cPrev, prev: props.prev },
-			auth.getAuthHeaders()
-		)
-	);
+	const projectsDND = usePutProjectDND(auth.getAuthHeaders());
 
 	const dataLen = (data && data.length) || 0;
 	useEffect(() => {
@@ -215,24 +205,26 @@ const TaskManager = ({ project }: { project: Project }) => {
 			destination.index - 1 > -1
 				? tables[destinationTableIndex].tasks[destination.index - 1].id
 				: 0;
-		await mutateDnDAsync({
-			cPrev: cPrev,
-			prev: prev,
-			tableID: destinationTableID,
-			taskID: taskID,
-		}).then(() =>
-			dispatchTables({
-				method: "DnD",
-				source: {
-					tableID: parseInt(source.droppableId),
-					taskIndex: source.index,
-				},
-				destination: {
-					tableID: parseInt(destination.droppableId),
-					taskIndex: destination.index,
-				},
-			} as action)
-		);
+		await projectsDND
+			.mutateAsyncProjectDND({
+				cPrev: cPrev,
+				prev: prev,
+				tableID: destinationTableID,
+				taskID: taskID,
+			})
+			.then(() =>
+				dispatchTables({
+					method: "DnD",
+					source: {
+						tableID: parseInt(source.droppableId),
+						taskIndex: source.index,
+					},
+					destination: {
+						tableID: parseInt(destination.droppableId),
+						taskIndex: destination.index,
+					},
+				} as action)
+			);
 	};
 
 	const addInputs: InputGlassmorphismFormProps[] = [

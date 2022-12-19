@@ -12,12 +12,9 @@ import axios from "./axios";
 import Project from "@/types/project";
 import ResponseType from "@/types/response";
 
-const useGetProjects = (
-	headers: AxiosRequestConfig,
-	enabled: boolean
-) => {
+const useGetProjects = (headers: AxiosRequestConfig, enabled: boolean) => {
 	const snackProvider = useSnackbar();
-	const { data, error, status, refetch } = useQuery(
+	const { data, status, refetch } = useQuery(
 		"projects",
 		() =>
 			axios
@@ -57,7 +54,6 @@ const useGetProjects = (
 	return {
 		data: data as Project[],
 		status,
-		error: error as AxiosError,
 		refetch,
 	};
 };

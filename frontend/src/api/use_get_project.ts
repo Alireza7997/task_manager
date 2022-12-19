@@ -17,7 +17,7 @@ const useGetProject = (
 	enabled: boolean
 ) => {
 	const snackProvider = useSnackbar();
-	const { data, error, status, refetch } = useQuery(
+	const { data, status, refetch } = useQuery(
 		["project", id],
 		() =>
 			axios
@@ -40,7 +40,7 @@ const useGetProject = (
 		}
 	);
 
-	return { data: data as Project, status, error: error as AxiosError, refetch };
+	return { data: data as Project, status, refetch };
 };
 
 export default useGetProject;
