@@ -1,5 +1,5 @@
 // =============== Libraries =============== //
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useContext, useEffect, useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Head from "next/head";
