@@ -41,8 +41,6 @@ const OrderTasks = (tasks: TaskData[]): TaskData[] => {
 		return tasks;
 	}
 	const output: TaskData[] = [head];
-	console.log(head);
-	console.log(output);
 	let j = 0;
 	for (let index = head.next; j < tasks.length; j++) {
 		if (index === 0) {
@@ -56,7 +54,6 @@ const OrderTasks = (tasks: TaskData[]): TaskData[] => {
 			index = tasks[foundIndex].next;
 		}
 	}
-	console.log(output);
 	return output;
 };
 
@@ -75,8 +72,8 @@ const Table: React.FC<TableProps> = (props) => {
 	const [tableFields, setTableFields] = useState<TableData | null>(null);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showEditPopup, setShowEditPopup] = useState(false);
-	useQuery(
-		`tasble-${props.table.id}`,
+	const { error } = useQuery(
+		["table", props.table.id],
 		() =>
 			axios
 				.get<ResponseType>(
@@ -95,6 +92,7 @@ const Table: React.FC<TableProps> = (props) => {
 				}),
 		{
 			refetchOnWindowFocus: false,
+			retry: 0,
 		}
 	);
 
@@ -129,7 +127,6 @@ const Table: React.FC<TableProps> = (props) => {
 			value: addTaskFields.name,
 			onChange: (e) => {
 				setAddTaskFields((prev) => {
-					console.log(e.target.value);
 					return { ...prev, name: e.target.value };
 				});
 			},

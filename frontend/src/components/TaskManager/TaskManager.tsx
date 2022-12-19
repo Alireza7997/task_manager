@@ -128,7 +128,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 	}>({ title: "", description: "" });
 	const [table, setTable] = useState<TableData | null>(null);
 	const { data, status } = useQuery(
-		`tables-${project.id}`,
+		["tables", project.id],
 		() =>
 			axios
 				.get<ResponseType>(
@@ -136,7 +136,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 					auth.getAuthHeaders()
 				)
 				.then((value) => value.data.message as TableData[]),
-		{ enabled: auth.is_authenticated, refetchOnWindowFocus: false }
+		{ enabled: auth.is_authenticated, refetchOnWindowFocus: false, retry: 0 }
 	);
 	const { mutateAsync: mutateAsyncDelete } = useMutation(
 		(tableId: number | string) =>

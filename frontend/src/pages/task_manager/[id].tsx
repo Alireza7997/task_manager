@@ -1,7 +1,6 @@
 // =============== Libraries =============== //
 import { useContext } from "react";
 import { useRouter } from "next/router";
-import { useQuery } from "react-query";
 import Head from "next/head";
 
 // =============== Components =============== //
@@ -12,42 +11,39 @@ import DashboardContainer from "@/components/Dashboard/DashboardContainer";
 import { AuthContext } from "@/store/auth";
 
 // =============== Utils =============== //
-import axios from "@/api/axios";
+import useGetProject from "@/api/use_get_project";
 
 // =============== Type =============== //
-import ResponseType from "@/types/response";
-import Project from "@/types/project";
 import TaskManager from "@/components/TaskManager/TaskManager";
 
 const TaskManagerID = () => {
 	const auth = useContext(AuthContext);
 	const router = useRouter();
-	const { id } = router.query;
-	const { data, status } = useQuery(
-		"project-" + id,
-		() =>
-			axios
-				.get<ResponseType>(`/projects/${id}`, auth.getAuthHeaders())
-				.then((value) => value.data.message as Project),
-		{
-			enabled: auth.is_authenticated && id !== undefined,
-			refetchOnWindowFocus: false,
-		}
+	const { id: idString } = router.query;
+	const id = parseInt(idString as string);
+	// auth.is_authenticated && id !== undefined
+	const project = useGetProject(
+		id,
+		auth.getAuthHeaders(),
+		auth.is_authenticated && idString !== undefined
 	);
 
 	return (
 		<>
 			<Head>
 				<title>
-					{"Task Manager" + (status === "success" ? " - " + data!.name : "")}
+					{"Task Manager" +
+						(project.status === "success" ? " - " + project.data.name : "")}
 				</title>
 			</Head>
 			<DashboardContainer
 				title={
-					status === "success" ? `task manager - ${data.name}` : "loading..."
+					project.status === "success"
+						? `task manager - ${project.data.name}`
+						: "loading..."
 				}
 			>
-				{status === "success" ? <TaskManager project={data} /> : <></>}
+				{project.status === "success" && <TaskManager project={project.data} />}
 			</DashboardContainer>
 		</>
 	);

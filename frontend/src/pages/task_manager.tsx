@@ -23,7 +23,7 @@ import Project from "@/types/project";
 // =============== Store =============== //
 import { AuthContext } from "@/store/auth";
 import Router from "next/router";
-import orderBy from "lodash/orderBy";
+import useGetProjects from "@/api/use_get_projects";
 
 const TaskManager = () => {
 	const auth = useContext(AuthContext);
@@ -33,29 +33,7 @@ const TaskManager = () => {
 	const [projectAdd, setProjectAdd] = useState<Project | null>(null);
 	const [projectDelete, setProjectDelete] = useState<Project | null>(null);
 	const [projectEdit, setProjectEdit] = useState<Project | null>(null);
-	const { data, status, refetch } = useQuery(
-		"projects",
-		() =>
-			axios
-				.get<ResponseType>("/projects", auth.getAuthHeaders())
-				.then((value) => {
-					const data = value.data.message as Record<string, string>[];
-					const output: Project[] = [];
-					for (let i = 0; i < data.length; i++) {
-						const element = data[i];
-						output.push(
-							new Project(
-								element["id"],
-								element["name"],
-								element["created_at"],
-								element["updated_at"]
-							)
-						);
-					}
-					return orderBy(output, (value) => value.id);
-				}),
-		{ enabled: auth.is_authenticated, refetchOnWindowFocus: false }
-	);
+	const projects = useGetProjects(auth.getAuthHeaders(), auth.is_authenticated);
 	const { mutate: mutatePost, isSuccess: isSuccessPost } = useMutation(() =>
 		axios
 			.post<ResponseType>("/projects", projectAdd, auth.getAuthHeaders())
@@ -80,15 +58,15 @@ const TaskManager = () => {
 	);
 
 	useEffect(() => {
-		if (isSuccessPost) refetch();
+		if (isSuccessPost) projects.refetch();
 	}, [isSuccessPost]);
 
 	useEffect(() => {
-		if (isSuccessDelete) refetch();
+		if (isSuccessDelete) projects.refetch();
 	}, [isSuccessDelete]);
 
 	useEffect(() => {
-		if (isSuccessEdit) refetch();
+		if (isSuccessEdit) projects.refetch();
 	}, [isSuccessEdit]);
 
 	const addInputs: InputGlassmorphismFormProps[] = [
@@ -216,10 +194,13 @@ const TaskManager = () => {
 			</Head>
 			<DashboardContainer title="task manager - projects">
 				<div className="flex-grow overflow-y-scroll">
-					{status === "success" ? (
+					{projects.status === "loading" && <h1>Loading....</h1>}
+					{projects.status === "success" ? (
 						<TableOfData
-							headerList={data.length > 0 ? Object.keys(data[0]) : []}
-							list={data}
+							headerList={
+								projects.data.length > 0 ? Object.keys(projects.data[0]) : []
+							}
+							list={projects.data}
 							onDeleteClick={(value: Project) => {
 								setProjectDelete(value);
 								setShowDelete(true);

@@ -8,6 +8,8 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ReactNotifications } from "react-notifications-component";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { SnackbarProvider } from "notistack";
 
 // =============== Stores =============== //
 import AuthProvider from "@/store/auth";
@@ -33,19 +35,24 @@ function MyApp({ Component, pageProps }: ComponentWithPageLayout) {
 			</Head>
 			<ReactNotifications />
 
-			<QueryClientProvider client={client}>
-				<AuthProvider>
-					{Component.DashboardLayout ? (
-						<DashboardProvider>
-							<Component.DashboardLayout>
-								<Component {...pageProps} />
-							</Component.DashboardLayout>
-						</DashboardProvider>
-					) : (
-						<Component {...pageProps} />
+			<SnackbarProvider maxSnack={3}>
+				<QueryClientProvider client={client}>
+					{process.env.NEXT_PUBLIC_DEBUG && (
+						<ReactQueryDevtools position="bottom-right" initialIsOpen={false} />
 					)}
-				</AuthProvider>
-			</QueryClientProvider>
+					<AuthProvider>
+						{Component.DashboardLayout ? (
+							<DashboardProvider>
+								<Component.DashboardLayout>
+									<Component {...pageProps} />
+								</Component.DashboardLayout>
+							</DashboardProvider>
+						) : (
+							<Component {...pageProps} />
+						)}
+					</AuthProvider>
+				</QueryClientProvider>
+			</SnackbarProvider>
 		</>
 	);
 }
