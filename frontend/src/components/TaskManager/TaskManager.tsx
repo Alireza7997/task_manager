@@ -27,7 +27,8 @@ import axios from "@/api/axios";
 
 // =============== API =============== //
 import useGetTables from "@/api/use_get_tables";
-import usePutProjectDND from "@/api/use_put_project_dnd";
+import usePutProjectsDND from "@/api/use_put_projects_dnd";
+import useDeleteTables from "@/api/use_delete_tables";
 
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
@@ -121,20 +122,15 @@ interface tableFields {
 
 const TaskManager = ({ project }: { project: Project }) => {
 	const auth = useContext(AuthContext);
+	const headers = auth.getAuthHeaders();
+	const is_authenticated = auth.is_authenticated;
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
 	const [tables, dispatchTables] = useReducer(taskReducer, []);
 	const [addTableFields, setAddTableFields] = useState({} as tableFields);
 	const [table, setTable] = useState<TableData | null>(null);
-	const tablesGet = useGetTables(
-		project.id,
-		auth.getAuthHeaders(),
-		auth.is_authenticated
-	);
-	const { mutateAsync: mutateAsyncDelete } = useMutation(
-		(tableId: number | string) =>
-			axios.delete<ResponseType>(`/tables/${tableId}`, auth.getAuthHeaders())
-	);
+	const tablesGet = useGetTables(project.id, headers, is_authenticated);
+	const tablesDelete = useDeleteTables(headers);
 	const { mutateAsync: mutateAsyncAdd } = useMutation(() =>
 		axios
 			.post<ResponseType>(
@@ -144,7 +140,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 			)
 			.then((value) => value.data.message as TableData)
 	);
-	const projectsDND = usePutProjectDND(auth.getAuthHeaders());
+	const projectsDND = usePutProjectsDND(auth.getAuthHeaders());
 
 	const dataLen = (tablesGet.data && tablesGet.data.length) || 0;
 	useEffect(() => {
@@ -203,7 +199,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 				? tables[destinationTableIndex].tasks[destination.index - 1].id
 				: 0;
 		await projectsDND
-			.mutateAsyncProjectDND({
+			.mutateAsync({
 				cPrev: cPrev,
 				prev: prev,
 				tableID: destinationTableID,
@@ -281,9 +277,9 @@ const TaskManager = ({ project }: { project: Project }) => {
 			onClick: (e) => {
 				e.preventDefault();
 				const id = table!.id;
-				mutateAsyncDelete(id).then(() =>
-					dispatchTables({ id: id, method: "Delete" } as action)
-				);
+				tablesDelete
+					.mutateAsync(id)
+					.then(() => dispatchTables({ id: id, method: "Delete" } as action));
 				setShowDeletePopup(false);
 			},
 		},

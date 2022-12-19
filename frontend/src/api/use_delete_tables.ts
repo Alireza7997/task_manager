@@ -8,18 +8,13 @@ import CreateNotification from "@/notification/notification";
 import axios from "./axios";
 
 // =============== Types =============== //
-import DndProps from "@/types/dnd_props";
 import ResponseType from "@/types/response";
 
-const usePutProjectDND = (headers: AxiosRequestConfig) => {
+const useDeleteTables = (headers: AxiosRequestConfig) => {
 	const snackProvider = useSnackbar();
-	const { mutateAsync, mutate } = useMutation((props: DndProps) =>
+	const { mutateAsync, mutate } = useMutation((tableID: number | string) =>
 		axios
-			.put<ResponseType>(
-				`/tasks/${props.taskID}/to_table/${props.tableID}`,
-				{ current_prev: props.cPrev, prev: props.prev },
-				headers
-			)
+			.delete<ResponseType>(`/tables/${tableID}`, headers)
 			.catch((reason: AxiosError) => {
 				const data = reason.response?.data as ResponseType;
 				CreateNotification(
@@ -33,9 +28,9 @@ const usePutProjectDND = (headers: AxiosRequestConfig) => {
 	);
 
 	return {
-		mutateProjectDND: mutate,
-		mutateAsyncProjectDND: mutateAsync,
+		mutate,
+		mutateAsync,
 	};
 };
 
-export default usePutProjectDND;
+export default useDeleteTables;
