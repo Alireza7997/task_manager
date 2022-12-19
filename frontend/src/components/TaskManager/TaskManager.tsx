@@ -26,6 +26,7 @@ import ResponseType from "@/types/response";
 import axios from "@/api/axios";
 
 // =============== API =============== //
+import useGetTables from "@/api/use_get_tables";
 import usePutProjectDND from "@/api/use_put_project_dnd";
 
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
@@ -113,26 +114,22 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	}
 };
 
+interface tableFields {
+	title: string;
+	description: string;
+}
+
 const TaskManager = ({ project }: { project: Project }) => {
 	const auth = useContext(AuthContext);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
 	const [tables, dispatchTables] = useReducer(taskReducer, []);
-	const [addTableFields, setAddTableFields] = useState<{
-		title: string;
-		description: string;
-	}>({ title: "", description: "" });
+	const [addTableFields, setAddTableFields] = useState({} as tableFields);
 	const [table, setTable] = useState<TableData | null>(null);
-	const { data, status } = useQuery(
-		["tables", project.id],
-		() =>
-			axios
-				.get<ResponseType>(
-					`/projects/${project.id}/tables`,
-					auth.getAuthHeaders()
-				)
-				.then((value) => value.data.message as TableData[]),
-		{ enabled: auth.is_authenticated, refetchOnWindowFocus: false, retry: 0 }
+	const tablesGet = useGetTables(
+		project.id,
+		auth.getAuthHeaders(),
+		auth.is_authenticated
 	);
 	const { mutateAsync: mutateAsyncDelete } = useMutation(
 		(tableId: number | string) =>
@@ -149,13 +146,13 @@ const TaskManager = ({ project }: { project: Project }) => {
 	);
 	const projectsDND = usePutProjectDND(auth.getAuthHeaders());
 
-	const dataLen = (data && data.length) || 0;
+	const dataLen = (tablesGet.data && tablesGet.data.length) || 0;
 	useEffect(() => {
 		if (dataLen > 0 && tables.length !== dataLen) {
 			dispatchTables({
 				id: project.id,
 				method: "Replace",
-				tables: data,
+				tables: tablesGet.data,
 			} as action);
 		}
 	}, [dataLen]);
@@ -328,7 +325,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 				/>
 			)}
 			<div className={styles["task-manager-container"]}>
-				{status === "success" && (
+				{tablesGet.status === "success" && (
 					<>
 						<DragDropContext onDragEnd={DropFunction}>
 							{actualTables}
