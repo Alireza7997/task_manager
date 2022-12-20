@@ -28,6 +28,7 @@ import Router from "next/router";
 import useGetProjects from "@/api/use_get_projects";
 import usePostProject from "@/api/use_post_project";
 import useDeleteProject from "@/api/use_delete_project";
+import usePutProject from "@/api/use_put_project";
 
 const TaskManager = () => {
 	const auth = useContext(AuthContext);
@@ -43,15 +44,7 @@ const TaskManager = () => {
 		auth.is_authenticated
 	);
 	const projectDelete = useDeleteProject(auth.getAuthHeaders());
-	const { mutate: mutateEdit, isSuccess: isSuccessEdit } = useMutation(() =>
-		axios
-			.put<ResponseType>(
-				"/projects/" + projectEdit?.id,
-				projectEdit,
-				auth.getAuthHeaders()
-			)
-			.finally(() => setProjectEdit(null))
-	);
+	const projectPut = usePutProject(auth.getAuthHeaders());
 
 	useEffect(() => {
 		if (projectPost.isSuccess) projectsGet.refetch();
@@ -62,8 +55,8 @@ const TaskManager = () => {
 	}, [projectDelete.isSuccess]);
 
 	useEffect(() => {
-		if (isSuccessEdit) projectsGet.refetch();
-	}, [isSuccessEdit]);
+		if (projectPut.isSuccess) projectsGet.refetch();
+	}, [projectPut.isSuccess]);
 
 	const addInputs: InputGlassmorphismFormProps[] = [
 		{
@@ -145,7 +138,9 @@ const TaskManager = () => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				mutateEdit();
+				projectPut
+					.mutateAsync(projectEdit!)
+					.finally(() => setProjectEdit(null));
 				setShowEdit(false);
 			},
 		},
