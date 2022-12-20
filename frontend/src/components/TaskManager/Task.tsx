@@ -24,6 +24,7 @@ import ResponseType from "@/types/response";
 
 // =============== API =============== //
 import useDeleteTask from "@/api/use_delete_task";
+import usePutTask from "@/api/use_put_task";
 
 interface TaskIconProps extends React.PropsWithChildren {
 	onClick?: () => void;
@@ -54,19 +55,10 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
 	const [taskFields, setTaskFields] = useState<TaskData | null>(null);
 	const taskDelete = useDeleteTask(props.task.id, auth.getAuthHeaders());
-
-	const { mutate: mutatePut } = useMutation((task: TaskData) =>
-		axios
-			.put<ResponseType>(`/tasks/${task.id}`, task, auth.getAuthHeaders())
-			.then((value) => {
-				const data = value.data.message as TaskData;
-				props.dispatchTables({
-					id: props.table.id,
-					task_id: task.id,
-					method: "ReplaceTask",
-					tasks: [data],
-				} as action);
-			})
+	const taskPut = usePutTask(
+		props.table.id,
+		auth.getAuthHeaders(),
+		props.dispatchTables
 	);
 
 	const editInputs: InputGlassmorphismFormProps[] = [
@@ -99,7 +91,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				mutatePut(taskFields!);
+				taskPut.mutate(taskFields!);
 				setTaskFields(null);
 				setShowEditPopup(false);
 			},
