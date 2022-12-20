@@ -6,7 +6,6 @@ import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
 import { useContext, useState } from "react";
-import { useMutation } from "react-query";
 import { Droppable } from "react-beautiful-dnd";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
@@ -17,12 +16,8 @@ import Task from "@/components/TaskManager/Task";
 import Popup from "./Popup";
 import { InputGlassmorphismFormProps } from "../UI/InputGlassmorphismForm";
 
-// =============== Utils =============== //
-import axios from "@/api/axios";
-
 // =============== Types =============== //
 import { action, TableData, TaskData } from "@/types/task_manager";
-import ResponseType from "@/types/response";
 
 // =============== API =============== //
 import useGetTasks from "@/api/use_get_tasks";

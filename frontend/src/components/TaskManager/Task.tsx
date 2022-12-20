@@ -22,6 +22,9 @@ import axios from "@/api/axios";
 import { action, TableData, TaskData } from "@/types/task_manager";
 import ResponseType from "@/types/response";
 
+// =============== API =============== //
+import useDeleteTask from "@/api/use_delete_task";
+
 interface TaskIconProps extends React.PropsWithChildren {
 	onClick?: () => void;
 	className?: string;
@@ -50,9 +53,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 	const [showEditPopup, setShowEditPopup] = useState(false);
 	const [showDeletePopup, setShowDeletePopup] = useState(false);
 	const [taskFields, setTaskFields] = useState<TaskData | null>(null);
-	const { mutateAsync: mutateAsyncDelete } = useMutation((id: number) =>
-		axios.delete<ResponseType>(`/tasks/${id}`, auth.getAuthHeaders())
-	);
+	const taskDelete = useDeleteTask(props.task.id, auth.getAuthHeaders());
 
 	const { mutate: mutatePut } = useMutation((task: TaskData) =>
 		axios
@@ -121,7 +122,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				mutateAsyncDelete(props.task.id).then(() =>
+				taskDelete.mutateAsync().then(() =>
 					props.dispatchTables({
 						id: props.table.id,
 						method: "DeleteTask",
