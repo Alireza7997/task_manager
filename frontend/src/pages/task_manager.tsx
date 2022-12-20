@@ -1,5 +1,4 @@
 // =============== Libraries =============== //
-import { useMutation } from "react-query";
 import { useContext, useEffect, useState } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Head from "next/head";
@@ -13,11 +12,7 @@ import InputGlassmorphismForm, {
 	InputGlassmorphismFormProps,
 } from "@/components/UI/InputGlassmorphismForm";
 
-// =============== Utils =============== //
-import axios from "@/api/axios";
-
 // =============== Types =============== //
-import ResponseType from "@/types/response";
 import Project from "@/types/project";
 
 // =============== Store =============== //
