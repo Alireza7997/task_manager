@@ -6,14 +6,11 @@ import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
 import { useContext, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { Droppable } from "react-beautiful-dnd";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import includes from "lodash/includes";
-import findIndex from "lodash/findIndex";
-import orderBy from "lodash/orderBy";
 
 // =============== Components =============== //
 import Task from "@/components/TaskManager/Task";
@@ -27,35 +24,8 @@ import axios from "@/api/axios";
 import { action, TableData, TaskData } from "@/types/task_manager";
 import ResponseType from "@/types/response";
 
-const OrderTasks = (tasks: TaskData[]): TaskData[] => {
-	const nexts = tasks.map((value) => value.next);
-	let head: TaskData | null = null;
-	for (let index = 0; index < tasks.length; index++) {
-		const element = tasks[index];
-		if (!includes(nexts, element.id)) {
-			head = element;
-			break;
-		}
-	}
-	if (head === null) {
-		return tasks;
-	}
-	const output: TaskData[] = [head];
-	let j = 0;
-	for (let index = head.next; j < tasks.length; j++) {
-		if (index === 0) {
-			break;
-		}
-		const foundIndex = findIndex(tasks, (value) => value.id === index);
-		if (foundIndex === -1) {
-			return output;
-		} else {
-			output.push(tasks[foundIndex]);
-			index = tasks[foundIndex].next;
-		}
-	}
-	return output;
-};
+// =============== API =============== //
+import useGetTasks from "@/api/use_get_tasks";
 
 interface TableProps {
 	table: TableData;
@@ -72,28 +42,11 @@ const Table: React.FC<TableProps> = (props) => {
 	const [tableFields, setTableFields] = useState<TableData | null>(null);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showEditPopup, setShowEditPopup] = useState(false);
-	const { error } = useQuery(
-		["table", props.table.id],
-		() =>
-			axios
-				.get<ResponseType>(
-					`/tables/${props.table.id}/tasks`,
-					auth.getAuthHeaders()
-				)
-				.then((value) => {
-					const data = orderBy(value.data.message as TaskData[], (value) => {
-						value.next;
-					}).reverse();
-					props.dispatchTables({
-						id: props.table.id,
-						method: "ReplaceTasks",
-						tasks: OrderTasks(data),
-					} as action);
-				}),
-		{
-			refetchOnWindowFocus: false,
-			retry: 0,
-		}
+	useGetTasks(
+		props.table.id,
+		auth.getAuthHeaders(),
+		true,
+		props.dispatchTables
 	);
 
 	const { mutateAsync: mutateAsyncAdd } = useMutation((id: number) =>

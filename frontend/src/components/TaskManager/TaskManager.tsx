@@ -10,7 +10,7 @@ import Popup from "./Popup";
 import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismForm";
 
 // =============== Libraries =============== //
-import { useContext, useEffect, useReducer, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import findIndex from "lodash/findIndex";
 import orderBy from "lodash/orderBy";
@@ -19,10 +19,6 @@ import find from "lodash/find";
 // =============== Types =============== //
 import { TableData, action } from "@/types/task_manager";
 import Project from "@/types/project";
-import ResponseType from "@/types/response";
-
-// =============== Utils =============== //
-import axios from "@/api/axios";
 
 // =============== API =============== //
 import useGetTables from "@/api/use_get_tables";
