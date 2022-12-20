@@ -22,9 +22,9 @@ import Project from "@/types/project";
 
 // =============== API =============== //
 import useGetTables from "@/api/use_get_tables";
-import usePutProjectsDND from "@/api/use_put_projects_dnd";
-import useDeleteTables from "@/api/use_delete_tables";
-import usePostTables from "@/api/use_post_tables";
+import usePutProjectDND from "@/api/use_put_project_dnd";
+import useDeleteTable from "@/api/use_delete_table";
+import usePostTable from "@/api/use_post_table";
 
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
@@ -125,9 +125,9 @@ const TaskManager = ({ project }: { project: Project }) => {
 	const [tables, dispatchTables] = useReducer(taskReducer, []);
 	const [addTableFields, setAddTableFields] = useState({} as tableFields);
 	const [table, setTable] = useState<TableData | null>(null);
-	const tablesDelete = useDeleteTables(headers);
-	const tablesPost = usePostTables(project.id, headers);
-	const projectsDND = usePutProjectsDND(auth.getAuthHeaders());
+	const tablesDelete = useDeleteTable(headers);
+	const tablesPost = usePostTable(project.id, headers);
+	const projectsDND = usePutProjectDND(auth.getAuthHeaders());
 	const tablesGet = useGetTables(
 		project.id,
 		headers,

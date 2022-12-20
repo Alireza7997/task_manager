@@ -9,12 +9,14 @@ import axios from "./axios";
 
 // =============== Types =============== //
 import ResponseType from "@/types/response";
+import { TaskData } from "@/types/task_manager";
 
-const useDeleteTables = (headers: AxiosRequestConfig) => {
+const usePostTask = (tableID: number, headers: AxiosRequestConfig) => {
 	const snackProvider = useSnackbar();
-	const { mutateAsync, mutate } = useMutation((tableID: number | string) =>
+	const { mutateAsync, mutate } = useMutation((data: TaskData) =>
 		axios
-			.delete<ResponseType>(`/tables/${tableID}`, headers)
+			.post<ResponseType>(`/tables/${tableID}/tasks`, data, headers)
+			.then((value) => value.data.message as TaskData)
 			.catch((reason: AxiosError) => {
 				const data = reason.response?.data as ResponseType;
 				CreateNotification(
@@ -33,4 +35,4 @@ const useDeleteTables = (headers: AxiosRequestConfig) => {
 	};
 };
 
-export default useDeleteTables;
+export default usePostTask;

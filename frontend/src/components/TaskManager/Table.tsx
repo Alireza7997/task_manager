@@ -26,6 +26,7 @@ import ResponseType from "@/types/response";
 
 // =============== API =============== //
 import useGetTasks from "@/api/use_get_tasks";
+import usePostTask from "@/api/use_post_task";
 
 interface TableProps {
 	table: TableData;
@@ -33,32 +34,24 @@ interface TableProps {
 	deleteTable: (value: TableData) => void;
 }
 
+interface taskFields {
+	name: string;
+	description: string;
+}
+
 const Table: React.FC<TableProps> = (props) => {
 	const auth = useContext(AuthContext);
-	const [addTaskFields, setAddTaskFields] = useState<{
-		name: string;
-		description: string;
-	}>({ name: "", description: "" });
+	const [addTaskFields, setAddTaskFields] = useState({} as taskFields);
 	const [tableFields, setTableFields] = useState<TableData | null>(null);
 	const [showAddPopup, setShowAddPopup] = useState(false);
 	const [showEditPopup, setShowEditPopup] = useState(false);
+	const taskPost = usePostTask(props.table.id, auth.getAuthHeaders());
 	useGetTasks(
 		props.table.id,
 		auth.getAuthHeaders(),
 		true,
 		props.dispatchTables
 	);
-
-	const { mutateAsync: mutateAsyncAdd } = useMutation((id: number) =>
-		axios
-			.post<ResponseType>(
-				`/tables/${id}/tasks`,
-				addTaskFields,
-				auth.getAuthHeaders()
-			)
-			.then((value) => value.data.message as TaskData)
-	);
-
 	const { mutate: mutatePut } = useMutation((table: TableData) =>
 		axios
 			.put<ResponseType>(`/tables/${table.id}`, table, auth.getAuthHeaders())
@@ -104,7 +97,7 @@ const Table: React.FC<TableProps> = (props) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				mutateAsyncAdd(props.table.id).then((value) => {
+				taskPost.mutateAsync(addTaskFields as TaskData).then((value) => {
 					props.dispatchTables({
 						id: props.table.id,
 						method: "AddTask",
