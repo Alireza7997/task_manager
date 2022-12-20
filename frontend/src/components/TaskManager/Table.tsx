@@ -27,6 +27,7 @@ import ResponseType from "@/types/response";
 // =============== API =============== //
 import useGetTasks from "@/api/use_get_tasks";
 import usePostTask from "@/api/use_post_task";
+import usePutTable from "@/api/use_put_table";
 
 interface TableProps {
 	table: TableData;
@@ -52,17 +53,10 @@ const Table: React.FC<TableProps> = (props) => {
 		true,
 		props.dispatchTables
 	);
-	const { mutate: mutatePut } = useMutation((table: TableData) =>
-		axios
-			.put<ResponseType>(`/tables/${table.id}`, table, auth.getAuthHeaders())
-			.then((value) => {
-				const data = value.data.message as TableData;
-				props.dispatchTables({
-					id: table.id,
-					method: "ReplaceTable",
-					tables: [data],
-				} as action);
-			})
+	const tablePut = usePutTable(
+		props.table.id,
+		auth.getAuthHeaders(),
+		props.dispatchTables
 	);
 
 	const addInputs: InputGlassmorphismFormProps[] = [
@@ -150,7 +144,7 @@ const Table: React.FC<TableProps> = (props) => {
 			type: "button",
 			onClick: (e) => {
 				e.preventDefault();
-				mutatePut(tableFields!);
+				tablePut.mutate(tableFields!);
 				setTableFields(null);
 				setShowEditPopup(false);
 			},
