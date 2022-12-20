@@ -27,6 +27,7 @@ import Router from "next/router";
 // =============== API =============== //
 import useGetProjects from "@/api/use_get_projects";
 import usePostProject from "@/api/use_post_project";
+import useDeleteProject from "@/api/use_delete_project";
 
 const TaskManager = () => {
 	const auth = useContext(AuthContext);
@@ -34,21 +35,14 @@ const TaskManager = () => {
 	const [showDelete, setShowDelete] = useState(false);
 	const [showEdit, setShowEdit] = useState(false);
 	const [projectAdd, setProjectAdd] = useState<Project | null>(null);
-	const [projectDelete, setProjectDelete] = useState<Project | null>(null);
+	const [projectRemove, setProjectRemove] = useState<Project | null>(null);
 	const [projectEdit, setProjectEdit] = useState<Project | null>(null);
+	const projectPost = usePostProject(auth.getAuthHeaders());
 	const projectsGet = useGetProjects(
 		auth.getAuthHeaders(),
 		auth.is_authenticated
 	);
-	const projectPost = usePostProject(auth.getAuthHeaders());
-	const { mutate: mutateDelete, isSuccess: isSuccessDelete } = useMutation(() =>
-		axios
-			.delete<ResponseType>(
-				"/projects/" + projectDelete?.id,
-				auth.getAuthHeaders()
-			)
-			.finally(() => setProjectDelete(null))
-	);
+	const projectDelete = useDeleteProject(auth.getAuthHeaders());
 	const { mutate: mutateEdit, isSuccess: isSuccessEdit } = useMutation(() =>
 		axios
 			.put<ResponseType>(
@@ -64,8 +58,8 @@ const TaskManager = () => {
 	}, [projectPost.isSuccess]);
 
 	useEffect(() => {
-		if (isSuccessDelete) projectsGet.refetch();
-	}, [isSuccessDelete]);
+		if (projectDelete.isSuccess) projectsGet.refetch();
+	}, [projectDelete.isSuccess]);
 
 	useEffect(() => {
 		if (isSuccessEdit) projectsGet.refetch();
@@ -93,7 +87,7 @@ const TaskManager = () => {
 				e.preventDefault();
 				await projectPost
 					.mutateAsync(projectAdd!)
-					.finally(() => setProjectDelete(null));
+					.finally(() => setProjectAdd(null));
 				setShowAdd(false);
 			},
 		},
@@ -112,9 +106,11 @@ const TaskManager = () => {
 			id: "confirm",
 			label: "confirm",
 			type: "button",
-			onClick: (e) => {
+			onClick: async (e) => {
 				e.preventDefault();
-				mutateDelete();
+				await projectDelete
+					.mutateAsync(projectRemove!.id)
+					.finally(() => setProjectRemove(null));
 				setShowDelete(false);
 			},
 		},
@@ -124,7 +120,7 @@ const TaskManager = () => {
 			type: "button",
 			onClick: () => {
 				setShowDelete(false);
-				setProjectDelete(null);
+				setProjectRemove(null);
 			},
 		},
 	];
@@ -168,7 +164,7 @@ const TaskManager = () => {
 		<>
 			{showDelete && projectDelete && (
 				<Popup
-					title={`Delete ${projectDelete.name}?`}
+					title={`Delete ${projectRemove!.name}?`}
 					addSquares={false}
 					hide={() => setShowDelete(false)}
 					inputs={[]}
@@ -208,7 +204,7 @@ const TaskManager = () => {
 							}
 							list={projectsGet.data}
 							onDeleteClick={(value: Project) => {
-								setProjectDelete(value);
+								setProjectRemove(value);
 								setShowDelete(true);
 							}}
 							onEditClick={(value: Project) => {
