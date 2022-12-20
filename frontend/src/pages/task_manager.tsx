@@ -23,7 +23,10 @@ import Project from "@/types/project";
 // =============== Store =============== //
 import { AuthContext } from "@/store/auth";
 import Router from "next/router";
+
+// =============== API =============== //
 import useGetProjects from "@/api/use_get_projects";
+import usePostProject from "@/api/use_post_project";
 
 const TaskManager = () => {
 	const auth = useContext(AuthContext);
@@ -33,12 +36,11 @@ const TaskManager = () => {
 	const [projectAdd, setProjectAdd] = useState<Project | null>(null);
 	const [projectDelete, setProjectDelete] = useState<Project | null>(null);
 	const [projectEdit, setProjectEdit] = useState<Project | null>(null);
-	const projects = useGetProjects(auth.getAuthHeaders(), auth.is_authenticated);
-	const { mutate: mutatePost, isSuccess: isSuccessPost } = useMutation(() =>
-		axios
-			.post<ResponseType>("/projects", projectAdd, auth.getAuthHeaders())
-			.finally(() => setProjectDelete(null))
+	const projectsGet = useGetProjects(
+		auth.getAuthHeaders(),
+		auth.is_authenticated
 	);
+	const projectPost = usePostProject(auth.getAuthHeaders());
 	const { mutate: mutateDelete, isSuccess: isSuccessDelete } = useMutation(() =>
 		axios
 			.delete<ResponseType>(
@@ -58,15 +60,15 @@ const TaskManager = () => {
 	);
 
 	useEffect(() => {
-		if (isSuccessPost) projects.refetch();
-	}, [isSuccessPost]);
+		if (projectPost.isSuccess) projectsGet.refetch();
+	}, [projectPost.isSuccess]);
 
 	useEffect(() => {
-		if (isSuccessDelete) projects.refetch();
+		if (isSuccessDelete) projectsGet.refetch();
 	}, [isSuccessDelete]);
 
 	useEffect(() => {
-		if (isSuccessEdit) projects.refetch();
+		if (isSuccessEdit) projectsGet.refetch();
 	}, [isSuccessEdit]);
 
 	const addInputs: InputGlassmorphismFormProps[] = [
@@ -87,9 +89,11 @@ const TaskManager = () => {
 			id: "submit",
 			label: "submit",
 			type: "button",
-			onClick: (e) => {
+			onClick: async (e) => {
 				e.preventDefault();
-				mutatePost();
+				await projectPost
+					.mutateAsync(projectAdd!)
+					.finally(() => setProjectDelete(null));
 				setShowAdd(false);
 			},
 		},
@@ -194,13 +198,15 @@ const TaskManager = () => {
 			</Head>
 			<DashboardContainer title="task manager - projects">
 				<div className="flex-grow overflow-y-scroll">
-					{projects.status === "loading" && <h1>Loading....</h1>}
-					{projects.status === "success" ? (
+					{projectsGet.status === "loading" && <h1>Loading....</h1>}
+					{projectsGet.status === "success" ? (
 						<TableOfData
 							headerList={
-								projects.data.length > 0 ? Object.keys(projects.data[0]) : []
+								projectsGet.data.length > 0
+									? Object.keys(projectsGet.data[0])
+									: []
 							}
-							list={projects.data}
+							list={projectsGet.data}
 							onDeleteClick={(value: Project) => {
 								setProjectDelete(value);
 								setShowDelete(true);
