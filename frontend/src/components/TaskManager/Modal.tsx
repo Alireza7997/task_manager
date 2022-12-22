@@ -9,7 +9,7 @@ interface ModalProps extends React.PropsWithChildren {
 const Modal = (props: ModalProps) => {
 	return createPortal(
 		<div className="screen fixed inset-0" style={{ zIndex: props.zIndex }}>
-			<div className="full bg-[#000000bd]" onClick={props.hide}></div>
+			<div className="full animate-fade-in" onClick={props.hide}></div>
 			{props.children}
 		</div>,
 		document.getElementsByTagName("body")[0]

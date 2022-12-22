@@ -1,5 +1,5 @@
 .task-row {
-	@apply bg-[#60a2d8] rounded-lg px-4 py-4 cursor-grab my-2;
+	@apply bg-[#60a2d8] rounded-lg px-4 py-4 cursor-grab mb-2;
 
 	@apply transition-all;
 

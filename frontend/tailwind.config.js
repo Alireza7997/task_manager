@@ -19,6 +19,17 @@ module.exports = {
 			// 		"100%": { padding: 0 },
 			// 	},
 			// },
+			animation: {
+				"fade-in": "fadeIn 500ms ease forwards",
+			},
+
+			// that is actual animation
+			keyframes: () => ({
+				fadeIn: {
+					"0%": { backgroundColor: "#00000000" },
+					"100%": { backgroundColor: "#000000bd" },
+				},
+			}),
 		},
 		screens: {
 			xs: "475px",
