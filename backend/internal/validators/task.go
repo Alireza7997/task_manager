@@ -13,6 +13,6 @@ var TaskPUTValidator = g.ComplexValidator(galidator.Rules{
 })
 
 var TaskDRAGValidator = g.ComplexValidator(galidator.Rules{
-	"CurrentPrev": g.RuleSet("current_prev").Required(),
-	"Prev":        g.RuleSet("prev").Required(),
+	"CurrentPrev": g.RuleSet("current_prev").Int(),
+	"Prev":        g.RuleSet("prev").Int(),
 })

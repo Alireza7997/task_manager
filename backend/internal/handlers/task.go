@@ -247,7 +247,7 @@ func DragAndDrop(c *gin.Context) {
 	if err != nil {
 		utils.Response(c, 500,
 			"Internal Error",
-			"",
+			err.Error(),
 			nil)
 		return
 	}
