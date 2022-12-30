@@ -186,13 +186,13 @@ const Table: React.FC<TableProps> = (props) => {
 				</div>
 
 				<Droppable droppableId={props.table.id.toString()}>
-					{(provided) => (
+					{(provided, snapshot) => (
 						<div
 							className={styles["tasks"]}
 							ref={provided.innerRef}
 							{...provided.droppableProps}
 						>
-							{props.table.tasks.length === 0 && (
+							{props.table.tasks.length === 0 && !snapshot.isDraggingOver && (
 								<div className="p-3 ">
 									<p className="text-center text-slate-200 font-bold">
 										NO TASK

@@ -17,12 +17,21 @@ const useDeleteTask = (taskID: number, headers: AxiosRequestConfig) => {
 			.delete<ResponseType>(`/tasks/${taskID}`, headers)
 			.catch((reason: AxiosError) => {
 				const data = reason.response?.data as ResponseType;
-				CreateNotification(
-					data.title,
-					data.message as string,
-					"error",
-					snackProvider
-				);
+				if (data) {
+					CreateNotification(
+						data.title,
+						data.message as string,
+						"error",
+						snackProvider
+					);
+				} else {
+					CreateNotification(
+						"Unknown",
+						"An unknown error happened",
+						"error",
+						snackProvider
+					);
+				}
 				throw reason;
 			})
 	);

@@ -21,7 +21,6 @@ const TaskManagerID = () => {
 	const router = useRouter();
 	const { id: idString } = router.query;
 	const id = parseInt(idString as string);
-	// auth.is_authenticated && id !== undefined
 	const project = useGetProject(
 		id,
 		auth.getAuthHeaders(),
@@ -39,7 +38,7 @@ const TaskManagerID = () => {
 			<DashboardContainer
 				title={
 					project.status === "success"
-						? `task manager - ${project.data.name}`
+						? `task manager / ${project.data.name}`
 						: "loading..."
 				}
 			>

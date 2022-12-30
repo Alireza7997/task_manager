@@ -140,7 +140,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 		setShowDeletePopup(true);
 	};
 
-	const DropFunction = async (result: DropResult) => {
+	const DropFunction = (result: DropResult) => {
 		const { source, destination } = result;
 		if (destination === null || destination === undefined) return;
 		if (
@@ -169,26 +169,37 @@ const TaskManager = ({ project }: { project: Project }) => {
 			destination.index - 1 > -1
 				? tables[destinationTableIndex].tasks[destination.index - 1].id
 				: 0;
-		await projectsDND
+		projectsDND
 			.mutateAsync({
 				cPrev: cPrev,
 				prev: prev,
 				tableID: destinationTableID,
 				taskID: taskID,
 			})
-			.then(() =>
+			.catch(() => {
 				dispatchTables({
 					method: "DnD",
 					source: {
-						tableID: parseInt(source.droppableId),
-						taskIndex: source.index,
-					},
-					destination: {
 						tableID: parseInt(destination.droppableId),
 						taskIndex: destination.index,
 					},
-				} as action)
-			);
+					destination: {
+						tableID: parseInt(source.droppableId),
+						taskIndex: source.index,
+					},
+				} as action);
+			});
+		dispatchTables({
+			method: "DnD",
+			source: {
+				tableID: parseInt(source.droppableId),
+				taskIndex: source.index,
+			},
+			destination: {
+				tableID: parseInt(destination.droppableId),
+				taskIndex: destination.index,
+			},
+		} as action);
 	};
 
 	const addInputs: InputGlassmorphismFormProps[] = [
