@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }: ComponentWithPageLayout) {
 
 			<SnackbarProvider maxSnack={3}>
 				<QueryClientProvider client={client}>
-					{process.env.NEXT_PUBLIC_DEBUG && (
+					{process.env.NEXT_PUBLIC_DEBUG === "true" && (
 						<ReactQueryDevtools position="bottom-right" initialIsOpen={false} />
 					)}
 					<AuthProvider>
