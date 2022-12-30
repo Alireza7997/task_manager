@@ -216,7 +216,7 @@ const TaskManager = () => {
 							setShowAdd(true);
 						}}
 					>
-						<AddCircleIcon className="h-full w-full" />
+						<AddCircleIcon className="!h-full !w-full" />
 					</InputGlassmorphismForm>
 				</div>
 			</DashboardContainer>
