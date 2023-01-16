@@ -11,7 +11,7 @@ import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismF
 
 // =============== Libraries =============== //
 import { useContext, useReducer, useState } from "react";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import findIndex from "lodash/findIndex";
 import orderBy from "lodash/orderBy";
 import find from "lodash/find";
@@ -142,6 +142,9 @@ const TaskManager = ({ project }: { project: Project }) => {
 
 	const DropFunction = (result: DropResult) => {
 		const { source, destination } = result;
+		if (source.droppableId === "project") {
+			return;
+		}
 		if (destination === null || destination === undefined) return;
 		if (
 			destination.droppableId === source.droppableId &&
@@ -306,21 +309,41 @@ const TaskManager = ({ project }: { project: Project }) => {
 			)}
 			<div className={styles["task-manager-container"]}>
 				{tablesGet.status === "success" && (
-					<>
-						<DragDropContext onDragEnd={DropFunction}>
-							{/* Actual Tables */}
-							{orderBy(tables, (value) => value.id).map((value) => {
+					<DragDropContext onDragEnd={DropFunction}>
+						{/* Actual Tables */}
+						<Droppable
+							droppableId="project"
+							type="TABLE"
+							direction="horizontal"
+						>
+							{(provided, snapshot) => {
 								return (
-									<Table
-										key={value.id}
-										table={value}
-										deleteTable={deleteTable}
-										dispatchTables={dispatchTables}
-									/>
+									<>
+										<div
+											ref={provided.innerRef}
+											{...provided.droppableProps}
+											className={styles["task-manager-container"]}
+										>
+											{orderBy(tables, (value) => value.id).map(
+												(value, index) => {
+													return (
+														<Table
+															key={value.id}
+															index={index}
+															table={value}
+															deleteTable={deleteTable}
+															dispatchTables={dispatchTables}
+														/>
+													);
+												}
+											)}
+										</div>
+										{provided.placeholder}
+									</>
 								);
-							})}
-							{/* End Of Actual Tables */}
-						</DragDropContext>
+							}}
+						</Droppable>
+						{/* End Of Actual Tables */}
 						<div className={styles["add-table"]}>
 							<button
 								onClick={(e) => {
@@ -331,7 +354,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 								+
 							</button>
 						</div>
-					</>
+					</DragDropContext>
 				)}
 			</div>
 		</>

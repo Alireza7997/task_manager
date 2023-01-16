@@ -1,5 +1,5 @@
 .task-manager-container {
-	@apply space-x-3 flex flex-grow overflow-visible;
+	@apply flex overflow-visible;
 }
 
 .add-table {

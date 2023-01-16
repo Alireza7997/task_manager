@@ -6,7 +6,7 @@ import { AuthContext } from "@/store/auth";
 
 // =============== Libraries =============== //
 import { useContext, useState } from "react";
-import { Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -28,6 +28,7 @@ interface TableProps {
 	table: TableData;
 	dispatchTables: (value: action) => void;
 	deleteTable: (value: TableData) => void;
+	index: number;
 }
 
 interface taskFields {
@@ -180,69 +181,79 @@ const Table: React.FC<TableProps> = (props) => {
 					}}
 				/>
 			)}
-			<div className={styles["tasks-table"]}>
-				<div className={styles["table-title"]}>
-					<h4>{props.table.title}</h4>
-				</div>
+			<Draggable draggableId={props.table.id.toString()} index={props.index}>
+				{(provided, snapshot) => (
+					<div
+						className={styles["tasks-table"]}
+						{...provided.draggableProps}
+						{...provided.dragHandleProps}
+						ref={provided.innerRef}
+					>
+						<div className={styles["table-title"]}>
+							<h4>{props.table.title}</h4>
+						</div>
 
-				<Droppable droppableId={props.table.id.toString()}>
-					{(provided, snapshot) => (
-						<div
-							className={styles["tasks"]}
-							ref={provided.innerRef}
-							{...provided.droppableProps}
-						>
-							{props.table.tasks.length === 0 && !snapshot.isDraggingOver && (
-								<div className="p-3 ">
-									<p className="text-center text-slate-200 font-bold">
-										NO TASK
-									</p>
+						<Droppable droppableId={props.table.id.toString()}>
+							{(provided, snapshot) => (
+								<div
+									className={styles["tasks"]}
+									ref={provided.innerRef}
+									{...provided.droppableProps}
+								>
+									{props.table.tasks.length === 0 &&
+										!snapshot.isDraggingOver && (
+											<div className="p-3 ">
+												<p className="text-center text-slate-200 font-bold">
+													NO TASK
+												</p>
+											</div>
+										)}
+									{props.table.tasks.map((value, index) => {
+										return (
+											<Task
+												key={value.id}
+												index={index}
+												dispatchTables={props.dispatchTables}
+												task={value}
+												table={props.table}
+											/>
+										);
+									})}
+									{provided.placeholder}
 								</div>
 							)}
-							{props.table.tasks.map((value, index) => {
-								return (
-									<Task
-										key={value.id}
-										index={index}
-										dispatchTables={props.dispatchTables}
-										task={value}
-										table={props.table}
-									/>
-								);
-							})}
-							{provided.placeholder}
-						</div>
-					)}
-				</Droppable>
+						</Droppable>
 
-				<div className={styles["table-buttons"]}>
-					<button
-						className="p-2"
-						onClick={() => {
-							setShowAddPopup(true);
-						}}
-					>
-						<AddCircleIcon className="h-[30px] w-[30px]" />
-					</button>
-					<button
-						className="p-2"
-						onClick={() => {
-							setTableFields(props.table);
-							setShowEditPopup(true);
-						}}
-					>
-						<ModeEditIcon className="h-[30px] w-[30px]" />
-					</button>
-					<button
-						className="p-2"
-						onClick={() => {
-							props.deleteTable(props.table);
-						}}
-					>
-						<DeleteIcon className="h-[30px] w-[30px]" />
-					</button>
-				</div>
-			</div>
+						<div className={styles["table-buttons"]}>
+							<button
+								className="p-2"
+								onClick={() => {
+									setShowAddPopup(true);
+								}}
+							>
+								<AddCircleIcon className="h-[30px] w-[30px]" />
+							</button>
+							<button
+								className="p-2"
+								onClick={() => {
+									setTableFields(props.table);
+									setShowEditPopup(true);
+								}}
+							>
+								<ModeEditIcon className="h-[30px] w-[30px]" />
+							</button>
+							<button
+								className="p-2"
+								onClick={() => {
+									props.deleteTable(props.table);
+								}}
+							>
+								<DeleteIcon className="h-[30px] w-[30px]" />
+							</button>
+						</div>
+					</div>
+				)}
+			</Draggable>
 		</>
 	);
 };

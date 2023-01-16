@@ -3,7 +3,7 @@
 }
 
 .tasks-table {
-	@apply bg-[#253d50] rounded-lg w-[25rem] min-w-[25rem] overflow-hidden h-fit flex flex-col;
+	@apply bg-[#253d50] mr-2 rounded-lg w-[25rem] min-w-[25rem] overflow-hidden h-fit flex flex-col;
 }
 
 .tasks {

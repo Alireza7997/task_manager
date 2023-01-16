@@ -167,9 +167,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 	];
 
 	const hours: number | null = props.task?.due_date
-		? parseISO(
-				(Date.now() - parseISO(props.task?.due_date).getDate()).toString()
-		  ).getHours()
+		? (Date.now() - parseISO(props.task?.due_date).getDate()) / 1000 / 60 / 60
 		: null;
 	const daysRemaining = hours && hours / 24;
 	const hoursRemaining = hours && hours % 24;
@@ -273,7 +271,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 													(daysRemaining <= 0 &&
 														hoursRemaining <= 0 &&
 														`${daysRemaining} days and ${hoursRemaining} hours passed`))) ||
-											"Error"
+											"OFF"
 										}
 										placement="bottom"
 									>
