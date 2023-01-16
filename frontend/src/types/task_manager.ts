@@ -1,9 +1,14 @@
+import { parseISO } from "date-fns";
+
 export interface TaskData {
 	id: number;
 	name: string;
 	description: string;
 	next: number;
 	done: boolean;
+	start_date: string;
+	finish_date: string;
+	due_date: string;
 }
 
 export interface TableData {

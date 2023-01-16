@@ -7,7 +7,15 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export interface InputGlassmorphismFormProps extends React.PropsWithChildren {
-	type: "password" | "text" | "button" | "submit" | "email" | "date" | "radio";
+	type:
+		| "password"
+		| "text"
+		| "button"
+		| "submit"
+		| "email"
+		| "date"
+		| "radio"
+		| "datetime-local";
 	label: string;
 	placeHolder?: string;
 	id?: string;
@@ -107,8 +115,12 @@ const InputGlassmorphismForm: React.FC<InputGlassmorphismFormProps> = (
 			)}
 
 			{/* Date input */}
-			{props.type === "date" && (
-				<input {...propsOnInput.data} readOnly={props.readonly} />
+			{(props.type === "date" || props.type === "datetime-local") && (
+				<input
+					{...propsOnInput.data}
+					{...propsOnInput.functions}
+					readOnly={props.readonly}
+				/>
 			)}
 
 			{/* Button, Submit input */}
