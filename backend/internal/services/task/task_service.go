@@ -93,7 +93,7 @@ func (t *TaskService) GetLastTask(db *goqu.Database, tableID uint) (*models.Task
 		return nil, err
 	}
 	if err != nil && err != sql.ErrNoRows {
-		return nil, errors.New("")
+		return nil, err
 	}
 	return task, nil
 }
@@ -229,19 +229,20 @@ func (t *TaskService) DragDrop(db *goqu.Database, taskID, toTable, cPrev, prev u
 }
 
 func (t *TaskService) UpdateNext(db *goqu.Database, taskID uint, next uint) error {
-	updateTime := time.Now().Local()
 	_, err := db.From(models.TaskName).Where(goqu.C("id").Eq(taskID)).Update().Set(goqu.Record{
-		"next":       next,
-		"updated_at": updateTime,
+		"next": next,
 	}).Executor().Exec()
 	if err != nil {
-		return errors.New("")
+		return err
 	}
 
 	return nil
 }
 
 func (t *TaskService) txUpdateNext(tx *goqu.TxDatabase, taskID uint, next uint) error {
+	if taskID == 0 {
+		return sql.ErrNoRows
+	}
 	updateTime := time.Now().Local()
 	_, err := tx.From(models.TaskName).Where(goqu.C("id").Eq(taskID)).Update().Set(goqu.Record{
 		"next":       next,
@@ -249,8 +250,10 @@ func (t *TaskService) txUpdateNext(tx *goqu.TxDatabase, taskID uint, next uint) 
 	}).Executor().Exec()
 	if err != nil {
 		if rErr := tx.Rollback(); rErr != nil {
-			return errors.New(err.Error())
+			return rErr
 		}
+
+		return err
 	}
 
 	return nil
@@ -265,8 +268,10 @@ func (t *TaskService) txMUpdateNext(tx *goqu.TxDatabase, taskID uint, toTable ui
 	}).Executor().Exec()
 	if err != nil {
 		if rErr := tx.Rollback(); rErr != nil {
-			return errors.New(err.Error())
+			return rErr
 		}
+
+		return err
 	}
 
 	return nil
