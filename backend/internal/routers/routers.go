@@ -25,7 +25,7 @@ func SetUpRouters(r *gin.Engine) {
 	manager1.POST("/projects", handlers.ProjectPOST)
 	manager1.POST("/projects/:project_id/tables", handlers.TablePOST)
 	manager1.POST("/tables/:table_id/tasks", handlers.TaskPOST)
-	manager1.GET("/projects", middleware.ContentRange, handlers.ProjectGETALL)
+	manager1.GET("/projects", handlers.ProjectGETALL)
 	// group 2
 	manager2 := r.Group("/", middleware.Auth, middleware.CheckUser)
 	manager2.GET("/projects/:project_id/tables", handlers.TableGETALL)
@@ -39,5 +39,5 @@ func SetUpRouters(r *gin.Engine) {
 	manager2.PUT("/projects/:project_id", handlers.ProjectPUT)
 	manager2.PUT("/tables/:table_id", handlers.TablePUT)
 	manager2.PUT("/tasks/:task_id", handlers.TaskPUT)
-	manager2.PUT("/tasks/:task_id/to_table/:table_id", handlers.DragAndDrop)
+	manager2.PUT("/tasks/:task_id/to_table/:table_id/move", handlers.DragAndDrop)
 }

@@ -18,6 +18,7 @@ func CheckUser(c *gin.Context) {
 	ts := taskService.New()
 	db := database.DB
 	user := c.MustGet("user").(*models.User)
+	idFound := false
 	if param := c.Param("project_id"); param != "" {
 		id, _ := strconv.Atoi(param)
 		project, err := p.GetProjectByID(db, uint(id))
@@ -29,6 +30,7 @@ func CheckUser(c *gin.Context) {
 			c.Abort()
 			return
 		}
+		idFound = true
 		c.Set("project", project)
 		if allowed := user.ID == project.UserID; !allowed {
 			utils.Response(c, 403,
@@ -39,7 +41,8 @@ func CheckUser(c *gin.Context) {
 			return
 		}
 		c.Next()
-	} else if param := c.Param("table_id"); param != "" {
+	}
+	if param := c.Param("table_id"); param != "" {
 		id, _ := strconv.Atoi(param)
 		table, err := t.GetTableByID(db, uint(id))
 		if err != nil {
@@ -50,6 +53,7 @@ func CheckUser(c *gin.Context) {
 			c.Abort()
 			return
 		}
+		idFound = true
 		c.Set("table", table)
 		project, err := p.GetProjectByID(db, table.ProjectID)
 		if err != nil {
@@ -69,7 +73,8 @@ func CheckUser(c *gin.Context) {
 			return
 		}
 		c.Next()
-	} else if param := c.Param("task_id"); param != "" {
+	}
+	if param := c.Param("task_id"); param != "" {
 		id, _ := strconv.Atoi(param)
 		task, err := ts.GetTaskByID(db, uint(id))
 		if err != nil {
@@ -80,6 +85,7 @@ func CheckUser(c *gin.Context) {
 			c.Abort()
 			return
 		}
+		idFound = true
 		c.Set("task", task)
 		table, err := t.GetTableByID(db, task.TableID)
 		if err != nil {
@@ -108,7 +114,8 @@ func CheckUser(c *gin.Context) {
 			return
 		}
 		c.Next()
-	} else {
+	}
+	if !idFound {
 		utils.Response(c, 400,
 			"Bad Request",
 			"Wrong Parameters",
