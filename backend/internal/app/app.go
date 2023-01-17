@@ -22,6 +22,7 @@ func config(router *gin.Engine) {
 }
 
 func Gin() {
+	gin.SetMode(gin.ReleaseMode)
 	Router := gin.Default()
 	config(Router)
 	routers.SetUpRouters(Router)
