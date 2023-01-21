@@ -78,6 +78,7 @@ func ProjectGETALL(c *gin.Context) {
 			nil)
 		return
 	}
+
 	utils.Response(c, 200,
 		"",
 		projects,
