@@ -68,7 +68,7 @@ func TaskPOST(c *gin.Context) {
 		utils.Response(c, 500,
 			"Internal Error",
 			"",
-			nil)
+			err.Error())
 		return
 	}
 

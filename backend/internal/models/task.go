@@ -11,6 +11,9 @@ type Task struct {
 	Done        bool      `db:"done" json:"done"`
 	TableID     uint      `db:"table_id" json:"table_id"`
 	Next        uint      `db:"next" json:"next"`
+	StartDate   string    `db:"start_date"`
+	FinishDate  string    `db:"finish_date"`
+	DueDate     string    `db:"due_date"`
 	CreatedAt   time.Time `db:"created_at" json:"created_at" goqu:"skipupdate"`
 	UpdatedAt   time.Time `db:"updated_at" json:"updated_at"`
 }

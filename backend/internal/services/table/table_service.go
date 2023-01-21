@@ -15,15 +15,17 @@ var service = &TableService{}
 
 func (t *TableService) CreateTable(db *goqu.Database, tbl models.Table) (*models.Table, error) {
 	tbl.CreatedAt = time.Now().Local()
+	tbl.Next = 0
 
 	_, err := db.Insert(models.TableName).Rows(tbl).Executor().Exec()
 	if err != nil {
-		return nil, errors.New("")
+		return nil, err
 	}
 	table, err := t.GetTableByCA(db, tbl.CreatedAt)
 	if err != nil {
-		return nil, errors.New("")
+		return nil, err
 	}
+
 	return table, nil
 }
 
