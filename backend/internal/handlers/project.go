@@ -78,18 +78,10 @@ func ProjectGETALL(c *gin.Context) {
 			nil)
 		return
 	}
-
-	count := len(projects)
-	c.Set("topic", "Projects")
-	c.Set("from", 0)
-	c.Set("to", count)
-	c.Set("count", count)
-	c.Set("send", func() {
-		utils.Response(c, 200,
-			"",
-			projects,
-			nil)
-	})
+	utils.Response(c, 200,
+		"",
+		projects,
+		nil)
 
 }
 
