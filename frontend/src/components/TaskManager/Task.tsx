@@ -271,7 +271,7 @@ const Task: React.FC<TaskProps> = (props: TaskProps) => {
 													(daysRemaining <= 0 &&
 														hoursRemaining <= 0 &&
 														`${daysRemaining} days and ${hoursRemaining} hours passed`))) ||
-											"OFF"
+											"Due Date is not Defined"
 										}
 										placement="bottom"
 									>

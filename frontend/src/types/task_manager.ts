@@ -37,9 +37,11 @@ export interface action {
 		| "AddTask"
 		| "DeleteTask"
 		| "ReplaceTask"
+		| "DnDTable"
 		| "DnD";
-	source: DnD;
-	destination: DnD;
+	sourceIndex: number;
+	destinationIndex: number;
+	toTable: number;
 	tasks: TaskData[];
 	tables: TableData[];
 }

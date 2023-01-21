@@ -193,7 +193,10 @@ const Table: React.FC<TableProps> = (props) => {
 							<h4>{props.table.title}</h4>
 						</div>
 
-						<Droppable droppableId={props.table.id.toString()}>
+						<Droppable
+							droppableId={props.table.id.toString()}
+							direction="vertical"
+						>
 							{(provided, snapshot) => (
 								<div
 									className={styles["tasks"]}

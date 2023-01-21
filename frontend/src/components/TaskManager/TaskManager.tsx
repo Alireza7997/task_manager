@@ -26,6 +26,23 @@ import usePutProjectDND from "@/api/use_put_project_dnd";
 import useDeleteTable from "@/api/use_delete_table";
 import usePostTable from "@/api/use_post_table";
 
+function move(arr: any, old_index: any, new_index: any) {
+	while (old_index < 0) {
+		old_index += arr.length;
+	}
+	while (new_index < 0) {
+		new_index += arr.length;
+	}
+	if (new_index >= arr.length) {
+		var k = new_index - arr.length;
+		while (k-- + 1) {
+			arr.push(undefined);
+		}
+	}
+	arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+	return arr;
+}
+
 const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 	const index = findIndex(prevState, (value) => {
 		return value.id === action.id;
@@ -83,29 +100,34 @@ const taskReducer = (prevState: TableData[], action: action): TableData[] => {
 			if (taskIndex === -1 || action.tasks.length !== 1) return prevState;
 			prevState[index].tasks[taskIndex] = action.tasks[0];
 			return [...prevState];
+		case "DnDTable":
+			return [...move(prevState, action.sourceIndex, action.destinationIndex)];
 		case "DnD":
-			const sourceTableIndex = findIndex(
-				prevState,
-				(value) => value.id === action.source.tableID
-			);
-			const sourceTaskIndex = action.source.taskIndex;
-			const task = prevState[sourceTableIndex].tasks[sourceTaskIndex];
-			prevState[sourceTableIndex].tasks = [
-				...prevState[sourceTableIndex].tasks.slice(0, sourceTaskIndex),
-				...prevState[sourceTableIndex].tasks.slice(sourceTaskIndex + 1),
+			if (action.id === action.toTable) {
+				prevState[index].tasks = move(
+					prevState[index].tasks,
+					action.sourceIndex,
+					action.destinationIndex
+				);
+				return [...prevState];
+			}
+
+			const movingTask = prevState[index].tasks[action.sourceIndex];
+			// Remove it
+			prevState[index].tasks = [
+				...prevState[index].tasks.slice(0, action.sourceIndex),
+				...prevState[index].tasks.slice(action.sourceIndex + 1),
 			];
-			const destinationTableIndex = findIndex(
+			// Find to table index
+			const toIndex = findIndex(
 				prevState,
-				(value) => value.id === action.destination.tableID
+				(value) => value.id === action.toTable
 			);
-			const destinationTaskIndex = action.destination.taskIndex;
-			prevState[destinationTableIndex].tasks = [
-				...prevState[destinationTableIndex].tasks.slice(
-					0,
-					destinationTaskIndex
-				),
-				task,
-				...prevState[destinationTableIndex].tasks.slice(destinationTaskIndex),
+			// Move it to new table
+			prevState[toIndex].tasks = [
+				...prevState[toIndex].tasks.slice(0, action.destinationIndex),
+				movingTask,
+				...prevState[toIndex].tasks.slice(action.destinationIndex),
 			];
 			return [...prevState];
 	}
@@ -142,15 +164,22 @@ const TaskManager = ({ project }: { project: Project }) => {
 
 	const DropFunction = (result: DropResult) => {
 		const { source, destination } = result;
-		if (source.droppableId === "project") {
-			return;
-		}
 		if (destination === null || destination === undefined) return;
 		if (
 			destination.droppableId === source.droppableId &&
 			destination.index === source.index
 		)
 			return;
+
+		// If it's a table
+		if (source.droppableId === "project") {
+			dispatchTables({
+				method: "DnDTable",
+				sourceIndex: source.index,
+				destinationIndex: destination.index,
+			} as action);
+			return;
+		}
 
 		const sourceTableID = parseInt(source.droppableId);
 		const destinationTableID = parseInt(destination.droppableId);
@@ -182,26 +211,18 @@ const TaskManager = ({ project }: { project: Project }) => {
 			.catch(() => {
 				dispatchTables({
 					method: "DnD",
-					source: {
-						tableID: parseInt(destination.droppableId),
-						taskIndex: destination.index,
-					},
-					destination: {
-						tableID: parseInt(source.droppableId),
-						taskIndex: source.index,
-					},
+					id: sourceTableID,
+					toTable: destinationTableID,
+					sourceIndex: destination.index,
+					destinationIndex: source.index,
 				} as action);
 			});
 		dispatchTables({
 			method: "DnD",
-			source: {
-				tableID: parseInt(source.droppableId),
-				taskIndex: source.index,
-			},
-			destination: {
-				tableID: parseInt(destination.droppableId),
-				taskIndex: destination.index,
-			},
+			id: sourceTableID,
+			toTable: destinationTableID,
+			sourceIndex: source.index,
+			destinationIndex: destination.index,
 		} as action);
 	};
 
@@ -324,19 +345,17 @@ const TaskManager = ({ project }: { project: Project }) => {
 											{...provided.droppableProps}
 											className={styles["task-manager-container"]}
 										>
-											{orderBy(tables, (value) => value.id).map(
-												(value, index) => {
-													return (
-														<Table
-															key={value.id}
-															index={index}
-															table={value}
-															deleteTable={deleteTable}
-															dispatchTables={dispatchTables}
-														/>
-													);
-												}
-											)}
+											{tables.map((value, index) => {
+												return (
+													<Table
+														key={value.id}
+														index={index}
+														table={value}
+														deleteTable={deleteTable}
+														dispatchTables={dispatchTables}
+													/>
+												);
+											})}
 										</div>
 										{provided.placeholder}
 									</>
