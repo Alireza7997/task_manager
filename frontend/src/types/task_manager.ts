@@ -1,5 +1,3 @@
-import { parseISO } from "date-fns";
-
 export interface TaskData {
 	id: number;
 	name: string;
@@ -18,11 +16,6 @@ export interface TableData {
 	created_at: string;
 	updated_at: string;
 	tasks: TaskData[];
-}
-
-interface DnD {
-	tableID: number;
-	taskIndex: number;
 }
 
 export interface action {

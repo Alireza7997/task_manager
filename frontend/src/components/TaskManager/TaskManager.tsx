@@ -198,9 +198,16 @@ const TaskManager = ({ project }: { project: Project }) => {
 				? tables[sourceTableIndex].tasks[source.index - 1].id
 				: 0;
 		const prev =
-			destination.index - 1 > -1
+			destinationTableIndex != sourceTableIndex
+				? destination.index - 1 > -1
+					? tables[destinationTableIndex].tasks[destination.index - 1].id
+					: 0
+				: destination.index > source.index
+				? tables[destinationTableIndex].tasks[destination.index].id
+				: destination.index - 1 > -1
 				? tables[destinationTableIndex].tasks[destination.index - 1].id
 				: 0;
+		console.log(destination.index);
 		projectsDND
 			.mutateAsync({
 				cPrev: cPrev,

@@ -16,7 +16,7 @@ const usePutProjectDND = (headers: AxiosRequestConfig) => {
 	const { mutateAsync, mutate } = useMutation((props: DndProps) =>
 		axios
 			.put<ResponseType>(
-				`/tasks/${props.taskID}/to_table/${props.tableID}`,
+				`/tasks/${props.taskID}/to_table/${props.tableID}/move`,
 				{ current_prev: props.cPrev, prev: props.prev },
 				headers
 			)
