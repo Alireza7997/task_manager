@@ -20,6 +20,6 @@ type TaskInterface interface {
 	DeleteTask(db *goqu.Database, taskID uint) error
 	// Updates a task
 	UpdateTask(db *goqu.Database, taskID uint, taskName string, taskDesc string) (*models.Task, error)
-	// Task Drag and Drop
+	// Moves a task
 	DragDrop(db *goqu.Database, taskID uint, toTable uint, cPrev uint, prev uint) error
 }

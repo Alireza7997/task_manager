@@ -17,9 +17,7 @@ var service = &TaskService{}
 func (t *TaskService) CreateTask(db *goqu.Database, tsk models.Task) (task *models.Task, err error) {
 	tsk.Done = false
 	tsk.CreatedAt = time.Now().Local()
-	tsk.StartDate = ""
-	tsk.FinishDate = ""
-	tsk.DueDate = ""
+
 	lastTask, err := t.GetLastTask(db, tsk.TableID)
 	if err == sql.ErrNoRows {
 		_, err = db.Insert(models.TaskName).Rows(tsk).Executor().Exec()

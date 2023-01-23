@@ -203,7 +203,7 @@ func TaskPUT(c *gin.Context) {
 		nil)
 }
 
-func DragAndDrop(c *gin.Context) {
+func TaskDragAndDrop(c *gin.Context) {
 	t := taskService.New()
 	req := &TaskDrag{}
 
