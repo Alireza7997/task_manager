@@ -11,14 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TableRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-type TableUpdate struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
+type (
+	TableRequest struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+	}
+	TableUpdate struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+	}
+	TableDrag struct {
+		CurrentPrev uint `json:"current_prev"`
+		Prev        uint `json:"prev"`
+	}
+)
 
 func TablePOST(c *gin.Context) {
 	req := &TableRequest{}
@@ -198,4 +204,50 @@ func TablePUT(c *gin.Context) {
 		"",
 		newTable,
 		nil)
+}
+
+func TableDragAndDrop(c *gin.Context) {
+
+	// Parsing JSON
+	request := &TableDrag{}
+	if !utils.ParseJson(request, c) {
+		return
+	}
+
+	// Validating the request
+	if errors := validators.TableDRAGValidator.Validate(request); errors != nil {
+		utils.Response(c, 400,
+			"Invalid Request",
+			"Fileds are not filled properly",
+			errors)
+		return
+	}
+
+	// Getting table and project ID from the url
+	param := c.Param("table_id")
+	table_id, err := strconv.Atoi(param)
+	if err != nil {
+		utils.Response(c, 400,
+			"Bad URL",
+			"",
+			nil)
+		return
+	}
+
+	// Moving the table
+	t := tableService.New()
+	err = t.DragDrop(database.DB, uint(table_id), request.CurrentPrev, request.Prev)
+	if err != nil {
+		utils.Response(c, 500,
+			"Internal Error",
+			"",
+			err.Error())
+		return
+	}
+
+	utils.Response(c, 200,
+		"Table Moved",
+		"",
+		nil)
+
 }

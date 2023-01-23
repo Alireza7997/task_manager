@@ -20,4 +20,6 @@ type TableInterface interface {
 	DeleteTable(db *goqu.Database, tID uint) error
 	// Updates a table
 	UpdateTable(db *goqu.Database, tableID uint, tableTitle string, tableDesc string) (*models.Table, error)
+	// Moves a table
+	DragDrop(db *goqu.Database, tableID, cPrev, prev uint) error
 }
