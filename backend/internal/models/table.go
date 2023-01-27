@@ -9,7 +9,7 @@ type Table struct {
 	Title       string    `db:"title" json:"title"`
 	Description string    `db:"description" json:"description"`
 	ProjectID   uint      `db:"project_id" json:"project_id"`
-	Next        uint      `db:"next"`
+	Next        uint      `db:"next" json:"next"`
 	CreatedAt   time.Time `db:"created_at" json:"created_at" goqu:"skipupdate"`
 	UpdatedAt   time.Time `db:"updated_at" json:"updated_at"`
 }
