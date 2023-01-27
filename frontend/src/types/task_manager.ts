@@ -13,6 +13,7 @@ export interface TableData {
 	id: number;
 	title: string;
 	description: string;
+	next: number;
 	created_at: string;
 	updated_at: string;
 	tasks: TaskData[];

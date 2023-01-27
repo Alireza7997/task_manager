@@ -13,33 +13,24 @@ import { InputGlassmorphismFormProps } from "@/components/UI/InputGlassmorphismF
 import { useContext, useReducer, useState } from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import findIndex from "lodash/findIndex";
-import orderBy from "lodash/orderBy";
 import find from "lodash/find";
 
 // =============== Types =============== //
 import { TableData, action } from "@/types/task_manager";
 import Project from "@/types/project";
+import DndProps from "@/types/dnd_props";
 
 // =============== API =============== //
 import useGetTables from "@/api/use_get_tables";
-import usePutProjectDND from "@/api/use_put_project_dnd";
+import usePutTaskDND from "@/api/use_put_task_dnd";
 import useDeleteTable from "@/api/use_delete_table";
 import usePostTable from "@/api/use_post_table";
+import usePutTableDND from "@/api/use_put_table_dnd";
 
 function move(arr: any, old_index: any, new_index: any) {
-	while (old_index < 0) {
-		old_index += arr.length;
-	}
-	while (new_index < 0) {
-		new_index += arr.length;
-	}
-	if (new_index >= arr.length) {
-		var k = new_index - arr.length;
-		while (k-- + 1) {
-			arr.push(undefined);
-		}
-	}
-	arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+	var element = arr[old_index];
+	arr.splice(old_index, 1);
+	arr.splice(new_index, 0, element);
 	return arr;
 }
 
@@ -149,7 +140,8 @@ const TaskManager = ({ project }: { project: Project }) => {
 	const [table, setTable] = useState<TableData | null>(null);
 	const tablesDelete = useDeleteTable(headers);
 	const tablesPost = usePostTable(project.id, headers);
-	const projectsDND = usePutProjectDND(auth.getAuthHeaders());
+	const tasksDND = usePutTaskDND(auth.getAuthHeaders());
+	const tablesDND = usePutTableDND(auth.getAuthHeaders());
 	const tablesGet = useGetTables(
 		project.id,
 		headers,
@@ -173,6 +165,27 @@ const TaskManager = ({ project }: { project: Project }) => {
 
 		// If it's a table
 		if (source.droppableId === "project") {
+			const tableID = tables[source.index].id;
+			const cprev = source.index - 1 >= 0 ? tables[source.index - 1].id : 0;
+			const prev =
+				destination.index < source.index
+					? destination.index - 1 >= 0
+						? tables[destination.index - 1].id
+						: 0
+					: tables[destination.index].id;
+			tablesDND
+				.mutateAsync({
+					tableID: tableID,
+					cPrev: cprev,
+					prev: prev,
+				} as DndProps)
+				.catch(() => {
+					dispatchTables({
+						method: "DnDTable",
+						sourceIndex: destination.index,
+						destinationIndex: source.index,
+					} as action);
+				});
 			dispatchTables({
 				method: "DnDTable",
 				sourceIndex: source.index,
@@ -207,8 +220,7 @@ const TaskManager = ({ project }: { project: Project }) => {
 				: destination.index - 1 > -1
 				? tables[destinationTableIndex].tasks[destination.index - 1].id
 				: 0;
-		console.log(destination.index);
-		projectsDND
+		tasksDND
 			.mutateAsync({
 				cPrev: cPrev,
 				prev: prev,
@@ -218,8 +230,8 @@ const TaskManager = ({ project }: { project: Project }) => {
 			.catch(() => {
 				dispatchTables({
 					method: "DnD",
-					id: sourceTableID,
-					toTable: destinationTableID,
+					id: destinationTableID,
+					toTable: sourceTableID,
 					sourceIndex: destination.index,
 					destinationIndex: source.index,
 				} as action);

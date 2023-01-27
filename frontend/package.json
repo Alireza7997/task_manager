@@ -1,6 +1,6 @@
 {
-	"name": "test_next_app",
-	"version": "0.1.0",
+	"name": "task_manager",
+	"version": "0.2.0",
 	"private": true,
 	"scripts": {
 		"dev": "concurrently \"yarn B\" \"yarn F\"",

@@ -11,7 +11,7 @@ import axios from "./axios";
 import DndProps from "@/types/dnd_props";
 import ResponseType from "@/types/response";
 
-const usePutProjectDND = (headers: AxiosRequestConfig) => {
+const usePutTaskDND = (headers: AxiosRequestConfig) => {
 	const snackProvider = useSnackbar();
 	const { mutateAsync, mutate } = useMutation((props: DndProps) =>
 		axios
@@ -47,4 +47,4 @@ const usePutProjectDND = (headers: AxiosRequestConfig) => {
 	};
 };
 
-export default usePutProjectDND;
+export default usePutTaskDND;
